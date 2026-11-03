@@ -11,22 +11,16 @@
   "theme_color": "#176b45",
   "icons": [
     {
-      "src": "icons/milkman.jpg",
-      "sizes": "128x128",
+      "src": "/Milk-Attendance-APP/icons/dudhwala-512.jpg",
+      "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any maskable"
     },
     {
-      "src": "icons/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "/Milk-Attendance-APP/icons/dudhwala-512.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
       "purpose": "any"
-    },
-    {
-      "src": "icons/icon-maskable.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "maskable"
     }
   ]
 }
