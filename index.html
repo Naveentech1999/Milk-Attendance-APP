@@ -31,25 +31,28 @@ const SEED=[{"id":"cust001","name":"Beside My-Village Apt","location":"2nd floor
 const $=id=>document.getElementById(id);
 let db={customers:SEED,days:{},prices:DEFAULT_PRICES,commission:5,monthlyCharges:{}};
 try{const old=JSON.parse(localStorage.getItem('milkBillingSpecV3')||'null');if(old?.customers&&old?.days)db={...db,...old,prices:{...DEFAULT_PRICES,...(old.prices||{})},monthlyCharges:old.monthlyCharges||{}}}catch(e){}
-// Remove discontinued products from customer setup, saved attendance and price list.
-// Small curd packets are retained; only small MILK packets are removed.
+// Remove only the discontinued WM extra daily product.
+// Restore Small milk packet items from the built-in customer list if an earlier
+// app version removed them; this keeps the original customer/product placement.
 const removedItemIds=new Set();
 db.customers.forEach(c=>{
  c.items=(c.items||[]).filter(it=>{
-  const label=String(it.brand||'')+' '+String(it.type||'');
-  const isCurd=/curd/i.test(label);
-  const remove=(!isCurd&&/small/i.test(label))||/wm\s*extra\s*daily/i.test(String(it.type||''));
+  const remove=/wm\s*extra\s*daily/i.test(String(it.type||''));
   if(remove)removedItemIds.add(it.id);
   return !remove;
+ });
+ const seed=SEED.find(x=>x.id===c.id);
+ (seed?.items||[]).filter(it=>/small packet milk/i.test(it.brand+' '+it.type)).forEach(it=>{
+  if(!c.items.some(existing=>existing.id===it.id))c.items.push({...it});
  });
 });
 Object.values(db.days||{}).forEach(day=>Object.values(day||{}).forEach(entry=>{
  if(entry?.items)removedItemIds.forEach(id=>delete entry.items[id]);
 }));
 Object.keys(db.prices||{}).forEach(k=>{
- const lower=k.toLowerCase();
- if((!lower.includes('curd')&&lower.includes('small'))||lower.includes('wm extra daily'))delete db.prices[k];
+ if(k.toLowerCase().includes('wm extra daily'))delete db.prices[k];
 });
+db.prices['Small packet Milk|Small']=16;
 const todayISO=()=>{let d=new Date(),z=d.getTimezoneOffset();return new Date(d-z*60000).toISOString().slice(0,10)};
 $('date').value=todayISO();$('month').value=todayISO().slice(0,7);
 const save=()=>{try{localStorage.setItem('milkBillingSpecV3',JSON.stringify(db))}catch(e){say('Storage unavailable/full. Download a backup.')}};
@@ -119,25 +122,36 @@ function orderedProductEntries(products){
  const brandOrder=['Heritage','Vijaya','Amul','Jersey'];
  const typeOrder=['TM','CM','WM','SM'];
  const parsed=Object.entries(products||{}).map(([k,value])=>{const p=k.split('|');return{key:k,brand:p[0]||'Other',type:p[1]||'Other',value};});
- const result=[];
- const addBrand=brand=>parsed.filter(x=>x.brand===brand).sort((a,b)=>{
-  const ai=typeOrder.indexOf(a.type),bi=typeOrder.indexOf(b.type);
-  return (ai<0?99:ai)-(bi<0?99:bi)||a.type.localeCompare(b.type);
- }).forEach(x=>result.push(x));
+ const sections=[];
+ const addBrand=brand=>{
+  const rows=parsed.filter(x=>x.brand===brand).sort((a,b)=>{
+   const ai=typeOrder.indexOf(a.type),bi=typeOrder.indexOf(b.type);
+   return (ai<0?99:ai)-(bi<0?99:bi)||a.type.localeCompare(b.type);
+  });
+  if(rows.length)sections.push({title:brand,rows});
+ };
  addBrand('Heritage');
- parsed.filter(x=>/^curd$/i.test(x.brand)||/curd/i.test(x.type))
-  .sort((a,b)=>a.brand.localeCompare(b.brand)||a.type.localeCompare(b.type)).forEach(x=>result.push(x));
+ const smallRows=parsed.filter(x=>/small packet milk/i.test(x.brand)||(/small/i.test(x.type)&&!/^curd$/i.test(x.brand)))
+  .sort((a,b)=>a.brand.localeCompare(b.brand)||a.type.localeCompare(b.type));
+ if(smallRows.length)sections.push({title:'Small milk packets',rows:smallRows});
+ const curdRows=parsed.filter(x=>/^curd$/i.test(x.brand)||/curd/i.test(x.type))
+  .sort((a,b)=>a.brand.localeCompare(b.brand)||a.type.localeCompare(b.type));
+ if(curdRows.length)sections.push({title:'Curd packets',rows:curdRows});
  ['Vijaya','Amul','Jersey'].forEach(addBrand);
- parsed.filter(x=>!brandOrder.includes(x.brand)&&!/^curd$/i.test(x.brand)&&!/curd/i.test(x.type)&&!isPacketKey(x.key))
-  .sort((a,b)=>a.brand.localeCompare(b.brand)||a.type.localeCompare(b.type)).forEach(x=>result.push(x));
- return result;
+ const known=new Set(sections.flatMap(section=>section.rows.map(x=>x.key)));
+ const otherRows=parsed.filter(x=>!known.has(x.key)).sort((a,b)=>a.brand.localeCompare(b.brand)||a.type.localeCompare(b.type));
+ if(otherRows.length)sections.push({title:'Other products',rows:otherRows});
+ return sections;
 }
 function productBreakdownHtml(products){
- const rows=orderedProductEntries(products);
- if(!rows.length)return '<p class="muted">No milk products recorded.</p>';
- return '<table><tr><th>Brand / milk type</th><th>Net quantity</th><th>Amount</th></tr>'+
- rows.map(x=>'<tr><td>'+esc(x.brand+' '+x.type)+'</td><td>'+(isPacketKey(x.key)?(x.value.qty*2).toFixed(0)+' packets':x.value.qty.toFixed(2)+' L')+'</td><td>'+money(x.value.amount)+'</td></tr>').join('')+
- '</table>';
+ const sections=orderedProductEntries(products);
+ if(!sections.length)return '<p class="muted">No milk products recorded.</p>';
+ const rowsHtml=sections.map(section=>{
+  const subtotal=section.rows.reduce((sum,x)=>sum+x.value.amount,0);
+  return '<tr><th colspan="3" style="background:#eaf4ed;color:#175b3b;padding:9px 7px">'+esc(section.title)+'<span style="float:right">'+money(subtotal)+'</span></th></tr>'+
+   section.rows.map(x=>'<tr><td>'+esc(x.brand+' '+x.type)+'</td><td>'+(isPacketKey(x.key)?(x.value.qty*2).toFixed(0)+' packets':x.value.qty.toFixed(2)+' L')+'</td><td>'+money(x.value.amount)+'</td></tr>').join('');
+ }).join('');
+ return '<table><tr><th>Brand / milk type</th><th>Net quantity</th><th>Amount</th></tr>'+rowsHtml+'</table>';
 }
 function monthRows(){
  let m=$('month').value,dates=Object.keys(db.days).filter(d=>d.startsWith(m)).sort();
