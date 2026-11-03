@@ -115,13 +115,40 @@ function renderDaily(){
  $('dPayable').textContent=money(t.payable);
 }
 function renderPrices(){$('prices').innerHTML=Object.entries(db.prices).map(([k,v])=>`<div class="product"><div>${esc(k.replace('|',' '))}<small>${isPacketKey(k)?'Per packet':'Per litre'}</small></div><input class="field" type="number" min="0" step=".5" value="${v}" data-price="${esc(k)}"></div>`).join('');document.querySelectorAll('[data-price]').forEach(i=>i.onchange=()=>{db.prices[i.dataset.price]=Math.max(0,+i.value||0);save();renderList();renderDaily();say('Price saved')});$('commissionRate').value=db.commission}
+function orderedProductEntries(products){
+ const brandOrder=['Heritage','Vijaya','Amul','Jersey'];
+ const typeOrder=['TM','CM','WM','SM'];
+ const parsed=Object.entries(products||{}).map(([k,value])=>{const p=k.split('|');return{key:k,brand:p[0]||'Other',type:p[1]||'Other',value};});
+ const result=[];
+ brandOrder.forEach(brand=>parsed.filter(x=>x.brand===brand).sort((a,b)=>{
+  const ai=typeOrder.indexOf(a.type),bi=typeOrder.indexOf(b.type);
+  return (ai<0?99:ai)-(bi<0?99:bi)||a.type.localeCompare(b.type);
+ }).forEach(x=>result.push(x)));
+ parsed.filter(x=>!brandOrder.includes(x.brand)&&!isPacketKey(x.key)&&!/^curd$/i.test(x.brand))
+  .sort((a,b)=>a.brand.localeCompare(b.brand)||a.type.localeCompare(b.type)).forEach(x=>result.push(x));
+ parsed.filter(x=>/^curd$/i.test(x.brand)||/curd/i.test(x.type))
+  .sort((a,b)=>a.brand.localeCompare(b.brand)||a.type.localeCompare(b.type)).forEach(x=>result.push(x));
+ return result;
+}
+function productBreakdownHtml(products){
+ const rows=orderedProductEntries(products);
+ if(!rows.length)return '<p class="muted">No milk products recorded.</p>';
+ return '<table><tr><th>Brand / milk type</th><th>Net quantity</th><th>Amount</th></tr>'+
+ rows.map(x=>'<tr><td>'+esc(x.brand+' '+x.type)+'</td><td>'+(isPacketKey(x.key)?(x.value.qty*2).toFixed(0)+' packets':x.value.qty.toFixed(2)+' L')+'</td><td>'+money(x.value.amount)+'</td></tr>').join('')+
+ '</table>';
+}
 function monthRows(){
  let m=$('month').value,dates=Object.keys(db.days).filter(d=>d.startsWith(m)).sort();
  return db.customers.map(c=>{
-  let litres=0,amount=0,present=0;
-  dates.forEach(d=>{let e=db.days[d]?.[c.id];if(e?.status!=='present')return;present++;c.items.forEach(it=>{let v=e.items?.[it.id]||{extra:0,returns:0},q=Math.max(0,it.qty+(+v.extra||0)-(+v.returns||0));if(!isCurd(it))litres+=q;amount+=q*(isPacketItem(it)?2:1)*price(it)})});
+  let litres=0,amount=0,present=0,products={};
+  dates.forEach(d=>{let e=db.days[d]?.[c.id];if(e?.status!=='present')return;present++;c.items.forEach(it=>{
+   let v=e.items?.[it.id]||{extra:0,returns:0},q=Math.max(0,it.qty+(+v.extra||0)-(+v.returns||0)),a=q*(isPacketItem(it)?2:1)*price(it),k=key(it);
+   if(!isCurd(it))litres+=q;amount+=a;
+   if(!products[k])products[k]={qty:0,amount:0};
+   products[k].qty+=q;products[k].amount+=a;
+  })});
   let delivery=Number(db.monthlyCharges?.[m]?.[c.id]||0);
-  return{c,litres,amount,present,delivery,total:amount+delivery};
+  return{c,litres,amount,present,delivery,total:amount+delivery,products};
  });
 }
 function monthHtml(){
@@ -131,6 +158,15 @@ function monthHtml(){
  ${rows.map(x=>`<tr><td>${esc(x.c.name)}<div class="muted">${esc(x.c.location)}</div></td><td>${x.present}</td><td>${x.litres.toFixed(2)}</td><td>${money(x.amount)}</td><td><input class="field monthly-charge" type="number" min="0" step="1" value="${x.delivery}" style="width:105px" data-month="${esc(m)}" data-customer="${x.c.id}"></td><td><b>${money(x.total)}</b></td></tr>`).join('')}</table></div>
  <h3>All customer bills total: ${money(total)}</h3>`;
 }
+function customerBillPrintHtml(x,m){
+ return `<section class="bill-page"><h2>${esc(x.c.name)}</h2><p>${esc(x.c.location)}</p><p>Month: ${esc(m)} · Present days: ${x.present}</p>
+ ${productBreakdownHtml(x.products)}
+ <p>Net milk: ${x.litres.toFixed(2)} L</p><p>Milk amount: ${money(x.amount)}</p><p>Monthly delivery charge: ${money(x.delivery)}</p><h2>Amount due: ${money(x.total)}</h2></section>`;
+}
+function monthlyBillsPrintHtml(){
+ const m=$('month').value,rows=monthRows();
+ return rows.map(x=>customerBillPrintHtml(x,m)).join('');
+}
 function bindMonthlyCharges(){
  document.querySelectorAll('.monthly-charge').forEach(i=>i.onchange=()=>{
   let m=i.dataset.month,id=i.dataset.customer;
@@ -139,7 +175,7 @@ function bindMonthlyCharges(){
   $('monthOutput').innerHTML=monthHtml();bindMonthlyCharges();say('Monthly delivery charge saved');
  });
 }
-function printPage(title,body){let w=window.open('','_blank');if(!w){say('Allow pop-ups to print or save PDF');return}w.document.write('<html><head><title>'+esc(title)+'</title><style>body{font:13px Arial;padding:24px}table{width:100%;border-collapse:collapse}td,th{padding:7px;border-bottom:1px solid #ddd;text-align:left}h1{color:#176b45}</style></head><body><h1>'+esc(title)+'</h1>'+body+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300)}
+function printPage(title,body){let w=window.open('','_blank');if(!w){say('Allow pop-ups to print or save PDF');return}w.document.write('<html><head><title>'+esc(title)+'</title><style>body{font:13px Arial;padding:24px}.bill-page{page-break-after:always;break-after:page}.bill-page:last-child{page-break-after:auto;break-after:auto}table{width:100%;border-collapse:collapse}td,th{padding:7px;border-bottom:1px solid #ddd;text-align:left}h1{color:#176b45}</style></head><body><h1>'+esc(title)+'</h1>'+body+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300)}
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['register','daily','monthly','settings'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab));if(b.dataset.tab==='daily')renderDaily();if(b.dataset.tab==='settings')renderPrices();if(b.dataset.tab==='monthly')fillCustomerSelect()});
 function fillCustomerSelect(){$('billCustomer').innerHTML=db.customers.map(c=>`<option value="${c.id}">${esc(c.name)} — ${esc(c.location)}</option>`).join('')}
 $('date').onchange=()=>{renderList();renderDaily()};$('today').onclick=()=>{$('date').value=todayISO();renderList();renderDaily()};$('search').oninput=renderList;$('filter').onchange=renderList;
@@ -147,8 +183,8 @@ $('allPresent').onclick=()=>{if(!confirm('Mark all delivery locations PRESENT fo
 $('clearDate').onclick=()=>{if(!confirm('Clear all attendance for '+$('date').value+'?'))return;delete db.days[$('date').value];save();renderList();renderDaily()};
 $('commissionRate').onchange=()=>{db.commission=Math.max(0,+$('commissionRate').value||0);save();renderDaily()};
 $('calculate').onclick=()=>{$('monthOutput').innerHTML=monthHtml();fillCustomerSelect();bindMonthlyCharges()};
-$('printMonthly').onclick=()=>printPage('Monthly customer milk bills',monthHtml());
-$('printOne').onclick=()=>{let c=db.customers.find(x=>x.id===$('billCustomer').value),rows=monthRows().find(x=>x.c.id===c.id);printPage('Customer milk bill',`<h2>${esc(c.name)}</h2><p>${esc(c.location)}</p><p>Month: ${esc($('month').value)}</p><p>Present days: ${rows.present}</p><h3>Net milk: ${rows.litres.toFixed(2)} L</h3><p>Milk amount: ${money(rows.amount)}</p><p>Monthly delivery charge: ${money(rows.delivery)}</p><h2>Amount due: ${money(rows.total)}</h2>`)};
+$('printMonthly').onclick=()=>printPage('Monthly customer milk bills',monthlyBillsPrintHtml());
+$('printOne').onclick=()=>{let x=monthRows().find(r=>r.c.id===$('billCustomer').value);if(x)printPage('Customer milk bill',customerBillPrintHtml(x,$('month').value))};
 $('shareOne').onclick=()=>{
  let c=db.customers.find(x=>x.id===$('billCustomer').value);
  if(!c)return;
@@ -156,7 +192,7 @@ $('shareOne').onclick=()=>{
  let msg=`Milk bill - ${$('month').value}\n${c.name}\n${c.location}\nPresent days: ${r.present}\nMilk: ${r.litres.toFixed(2)} L\nMilk amount: ${money(r.amount)}\nMonthly delivery charge: ${money(r.delivery)}\nTOTAL DUE: ${money(r.total)}`;
  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
 };
-$('printDaily').onclick=()=>{let t=calcDay();printPage('Daily milk settlement',`<p>Date: ${esc($('date').value)}</p><p>Net litres: ${t.litres.toFixed(2)} L</p><p>Total MRP amount: ${money(t.amount)}</p><p>Commission deduction: ${money(t.commission)}</p><h2>Company payable: ${money(t.payable)}</h2><table><tr><th>Product</th><th>Litres</th><th>Amount</th></tr>${Object.entries(t.products).map(([k,v])=>`<tr><td>${esc(k)}</td><td>${v.qty.toFixed(2)}</td><td>${money(v.amount)}</td></tr>`).join('')}</table>`)};
+$('printDaily').onclick=()=>{let t=calcDay();printPage('Daily milk settlement',`<p>Date: ${esc($('date').value)}</p><p>Net litres: ${t.litres.toFixed(2)} L</p><p>Total MRP amount: ${money(t.amount)}</p><p>Commission deduction: ${money(t.commission)}</p><h2>Company payable: ${money(t.payable)}</h2>${productBreakdownHtml(t.products)}`)};
 $('backup').onclick=()=>{let a=document.createElement('a'),u=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));a.href=u;a.download='milk-attendance-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
 $('restore').onchange=async e=>{try{let x=JSON.parse(await e.target.files[0].text());if(!x.customers||!x.days)throw Error();db=x;save();renderList();renderPrices();renderDaily();fillCustomerSelect();say('Backup restored')}catch(err){say('Invalid backup file')}};
 renderList();renderDaily();renderPrices();fillCustomerSelect();
