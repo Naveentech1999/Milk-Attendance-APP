@@ -1,4 +1,4 @@
-const CACHE='dudhwala-shell-v18';
+const CACHE='dudhwala-pwa-v19';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./icons/icon.svg','./icons/icon-maskable.svg','./icons/milkman.jpg','./icons/dudhwala-512.jpg'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));self.skipWaiting();});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))));self.clients.claim();});
