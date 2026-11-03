@@ -120,13 +120,15 @@ function orderedProductEntries(products){
  const typeOrder=['TM','CM','WM','SM'];
  const parsed=Object.entries(products||{}).map(([k,value])=>{const p=k.split('|');return{key:k,brand:p[0]||'Other',type:p[1]||'Other',value};});
  const result=[];
- brandOrder.forEach(brand=>parsed.filter(x=>x.brand===brand).sort((a,b)=>{
+ const addBrand=brand=>parsed.filter(x=>x.brand===brand).sort((a,b)=>{
   const ai=typeOrder.indexOf(a.type),bi=typeOrder.indexOf(b.type);
   return (ai<0?99:ai)-(bi<0?99:bi)||a.type.localeCompare(b.type);
- }).forEach(x=>result.push(x)));
- parsed.filter(x=>!brandOrder.includes(x.brand)&&!isPacketKey(x.key)&&!/^curd$/i.test(x.brand))
-  .sort((a,b)=>a.brand.localeCompare(b.brand)||a.type.localeCompare(b.type)).forEach(x=>result.push(x));
+ }).forEach(x=>result.push(x));
+ addBrand('Heritage');
  parsed.filter(x=>/^curd$/i.test(x.brand)||/curd/i.test(x.type))
+  .sort((a,b)=>a.brand.localeCompare(b.brand)||a.type.localeCompare(b.type)).forEach(x=>result.push(x));
+ ['Vijaya','Amul','Jersey'].forEach(addBrand);
+ parsed.filter(x=>!brandOrder.includes(x.brand)&&!/^curd$/i.test(x.brand)&&!/curd/i.test(x.type)&&!isPacketKey(x.key))
   .sort((a,b)=>a.brand.localeCompare(b.brand)||a.type.localeCompare(b.type)).forEach(x=>result.push(x));
  return result;
 }
