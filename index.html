@@ -68,7 +68,7 @@ const isPacketItem=it=>isCurd(it)||isSmallMilk(it);
 const isPacketKey=k=>/curd|small/i.test(k);
 const price=it=>Number(db.prices[key(it)]||0);
 const itemAmount=(c,it)=>net(c,it)*(isPacketItem(it)?2:1)*price(it);
-db.customers.forEach(c=>c.items.forEach(it=>{if((it.id==='i6_1'||it.id==='i25_1')&&it.brand==='Heritage'&&it.type==='Cow Milk')it.type='CM';if(it.id==='i42_1'||it.id==='i43_1'){it.brand='Amul';it.type='TM';it.qty=1;}if(isPacketItem(it))db.prices[key(it)]=8;}));
+db.customers.forEach(c=>c.items.forEach(it=>{if((it.id==='i6_1'||it.id==='i25_1')&&it.brand==='Heritage'&&it.type==='Cow Milk')it.type='CM';if(it.id==='i42_1'||it.id==='i43_1'){it.brand='Amul';it.type='TM';it.qty=1;}if(isCurd(it))db.prices[key(it)]=8;else if(isSmallMilk(it))db.prices[key(it)]??=16;}));
 save();
 const net=(c,it)=>Math.max(0,(Number(it.qty)||0)+(Number(getVal(c,it).extra)||0)-(Number(getVal(c,it).returns)||0));
 const money=n=>'₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
