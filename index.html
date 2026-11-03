@@ -4,7 +4,7 @@
 </style></head><body><header><h1>🥛 Milk Attendance & Billing</h1><div style="font-size:12px">Date-wise register · Daily litres · Commission · Monthly customer bills</div></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
-<div class="tabs"><button class="active" data-tab="register">Attendance</button><button data-tab="daily">Daily totals</button><button data-tab="monthly">Monthly bills</button><button data-tab="settings">Prices & backup</button></div>
+<div class="tabs" style="grid-template-columns:repeat(5,1fr)"><button class="active" data-tab="register">Attendance</button><button data-tab="daily">Daily totals</button><button data-tab="monthly">Monthly bills</button><button data-tab="downloads">Download Bills</button><button data-tab="settings">Prices & backup</button></div>
 <section id="register">
 <div class="tools"><input class="field" id="search" placeholder="Search customer / floor..." style="flex:1"><select class="field" id="filter"><option value="all">All</option><option value="unmarked">Not marked</option><option value="present">Present</option><option value="absent">Absent</option></select></div>
 <div class="actions"><button class="primary" id="allPresent">Mark all present</button><button id="clearDate">Clear this date</button></div>
@@ -20,6 +20,9 @@
 <div class="card"><div class="title">Monthly bill for every customer</div><div class="bar"><input class="field" id="month" type="month"><button class="primary" id="calculate">Calculate monthly bills</button></div><div id="monthOutput"></div><button class="primary" id="printMonthly">Print all customer bills / Save PDF</button></div>
 <div class="card"><div class="title">Individual customer bill</div><select class="field" id="billCustomer" style="width:100%"></select><button id="printOne" style="margin-top:8px">Print selected customer's bill</button> <button id="shareOne" style="margin-top:8px">Share bill on WhatsApp</button></div>
 </section>
+<section id="downloads" class="hidden">
+<div class="card"><div class="title">Download monthly customer bills (PNG)</div><p class="muted">Choose a month, set each customer’s delivery charge, then download an individual bill image.</p><div class="bar"><input class="field" id="downloadMonth" type="month"><button class="primary" id="loadDownloadBills">Show customers</button></div><div id="downloadOutput"></div></div>
+</section>
 <section id="settings" class="hidden">
 <div class="card"><div class="title">MRP prices per litre (₹)</div><div id="prices"></div><p class="muted">Regular milk prices are per litre. Curd packets are priced per packet.</p></div>
 <div class="card"><div class="title">Commission</div><label class="muted">Commission deduction per net litre (₹)</label><input class="field" type="number" id="commissionRate" min="0" step=".5"><p class="muted">Default ₹5 per litre is provisional and editable; change it if your commission rule is different.</p></div>
@@ -27,7 +30,7 @@
 <div class="card"><div class="title">Backup</div><button class="primary" id="backup">Download backup</button> <label class="field">Restore backup <input type="file" id="restore" accept=".json"></label><p class="muted">Saved on this browser/device. Download backup regularly.</p></div>
 </section><p id="msg" class="muted"></p><div class="footer">Previous dates are retained separately. Unmarked and absent customers are excluded from daily and monthly bills.</div>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
 const SEED=[{"id":"cust001","name":"Beside My-Village Apt","location":"2nd floor box","items":[{"id":"i1_1","brand":"Heritage","type":"TM","qty":1.5}]},{"id":"cust002","name":"Nath Apartment","location":"2nd floor left","items":[{"id":"i2_1","brand":"Heritage","type":"TM","qty":1}]},{"id":"cust003","name":"Nath Apartment","location":"2nd floor right","items":[{"id":"i3_1","brand":"Vijaya","type":"SM","qty":2}]},{"id":"cust004","name":"Nath Apartment","location":"1st floor bucket","items":[{"id":"i4_1","brand":"Amul","type":"TM","qty":2}]},{"id":"cust005","name":"Vijaya Sree Apartment","location":"1st floor opposite lift basket","items":[{"id":"i5_1","brand":"Heritage","type":"TM","qty":0.5},{"id":"i5_2","brand":"Heritage","type":"Small packet","qty":0.5}]},{"id":"cust006","name":"Vijaya Sree Apartment","location":"3rd floor lift backside table","items":[{"id":"i6_1","brand":"Heritage","type":"CM","qty":0.5}]},{"id":"cust007","name":"Vijaya Sree Apartment","location":"3rd floor lift backside cover/basket","items":[{"id":"i7_1","brand":"Heritage","type":"TM","qty":1.5}]},{"id":"cust008","name":"Vijaya Sree Apartment","location":"4th floor opposite lift","items":[{"id":"i8_1","brand":"Heritage","type":"SM","qty":0.5}]},{"id":"cust009","name":"Vijaya Sree Apartment","location":"4th floor lift backside cover","items":[{"id":"i9_1","brand":"Heritage","type":"SM","qty":1}]},{"id":"cust010","name":"Kundalika Apartment","location":"1st floor pink basket","items":[{"id":"i10_1","brand":"Vijaya","type":"WM","qty":1}]},{"id":"cust011","name":"Pragathi APT","location":"1st floor","items":[{"id":"i11_1","brand":"Heritage","type":"TM","qty":0.5},{"id":"i11_2","brand":"Heritage","type":"CM","qty":0.5}]},{"id":"cust012","name":"Pragathi APT","location":"Ground floor","items":[{"id":"i12_1","brand":"Vijaya","type":"CM","qty":1.5}]},{"id":"cust013","name":"Pragathi APT","location":"1st floor green basket","items":[{"id":"i13_1","brand":"Heritage","type":"TM","qty":1}]},{"id":"cust014","name":"Opposite to GYM Quest","location":"2nd floor","items":[{"id":"i14_1","brand":"Amul","type":"A2","qty":1.5},{"id":"i14_2","brand":"Amul","type":"TM","qty":0.5}]},{"id":"cust015","name":"Next opposite galli to gym","location":"White grill gate hanging bag","items":[{"id":"i15_1","brand":"Vijaya","type":"SM","qty":2.5}]},{"id":"cust016","name":"Beside Shem Rock School","location":"Left galli bag","items":[{"id":"i16_1","brand":"Amul","type":"TM","qty":1}]},{"id":"cust017","name":"Next right side green bucket","location":"","items":[{"id":"i17_1","brand":"Heritage","type":"TM","qty":0.5}]},{"id":"cust018","name":"Dawarakamai Building","location":"Down bag","items":[{"id":"i18_1","brand":"Vijaya","type":"TM","qty":0.5}]},{"id":"cust019","name":"Dawarakamai Building","location":"Up green basket","items":[{"id":"i19_1","brand":"Vijaya","type":"TM","qty":1}]},{"id":"cust020","name":"Next right-side galli","location":"Bag","items":[{"id":"i20_1","brand":"Amul","type":"A2","qty":0.5}]},{"id":"cust021","name":"Blue Building","location":"Basket","items":[{"id":"i21_1","brand":"Vijaya","type":"TM","qty":0.5}]},{"id":"cust022","name":"Sai Tirumala Apartment","location":"2nd floor opposite lift","items":[{"id":"i22_1","brand":"Heritage","type":"WM","qty":1}]},{"id":"cust023","name":"Sai Tirumala Apartment","location":"2nd floor basket · Panthul","items":[{"id":"i23_1","brand":"Heritage","type":"TM","qty":1}]},{"id":"cust024","name":"Tirumala Residency","location":"Chair","items":[{"id":"i24_1","brand":"Amul","type":"Gold","qty":1.5}]},{"id":"cust025","name":"Shabarish","location":"","items":[{"id":"i25_1","brand":"Heritage","type":"CM","qty":1}]},{"id":"cust026","name":"Akash Residency","location":"2nd floor basket","items":[{"id":"i26_1","brand":"Heritage","type":"TM","qty":1}]},{"id":"cust027","name":"Beside Prashanti Nivas","location":"Down basket","items":[{"id":"i27_1","brand":"Heritage","type":"SM","qty":1},{"id":"i27_2","brand":"Heritage","type":"WM","qty":1}]},{"id":"cust028","name":"Prashanthi Nivas","location":"4th floor bag","items":[{"id":"i28_1","brand":"Heritage","type":"TM","qty":1}]},{"id":"cust029","name":"Prashanthi Nivas","location":"4th floor basket","items":[{"id":"i29_1","brand":"Heritage","type":"CM","qty":1.5}]},{"id":"cust030","name":"Next right-side 1st left house","location":"Gate bag","items":[{"id":"i30_1","brand":"Heritage","type":"TM","qty":0.5}]},{"id":"cust031","name":"Opposite building","location":"2nd floor left-side door","items":[{"id":"i31_1","brand":"Vijaya","type":"TM","qty":1}]},{"id":"cust032","name":"Next opposite building at last","location":"Bag","items":[{"id":"i32_1","brand":"Vijaya","type":"TM","qty":1.5}]},{"id":"cust033","name":"Next right-side dead end left house","location":"Bag","items":[{"id":"i33_1","brand":"Vijaya","type":"TM","qty":0.5}]},{"id":"cust034","name":"Saraswathi Nilayam","location":"Watchman","items":[{"id":"i34_1","brand":"Heritage","type":"TM","qty":0.5}]},{"id":"cust035","name":"Saraswathi Nilayam","location":"3rd floor left side","items":[{"id":"i35_1","brand":"Vijaya","type":"CM","qty":1}]},{"id":"cust036","name":"Saraswathi Nilayam","location":"4th floor down","items":[{"id":"i36_1","brand":"Vijaya","type":"CM","qty":1}]},{"id":"cust037","name":"Vijaya Sree Solide","location":"2nd floor grill","items":[{"id":"i37_1","brand":"Amul","type":"TM","qty":0.5}]},{"id":"cust038","name":"Vijaya Sree Solide","location":"4th floor basket","items":[{"id":"i38_1","brand":"Vijaya","type":"TM","qty":1}]},{"id":"cust039","name":"After Saraswathi Nilayam","location":"Down bag left side","items":[{"id":"i39_1","brand":"Vijaya","type":"TM","qty":0.5}]},{"id":"cust040","name":"Golden 2 Apt","location":"5th floor","items":[{"id":"i40_1","brand":"Heritage","type":"TM","qty":1}]},{"id":"cust041","name":"Golden 2 Apt","location":"3rd floor","items":[{"id":"i41_1","brand":"Heritage","type":"TM","qty":1}]},{"id":"cust042","name":"Golden 2 Apt","location":"2nd floor bag","items":[{"id":"i42_1","brand":"Amul","type":"TM","qty":1}]},{"id":"cust043","name":"Golden 2 Apt","location":"2nd floor basket","items":[{"id":"i43_1","brand":"Amul","type":"TM","qty":1}]},{"id":"cust044","name":"Golden 1 Apt","location":"2nd floor lift left green basket","items":[{"id":"i44_1","brand":"Vijaya","type":"TM","qty":1}]},{"id":"cust045","name":"Golden 1 Apt","location":"4th floor opposite lift","items":[{"id":"i45_1","brand":"Heritage","type":"WM","qty":1},{"id":"i45_2","brand":"Heritage","type":"TM","qty":0.5}]},{"id":"cust046","name":"Elite 1","location":"5A","items":[{"id":"i46_1","brand":"Heritage","type":"TM","qty":1}]},{"id":"cust047","name":"Elite 1","location":"5B","items":[{"id":"i47_1","brand":"Heritage","type":"TM","qty":0.5}]},{"id":"cust048","name":"Elite 1","location":"3A","items":[{"id":"i48_1","brand":"Amul","type":"TM","qty":1}]},{"id":"cust049","name":"Elite 1","location":"3B","items":[{"id":"i49_1","brand":"Amul","type":"TM","qty":0.5}]},{"id":"cust050","name":"Elite 1","location":"2A","items":[{"id":"i50_1","brand":"Amul","type":"TM","qty":1}]},{"id":"cust051","name":"Elite 1","location":"1A","items":[{"id":"i51_1","brand":"Amul","type":"TM","qty":1}]},{"id":"cust052","name":"Elite 2","location":"2nd floor cover","items":[{"id":"i52_1","brand":"Amul","type":"A2","qty":0.5}]},{"id":"cust053","name":"Eshwar Sadan Apt","location":"4th floor bag to stairs","items":[{"id":"i53_1","brand":"Vijaya","type":"TM","qty":0.5}]},{"id":"cust054","name":"KBR 1 APT","location":"Ground floor","items":[{"id":"i54_1","brand":"Heritage","type":"TM","qty":3},{"id":"i54_2","brand":"Vijaya","type":"CM","qty":1.5},{"id":"i54_3","brand":"Amul","type":"TM","qty":2.5}]},{"id":"cust055","name":"Beside KBR 1 building","location":"Down inside window","items":[{"id":"i55_1","brand":"Vijaya","type":"TM","qty":1.5}]},{"id":"cust056","name":"KBR 2 APT","location":"Ground floor","items":[{"id":"i56_1","brand":"Heritage","type":"TM","qty":1.5},{"id":"i56_2","brand":"Heritage","type":"CM","qty":1.5},{"id":"i56_3","brand":"Heritage","type":"WM","qty":1.5},{"id":"i56_4","brand":"Heritage","type":"WM extra daily","qty":0.5},{"id":"i56_5","brand":"Heritage","type":"SM","qty":0.5},{"id":"i56_6","brand":"Amul","type":"TM","qty":0.5},{"id":"i56_7","brand":"Small packet Milk","type":"Small","qty":0.5}]},{"id":"cust057","name":"Opposite KBR 2 galli","location":"Down right-side basket","items":[{"id":"i57_1","brand":"Heritage","type":"TM","qty":0.5},{"id":"i57_2","brand":"Heritage","type":"WM","qty":0.5}]},{"id":"cust058","name":"Opposite KBR 2 galli K31","location":"Left-side bag","items":[{"id":"i58_1","brand":"Vijaya","type":"TM","qty":0.5}]},{"id":"cust059","name":"Shilpi Apt","location":"Ground floor","items":[{"id":"i59_1","brand":"Heritage","type":"TM","qty":1.5},{"id":"i59_2","brand":"Amul","type":"TM","qty":4},{"id":"i59_3","brand":"Vijaya","type":"SM","qty":0.5},{"id":"i59_4","brand":"Vijaya","type":"WM","qty":0.5},{"id":"i59_5","brand":"Vijaya","type":"TM","qty":3.5},{"id":"i59_6","brand":"Small packet Milk","type":"Small","qty":1}]},{"id":"cust060","name":"Left-side Apartment","location":"4th floor bag","items":[{"id":"i60_1","brand":"Heritage","type":"WM","qty":1}]},{"id":"cust061","name":"Annapurna APT","location":"Ground floor","items":[{"id":"i61_1","brand":"Heritage","type":"TM","qty":0.5},{"id":"i61_2","brand":"Vijaya","type":"TM","qty":1},{"id":"i61_3","brand":"Vijaya","type":"WM","qty":0.5}]},{"id":"cust062","name":"Shantamma APT","location":"4th floor basket","items":[{"id":"i62_1","brand":"Heritage","type":"WM","qty":0.5}]},{"id":"cust063","name":"Shantamma APT","location":"2nd floor","items":[{"id":"i63_1","brand":"Amul","type":"Gold","qty":1}]},{"id":"cust064","name":"Shantamma APT","location":"1st floor","items":[{"id":"i64_1","brand":"Amul","type":"A2","qty":1}]},{"id":"cust065","name":"Dogs House","location":"On a wall","items":[{"id":"i65_1","brand":"Vijaya","type":"TM","qty":1}]},{"id":"cust066","name":"Shanti Solide","location":"Opposite Dogs House · 2nd floor right-side bag","items":[{"id":"i66_1","brand":"Vijaya","type":"TM","qty":0.5}]},{"id":"cust067","name":"Doctors House","location":"In a box","items":[{"id":"i67_1","brand":"Vijaya","type":"TM","qty":0.5}]},{"id":"cust068","name":"Beside Doctors House C31","location":"","items":[{"id":"i68_1","brand":"Heritage","type":"WM","qty":1},{"id":"i68_2","brand":"Curd","type":"Small","qty":0.5}]},{"id":"cust069","name":"S.V Pride APT","location":"3rd floor shoe table","items":[{"id":"i69_1","brand":"Jersey","type":"WM","qty":1}]},{"id":"cust070","name":"S.V Pride APT","location":"4th floor shoe table","items":[{"id":"i70_1","brand":"Vijaya","type":"CM","qty":1.5}]},{"id":"cust071","name":"Meenakshi Building","location":"1st floor bag","items":[{"id":"i71_1","brand":"Heritage","type":"CM","qty":1.5}]},{"id":"cust072","name":"Meenakshi Building","location":"4th floor lift left table","items":[{"id":"i72_1","brand":"Vijaya","type":"TM","qty":1.5}]},{"id":"cust073","name":"Beside galli Apt","location":"1st floor bag","items":[{"id":"i73_1","brand":"Amul","type":"TM","qty":1}]},{"id":"cust074","name":"Beside Oxygen Park","location":"Ground floor bag","items":[{"id":"i74_1","brand":"Jersey","type":"TM","qty":1.5}]},{"id":"cust075","name":"Opposite Oxygen Park","location":"Bag","items":[{"id":"i75_1","brand":"Vijaya","type":"TM","qty":0.5}]}], DEFAULT_PRICES={"Heritage|TM":66,"Heritage|WM":90,"Heritage|CM":66,"Heritage|SM":68,"Vijaya|TM":69,"Vijaya|WM":80,"Vijaya|CM":69,"Vijaya|SM":70,"Amul|TM":60,"Amul|Gold":74,"Amul|A2":84,"Jersey|TM":66,"Jersey|WM":90,"Small packet Milk|Small":8,"Heritage|Small packet":8,"Curd|Small":8};
 const $=id=>document.getElementById(id);
@@ -141,17 +144,36 @@ function productBreakdownHtml(products){
  return '<table><tr><th>Brand / milk type</th><th>Net quantity</th><th>Amount</th></tr>'+rowsHtml+'</table>';
 }
 function monthRows(){
- let m=$('month').value,dates=Object.keys(db.days).filter(d=>d.startsWith(m)).sort();
+ const m=$('month').value,[year,month]=m.split('-').map(Number),daysInMonth=new Date(year,month,0).getDate();
+ const dates=Array.from({length:daysInMonth},(_,i)=>m+'-'+String(i+1).padStart(2,'0'));
  return db.customers.map(c=>{
-  let litres=0,amount=0,present=0,products={};
-  dates.forEach(d=>{let e=db.days[d]?.[c.id];if(e?.status!=='present')return;present++;c.items.forEach(it=>{
-   let v=e.items?.[it.id]||{extra:0,returns:0},q=Math.max(0,it.qty+(+v.extra||0)-(+v.returns||0)),a=q*(isPacketItem(it)?2:1)*price(it),k=key(it);
-   if(!isCurd(it))litres+=q;amount+=a;
-   if(!products[k])products[k]={qty:0,amount:0};
-   products[k].qty+=q;products[k].amount+=a;
-  })});
-  let delivery=Number(db.monthlyCharges?.[m]?.[c.id]||0);
-  return{c,litres,amount,present,delivery,total:amount+delivery,products};
+  let litres=0,amount=0,present=0,absent=0,extraDays=0,returnDays=0,notMarked=0;
+  let regularQty=0,extraQty=0,returnedQty=0,extraAmount=0,returnCredit=0,products={},daily=[];
+  dates.forEach(d=>{
+   const e=db.days[d]?.[c.id],status=e?.status||'unmarked';
+   let dayRegular=0,dayExtra=0,dayReturned=0,dayNet=0,dayAmount=0;
+   if(status==='present'){
+    present++;
+    c.items.forEach(it=>{
+     const v=e.items?.[it.id]||{extra:0,returns:0};
+     const reg=Math.max(0,Number(it.qty)||0),extra=Math.max(0,Number(v.extra)||0),returned=Math.max(0,Number(v.returns)||0);
+     const netQty=Math.max(0,reg+extra-returned),factor=isPacketItem(it)?2:1,rate=price(it),k=key(it);
+     const regValue=reg*factor*rate,extraValue=extra*factor*rate,returnValue=returned*factor*rate,netValue=netQty*factor*rate;
+     if(!isCurd(it))litres+=netQty;
+     amount+=netValue;extraAmount+=extraValue;returnCredit+=returnValue;
+     regularQty+=reg*2;extraQty+=extra*2;returnedQty+=returned*2;
+     dayRegular+=reg*2;dayExtra+=extra*2;dayReturned+=returned*2;dayNet+=netQty*2;dayAmount+=netValue;
+     if(!products[k])products[k]={regular:0,extra:0,returned:0,qty:0,amount:0,rate,packet:isPacketItem(it)};
+     products[k].regular+=reg*2;products[k].extra+=extra*2;products[k].returned+=returned*2;products[k].qty+=netQty*2;products[k].amount+=netValue;
+    });
+    if(dayExtra>0)extraDays++;
+    if(dayReturned>0)returnDays++;
+   }else if(status==='absent')absent++;
+   else notMarked++;
+   daily.push({date:d,status,regular:dayRegular,extra:dayExtra,returned:dayReturned,net:dayNet,amount:dayAmount});
+  });
+  const delivery=Number(db.monthlyCharges?.[m]?.[c.id]||0);
+  return{c,litres,amount,present,absent,extraDays,returnDays,notMarked,regularQty,extraQty,returnedQty,extraAmount,returnCredit,delivery,total:amount+delivery,products,daily,totalDays:daysInMonth};
  });
 }
 function monthHtml(){
@@ -161,11 +183,72 @@ function monthHtml(){
  ${rows.map(x=>`<tr><td>${esc(x.c.name)}<div class="muted">${esc(x.c.location)}</div></td><td>${x.present}</td><td>${x.litres.toFixed(2)}</td><td>${money(x.amount)}</td><td><input class="field monthly-charge" type="number" min="0" step="1" value="${x.delivery}" style="width:105px" data-month="${esc(m)}" data-customer="${x.c.id}"></td><td><b>${money(x.total)}</b></td></tr>`).join('')}</table></div>
  <h3>All customer bills total: ${money(total)}</h3>`;
 }
+function billMonthLabel(m){const [y,mo]=m.split('-').map(Number);return new Date(y,mo-1,1).toLocaleDateString('en-IN',{month:'long',year:'numeric'})}
 function customerBillPrintHtml(x,m){
- return `<section class="bill-page"><h2>${esc(x.c.name)}</h2><p>${esc(x.c.location)}</p><p>Month: ${esc(m)} · Present days: ${x.present}</p>
- ${productBreakdownHtml(x.products)}
- <p>Net milk: ${x.litres.toFixed(2)} L</p><p>Milk amount: ${money(x.amount)}</p><p>Monthly delivery charge: ${money(x.delivery)}</p><h2>Amount due: ${money(x.total)}</h2></section>`;
+ const productRows=Object.entries(x.products).map(([k,p])=>{
+  const [brand,type]=k.split('|'),label=displayProductName({brand,type});
+  return `<tr><td>${esc(label)}</td><td>${p.regular}</td><td>${p.extra}</td><td>${p.returned}</td><td>${p.qty}</td><td>${money(p.amount)}</td></tr>`;
+ }).join('');
+ const dayRows=x.daily.map(d=>{
+  const cls=d.status==='absent'?'absent':d.status==='present'?'delivered':'unmarked';
+  const label=d.status==='present'?'Delivered':d.status==='absent'?'Absent':'Not marked';
+  return `<tr class="${cls}"><td>${Number(d.date.slice(-2))}</td><td>${label}</td><td>${d.regular||'—'}</td><td>${d.extra||'—'}</td><td>${d.returned||'—'}</td><td>${d.net||'—'}</td><td>${d.amount?money(d.amount):'₹0.00'}</td></tr>`;
+ }).join('');
+ return `<div class="milk-bill">
+ <div class="bill-head"><div class="bill-brand">🥛 MILK SUPPLY</div><div class="bill-title">Monthly Customer Bill</div><div class="bill-period">${esc(billMonthLabel(m))}</div></div>
+ <div class="bill-customer"><div><b>Customer</b><span>${esc(x.c.name)}</span></div><div><b>Location</b><span>${esc(x.c.location||'—')}</span></div><div><b>Bill Period</b><span>${esc(m)}-01 to ${esc(m)}-${x.totalDays}</span></div><div><b>Total Days</b><span>${x.totalDays}</span></div><div><b>Delivery Charge</b><span>${money(x.delivery)} (Monthly)</span></div></div>
+ <div class="bill-grid">
+ <div class="bill-panel"><h3>Monthly Attendance Summary</h3><table class="summary"><tr><td>Total Days</td><td>${x.totalDays}</td></tr><tr class="good"><td>Milk Taken Days</td><td>${x.present}</td></tr><tr class="bad"><td>Absent Days</td><td>${x.absent}</td></tr><tr class="good"><td>Extra Days (Extra Qty: ${x.extraQty})</td><td>${x.extraDays}</td></tr><tr class="return"><td>Return Days (Return Qty: ${x.returnedQty})</td><td>${x.returnDays}</td></tr><tr><td>Not Marked Days</td><td>${x.notMarked}</td></tr></table></div>
+ <div class="bill-panel"><h3>Quantity Summary</h3><table class="summary"><tr><td>Regular Quantity</td><td>${x.regularQty}</td></tr><tr><td>Extra Quantity</td><td>${x.extraQty}</td></tr><tr><td>Returned Quantity</td><td>${x.returnedQty}</td></tr><tr class="net"><td>Net Quantity (Billed)</td><td>${Math.max(0,x.regularQty+x.extraQty-x.returnedQty)}</td></tr></table><p class="bill-note">Quantities are shown as 500 ml packet equivalents.</p></div>
+ </div>
+ <div class="bill-panel"><h3>Date-wise Attendance</h3><table class="days"><thead><tr><th>Date</th><th>Status</th><th>Regular</th><th>Extra</th><th>Return</th><th>Net</th><th>Amount</th></tr></thead><tbody>${dayRows}</tbody></table></div>
+ <div class="bill-panel"><h3>Product-wise Quantity & Amount</h3><table class="days"><thead><tr><th>Product</th><th>Regular</th><th>Extra</th><th>Return</th><th>Net</th><th colspan="2">Amount</th></tr></thead><tbody>${productRows||'<tr><td colspan="7">No delivered products recorded</td></tr>'}</tbody></table></div>
+ <div class="bill-panel"><h3>Billing Summary</h3><table class="summary"><tr><td>Milk / Product Charges</td><td>${money(x.amount)}</td></tr><tr><td>Extra Quantity Charges (included above)</td><td>${money(x.extraAmount)}</td></tr><tr><td>Returned Quantity Deduction (included above)</td><td>−${money(x.returnCredit)}</td></tr><tr><td>Delivery Charges (Monthly)</td><td>${money(x.delivery)}</td></tr><tr class="grand"><td>Total Amount Payable</td><td>${money(x.total)}</td></tr></table></div>
+ <div class="bill-foot">Absent days have no milk charge. Extra quantities are added and returned quantities are deducted at their product rates. Not marked days are shown separately and are not assumed absent. Delivery charge is the amount entered for this customer.</div>
+ </div>`;
 }
+function billImageStyles(){return `<style>
+.milk-bill{width:900px;background:#fff;color:#152638;padding:24px;font:15px Arial,sans-serif;border:2px solid #d6e5ef}
+.bill-head{background:linear-gradient(120deg,#07518a,#087bb5);color:#fff;text-align:center;padding:24px 18px;border-radius:12px;margin-bottom:16px}
+.bill-brand{font-size:17px;font-weight:bold;letter-spacing:2px}.bill-title{font-size:32px;font-weight:800;margin:8px 0}.bill-period{display:inline-block;background:#fff;color:#07518a;padding:7px 24px;border-radius:22px;font-size:19px;font-weight:bold}
+.bill-customer{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;border:1px solid #8ab2cf;border-radius:10px;padding:14px 18px;margin-bottom:16px}
+.bill-customer>div{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #e5edf3;padding:5px}.bill-customer b{color:#07518a}
+.bill-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.bill-panel{border:1px solid #8ab2cf;border-radius:11px;overflow:hidden;margin:0 0 14px}
+.bill-panel h3{margin:0;background:#075b98;color:#fff;padding:10px 14px;font-size:19px}
+.milk-bill table{width:100%;border-collapse:collapse;font-size:13px}.milk-bill th{background:#e8f2f8;color:#17476a}.milk-bill td,.milk-bill th{padding:8px 9px;border:1px solid #d5e0e8;text-align:left}.milk-bill td:last-child,.milk-bill th:last-child{text-align:right}
+.milk-bill .summary td{font-size:15px}.milk-bill .summary td:last-child{font-weight:bold}.milk-bill .good{background:#e6f7e9}.milk-bill .bad,.milk-bill tr.absent{background:#fde9e8}.milk-bill .return{background:#fff3d4}.milk-bill tr.delivered{background:#fff}.milk-bill tr.unmarked{background:#f1f4f6;color:#65717a}.milk-bill .net{background:#d9efff;font-weight:bold}.milk-bill .grand{background:#075b98;color:white;font-weight:bold}.milk-bill .grand td{font-size:20px}
+.milk-bill .bill-note,.milk-bill .bill-foot{font-size:12px;color:#526879;padding:10px 14px;margin:0}.milk-bill .bill-foot{background:#eaf4fa;line-height:1.6}
+</style>`}
+async function downloadCustomerBill(x,m){
+ if(!window.html2canvas){say('Bill image library is unavailable. Check your internet connection and reload.');return}
+ const host=document.createElement('div');host.style.cssText='position:fixed;left:-12000px;top:0;width:950px;z-index:-1;background:#fff';
+ host.innerHTML=billImageStyles()+customerBillPrintHtml(x,m);document.body.appendChild(host);
+ try{
+  const canvas=await window.html2canvas(host.querySelector('.milk-bill'),{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false});
+  const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+  if(!blob)throw new Error('Could not create PNG image');
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  const safeName=x.c.name.replace(/[^a-z0-9-_]+/gi,'-').replace(/^-|-$/g,'')||'customer';
+  a.href=url;a.download='Milk-Bill-'+safeName+'-'+m+'.png';document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);say('PNG bill downloaded for '+x.c.name);
+ }catch(err){say('Could not generate bill image: '+err.message)}
+ finally{host.remove()}
+}
+function renderDownloadBills(){
+ const m=$('downloadMonth').value||$('month').value;
+ $('downloadMonth').value=m;
+ const rows=monthRowsFor(m);
+ $('downloadOutput').innerHTML=rows.map(x=>`<div class="customer"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap"><div><b>${esc(x.c.name)}</b><div class="loc">${esc(x.c.location)}</div><div class="muted">${x.present} delivered · ${x.absent} absent · ${x.extraDays} extra · ${x.returnDays} return</div></div><button class="primary" data-download-bill="${x.c.id}">Download PNG</button></div><div class="bar" style="margin-top:8px"><label class="muted">Monthly delivery charge (₹)</label><input class="field download-charge" type="number" min="0" step="1" value="${x.delivery}" data-month="${esc(m)}" data-customer="${x.c.id}" style="width:120px"><b>${money(x.total)} total</b></div></div>`).join('')||'<p class="muted">No customers found.</p>';
+ document.querySelectorAll('.download-charge').forEach(i=>i.onchange=()=>{
+  db.monthlyCharges??={};db.monthlyCharges[i.dataset.month]??={};db.monthlyCharges[i.dataset.month][i.dataset.customer]=Math.max(0,Number(i.value)||0);save();renderDownloadBills();
+ });
+ document.querySelectorAll('[data-download-bill]').forEach(b=>b.onclick=async()=>{
+  const x=rows.find(row=>row.c.id===b.dataset.downloadBill);if(x){b.disabled=true;b.textContent='Creating…';await downloadCustomerBill(x,m);b.disabled=false;b.textContent='Download PNG'}
+ });
+}
+function monthRowsFor(m){const previous=$('month').value;$('month').value=m;const rows=monthRows();$('month').value=previous;return rows}
+
 function monthlyBillsPrintHtml(){
  const m=$('month').value,rows=monthRows();
  return rows.map(x=>customerBillPrintHtml(x,m)).join('');
@@ -179,13 +262,14 @@ function bindMonthlyCharges(){
  });
 }
 function printPage(title,body){let w=window.open('','_blank');if(!w){say('Allow pop-ups to print or save PDF');return}w.document.write('<html><head><title>'+esc(title)+'</title><style>body{font:13px Arial;padding:24px}.bill-page{page-break-after:always;break-after:page}.bill-page:last-child{page-break-after:auto;break-after:auto}table{width:100%;border-collapse:collapse}td,th{padding:7px;border-bottom:1px solid #ddd;text-align:left}h1{color:#176b45}</style></head><body><h1>'+esc(title)+'</h1>'+body+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300)}
-document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['register','daily','monthly','settings'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab));if(b.dataset.tab==='daily')renderDaily();if(b.dataset.tab==='settings')renderPrices();if(b.dataset.tab==='monthly')fillCustomerSelect()});
+document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['register','daily','monthly','downloads','settings'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab));if(b.dataset.tab==='daily')renderDaily();if(b.dataset.tab==='settings')renderPrices();if(b.dataset.tab==='monthly')fillCustomerSelect();if(b.dataset.tab==='downloads'){ $('downloadMonth').value=$('month').value;renderDownloadBills()}});
 function fillCustomerSelect(){$('billCustomer').innerHTML=db.customers.map(c=>`<option value="${c.id}">${esc(c.name)} — ${esc(c.location)}</option>`).join('')}
 $('date').onchange=()=>{renderList();renderDaily()};$('today').onclick=()=>{$('date').value=todayISO();renderList();renderDaily()};$('search').oninput=renderList;$('filter').onchange=renderList;
 $('allPresent').onclick=()=>{if(!confirm('Mark all delivery locations PRESENT for this date?'))return;db.customers.forEach(c=>getEntry(c).status='present');save();renderList()};
 $('clearDate').onclick=()=>{if(!confirm('Clear all attendance for '+$('date').value+'?'))return;delete db.days[$('date').value];save();renderList();renderDaily()};
 $('commissionRate').onchange=()=>{db.commission=Math.max(0,+$('commissionRate').value||0);save();renderDaily()};
 $('calculate').onclick=()=>{$('monthOutput').innerHTML=monthHtml();fillCustomerSelect();bindMonthlyCharges()};
+$('loadDownloadBills').onclick=renderDownloadBills;
 $('printMonthly').onclick=()=>printPage('Monthly customer milk bills',monthlyBillsPrintHtml());
 $('printOne').onclick=()=>{let x=monthRows().find(r=>r.c.id===$('billCustomer').value);if(x)printPage('Customer milk bill',customerBillPrintHtml(x,$('month').value))};
 $('shareOne').onclick=()=>{
