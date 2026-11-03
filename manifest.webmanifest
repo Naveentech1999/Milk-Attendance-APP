@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Milk Attendance & Billing",
-  "short_name": "Milk Billing",
-  "description": "Daily milk delivery attendance, packet tracking and monthly customer billing",
+  "name": "Milk man",
+  "short_name": "Milk man",
+  "description": "Milk man delivery attendance, packet tracking and monthly customer billing",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
