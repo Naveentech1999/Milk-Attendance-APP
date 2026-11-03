@@ -43,7 +43,7 @@ db.customers.forEach(c=>{
  });
  const seed=SEED.find(x=>x.id===c.id);
  (seed?.items||[]).filter(it=>/small packet milk/i.test(it.brand+' '+it.type)).forEach(it=>{
-  if(!c.items.some(existing=>existing.id===it.id))c.items.push({...it});
+  if(!c.items.some(existing=>existing.id===it.id)){const position=seed.items.findIndex(original=>original.id===it.id);c.items.splice(Math.max(0,Math.min(position,c.items.length)),0,{...it});}
  });
 });
 Object.values(db.days||{}).forEach(day=>Object.values(day||{}).forEach(entry=>{
@@ -81,29 +81,7 @@ document.querySelectorAll('[data-field]').forEach(i=>i.oninput=()=>{let c=db.cus
 function renderDaily(){
  let t=calcDay();
  const allKeys=[...new Set(db.customers.flatMap(c=>c.items.map(it=>key(it))))];
- allKeys.forEach(k=>{if(!t.products[k])t.products[k]={qty:0,amount:0}});
- const brandOrder=['Heritage','Vijaya','Amul','Jersey'];
- const typeOrder=['TM','CM','WM','SM'];
- const parsed=Object.keys(t.products).map(k=>{const p=k.split('|');return{key:k,brand:p[0]||'Other',type:p[1]||'Other',value:t.products[k]}});
- const sections=[];
- brandOrder.forEach(brand=>{
-  const rows=parsed.filter(x=>x.brand===brand).sort((a,b)=>{
-   const ai=typeOrder.indexOf(a.type),bi=typeOrder.indexOf(b.type);
-   return (ai<0?99:ai)-(bi<0?99:bi)||a.type.localeCompare(b.type);
-  });
-  if(rows.length)sections.push({title:brand,rows});
- });
- const smallRows=parsed.filter(x=>/small packet milk/i.test(x.brand)||(/small/i.test(x.type)&&!/^curd$/i.test(x.brand)))
-  .sort((a,b)=>a.brand.localeCompare(b.brand)||a.type.localeCompare(b.type));
- if(smallRows.length)sections.push({title:'Small milk packets',rows:smallRows});
- const curdRows=parsed.filter(x=>/^curd$/i.test(x.brand)||/curd/i.test(x.type))
-  .sort((a,b)=>a.brand.localeCompare(b.brand)||a.type.localeCompare(b.type));
- if(curdRows.length)sections.push({title:'Curd packets',rows:curdRows});
- const known=new Set(sections.flatMap(s=>s.rows.map(x=>x.key)));
- const otherRows=parsed.filter(x=>!known.has(x.key)).sort((a,b)=>a.brand.localeCompare(b.brand)||a.type.localeCompare(b.type));
- if(otherRows.length)sections.push({title:'Other products',rows:otherRows});
- const sectionOrder=['Heritage','Small milk packets','Curd packets','Vijaya','Amul','Jersey','Other products'];
- sections.sort((a,b)=>sectionOrder.indexOf(a.title)-sectionOrder.indexOf(b.title));
+ const sections=orderedProductSections(t.products,allKeys);
  const rowsHtml=sections.map(section=>{
   const subtotal=section.rows.reduce((sum,x)=>sum+x.value.amount,0);
   return `<tr><th colspan="3" style="background:#eaf4ed;color:#175b3b;padding:10px 7px;font-size:13px">${esc(section.title)} <span style="float:right">${money(subtotal)}</span></th></tr>`+
@@ -118,10 +96,12 @@ function renderDaily(){
  $('dPayable').textContent=money(t.payable);
 }
 function renderPrices(){$('prices').innerHTML=Object.entries(db.prices).map(([k,v])=>`<div class="product"><div>${esc(k.replace('|',' '))}<small>${isPacketKey(k)?'Per packet':'Per litre'}</small></div><input class="field" type="number" min="0" step=".5" value="${v}" data-price="${esc(k)}"></div>`).join('');document.querySelectorAll('[data-price]').forEach(i=>i.onchange=()=>{db.prices[i.dataset.price]=Math.max(0,+i.value||0);save();renderList();renderDaily();say('Price saved')});$('commissionRate').value=db.commission}
-function orderedProductEntries(products){
+function orderedProductSections(products,extraKeys=[]){
+ const merged={...(products||{})};
+ extraKeys.forEach(k=>{if(!merged[k])merged[k]={qty:0,amount:0};});
  const brandOrder=['Heritage','Vijaya','Amul','Jersey'];
  const typeOrder=['TM','CM','WM','SM'];
- const parsed=Object.entries(products||{}).map(([k,value])=>{const p=k.split('|');return{key:k,brand:p[0]||'Other',type:p[1]||'Other',value};});
+ const parsed=Object.entries(merged).map(([k,value])=>{const p=k.split('|');return{key:k,brand:p[0]||'Other',type:p[1]||'Other',value};});
  const sections=[];
  const addBrand=brand=>{
   const rows=parsed.filter(x=>x.brand===brand).sort((a,b)=>{
@@ -144,7 +124,7 @@ function orderedProductEntries(products){
  return sections;
 }
 function productBreakdownHtml(products){
- const sections=orderedProductEntries(products);
+ const sections=orderedProductSections(products);
  if(!sections.length)return '<p class="muted">No milk products recorded.</p>';
  const rowsHtml=sections.map(section=>{
   const subtotal=section.rows.reduce((sum,x)=>sum+x.value.amount,0);
