@@ -21,7 +21,7 @@
 <div class="card"><div class="title">Individual customer bill</div><select class="field" id="billCustomer" style="width:100%"></select><button id="printOne" style="margin-top:8px">Print selected customer's bill</button> <button id="shareOne" style="margin-top:8px">Share bill on WhatsApp</button></div>
 </section>
 <section id="settings" class="hidden">
-<div class="card"><div class="title">MRP prices per litre (₹)</div><div id="prices"></div><p class="muted">Regular milk prices are per litre. Small milk packets and curd packets are priced per packet (₹8 each).</p></div>
+<div class="card"><div class="title">MRP prices per litre (₹)</div><div id="prices"></div><p class="muted">Regular milk prices are per litre. Curd packets are priced per packet.</p></div>
 <div class="card"><div class="title">Commission</div><label class="muted">Commission deduction per net litre (₹)</label><input class="field" type="number" id="commissionRate" min="0" step=".5"><p class="muted">Default ₹5 per litre is provisional and editable; change it if your commission rule is different.</p></div>
 <div class="card"><div class="title">Backup</div><button class="primary" id="backup">Download backup</button> <label class="field">Restore backup <input type="file" id="restore" accept=".json"></label><p class="muted">Saved on this browser/device. Download backup regularly.</p></div>
 </section><p id="msg" class="muted"></p><div class="footer">Previous dates are retained separately. Unmarked and absent customers are excluded from daily and monthly bills.</div>
@@ -31,6 +31,25 @@ const SEED=[{"id":"cust001","name":"Beside My-Village Apt","location":"2nd floor
 const $=id=>document.getElementById(id);
 let db={customers:SEED,days:{},prices:DEFAULT_PRICES,commission:5,monthlyCharges:{}};
 try{const old=JSON.parse(localStorage.getItem('milkBillingSpecV3')||'null');if(old?.customers&&old?.days)db={...db,...old,prices:{...DEFAULT_PRICES,...(old.prices||{})},monthlyCharges:old.monthlyCharges||{}}}catch(e){}
+// Remove discontinued products from customer setup, saved attendance and price list.
+// Small curd packets are retained; only small MILK packets are removed.
+const removedItemIds=new Set();
+db.customers.forEach(c=>{
+ c.items=(c.items||[]).filter(it=>{
+  const label=String(it.brand||'')+' '+String(it.type||'');
+  const isCurd=/curd/i.test(label);
+  const remove=(!isCurd&&/small/i.test(label))||/wm\\s*extra\\s*daily/i.test(String(it.type||''));
+  if(remove)removedItemIds.add(it.id);
+  return !remove;
+ });
+});
+Object.values(db.days||{}).forEach(day=>Object.values(day||{}).forEach(entry=>{
+ if(entry?.items)removedItemIds.forEach(id=>delete entry.items[id]);
+}));
+Object.keys(db.prices||{}).forEach(k=>{
+ const lower=k.toLowerCase();
+ if((!lower.includes('curd')&&lower.includes('small'))||lower.includes('wm extra daily'))delete db.prices[k];
+});
 const todayISO=()=>{let d=new Date(),z=d.getTimezoneOffset();return new Date(d-z*60000).toISOString().slice(0,10)};
 $('date').value=todayISO();$('month').value=todayISO().slice(0,7);
 const save=()=>{try{localStorage.setItem('milkBillingSpecV3',JSON.stringify(db))}catch(e){say('Storage unavailable/full. Download a backup.')}};
