@@ -38,7 +38,7 @@ db.customers.forEach(c=>{
  c.items=(c.items||[]).filter(it=>{
   const label=String(it.brand||'')+' '+String(it.type||'');
   const isCurd=/curd/i.test(label);
-  const remove=(!isCurd&&/small/i.test(label))||/wm\\s*extra\\s*daily/i.test(String(it.type||''));
+  const remove=(!isCurd&&/small/i.test(label))||/wm\s*extra\s*daily/i.test(String(it.type||''));
   if(remove)removedItemIds.add(it.id);
   return !remove;
  });
