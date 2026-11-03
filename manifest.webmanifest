@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Milk man",
-  "short_name": "Milk man",
+  "name": "DudhWala",
+  "short_name": "DudhWala",
   "description": "Milk man delivery attendance, packet tracking and monthly customer billing",
   "start_url": "./",
   "scope": "./",
@@ -11,13 +11,13 @@
   "theme_color": "#176b45",
   "icons": [
     {
-      "src": "/Milk-Attendance-APP/icons/dudhwala-512.jpg",
+      "src": "./icons/dudhwala-512.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any maskable"
     },
     {
-      "src": "/Milk-Attendance-APP/icons/dudhwala-512.jpg",
+      "src": "./icons/dudhwala-512.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any"
