@@ -80,6 +80,8 @@ function renderDaily(){
  const known=new Set(sections.flatMap(s=>s.rows.map(x=>x.key)));
  const otherRows=parsed.filter(x=>!known.has(x.key)).sort((a,b)=>a.brand.localeCompare(b.brand)||a.type.localeCompare(b.type));
  if(otherRows.length)sections.push({title:'Other products',rows:otherRows});
+ const sectionOrder=['Heritage','Small milk packets','Curd packets','Vijaya','Amul','Jersey','Other products'];
+ sections.sort((a,b)=>sectionOrder.indexOf(a.title)-sectionOrder.indexOf(b.title));
  const rowsHtml=sections.map(section=>{
   const subtotal=section.rows.reduce((sum,x)=>sum+x.value.amount,0);
   return `<tr><th colspan="3" style="background:#eaf4ed;color:#175b3b;padding:10px 7px;font-size:13px">${esc(section.title)} <span style="float:right">${money(subtotal)}</span></th></tr>`+
