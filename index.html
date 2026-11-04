@@ -1,7 +1,66 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#176b45"><link rel="manifest" href="manifest.webmanifest"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="icon" type="image/jpeg" sizes="192x192" href="./icons/dudhwala-192.jpg"><link rel="apple-touch-icon" sizes="192x192" href="./icons/dudhwala-192.jpg"><title>DudhWala</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f4f7f5;color:#17231c;font:15px system-ui,Arial}header{background:#176b45;color:white;padding:18px}header h1{margin:0;font-size:21px}main{max-width:950px;margin:auto;padding:12px}.bar,.tabs,.actions,.tools{display:flex;gap:7px;flex-wrap:wrap;align-items:center}.bar{margin:10px 0}.tabs{display:grid;grid-template-columns:repeat(4,1fr);margin:12px 0}.tabs button,button{border:1px solid #dce5df;border-radius:9px;background:white;padding:9px 11px;font-weight:650;cursor:pointer}.tabs button{font-size:12px;padding:10px 3px}.tabs .active,.primary{background:#176b45;color:white;border-color:#176b45}.field{border:1px solid #dce5df;border-radius:8px;padding:9px;background:white;font:inherit;min-width:0}.card,.customer,.metric{background:white;border:1px solid #dce5df;border-radius:12px;padding:12px;margin:9px 0}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.metric{margin:0;background:#eaf4ed}.metric small{color:#637168}.metric b{display:block;font-size:20px;margin-top:3px}.muted{color:#637168;font-size:12px}.hidden{display:none!important}.customer h3{font-size:15px;margin:0}.customer{padding:14px;margin:11px 0;box-shadow:0 1px 3px #1020180b}.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}.actions button{font-size:14px;padding:11px 8px;border-radius:10px}.actions button.yes{background:#176b45;color:#fff;border-color:#176b45}.actions button.no{background:#fff0ee;color:#a33225;border-color:#e8b8b2}.milk-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;align-items:stretch;padding:12px 0}.milk-row>div:first-child{grid-column:1/-1;font-weight:700;font-size:14px}.milk-row label{display:block;background:#f6f8f6;border:1px solid #e2e9e4;border-radius:9px;padding:8px;color:#46564c;font-size:11px;font-weight:650}.milk-row .qty{display:block;width:100%;margin-top:5px;padding:9px;font-size:16px;font-weight:700}.milk-row .row-total{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;background:#eaf4ed;color:#175b3b;padding:10px 12px;font-size:13px;font-weight:750}.customer-total{margin-top:10px;padding-top:9px;border-top:1px solid #edf1ee;font-size:13px}.status{white-space:nowrap}.loc{font-size:12px;color:#637168;margin-top:3px}.actions{margin:9px 0}.actions button{font-size:12px;padding:7px 10px}.yes{background:#176b45;color:white}.no{background:#a33a2b;color:white}.status{font-size:10px;border-radius:20px;padding:4px 8px;background:#eef1ef}.status.present{background:#dff2e5;color:#176b45}.status.absent{background:#fbe8e6;color:#a33225}.product{display:grid;grid-template-columns:1fr auto auto auto;gap:6px;align-items:end;border-top:1px solid #edf1ee;padding:8px 0}.product small{display:block;color:#637168;font-size:11px}.qty{width:65px;padding:7px 3px;border:1px solid #dce5df;border-radius:7px;text-align:center}.pill{font-size:11px;background:#f0f4f1;padding:6px;border-radius:7px;color:#637168}table{border-collapse:collapse;width:100%;font-size:12px}td,th{text-align:left;padding:8px 6px;border-bottom:1px solid #dce5df}th{color:#637168}.right{text-align:right}.hidden{display:none!important}.hint{padding:10px;border-radius:9px;background:#fff8e8;border:1px solid #f0dfb7;color:#66522a;font-size:12px;margin:9px 0}.title{font-weight:750;margin:4px 0 8px}.totgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.big{font-size:20px;font-weight:750}.footer{font-size:11px;color:#637168;margin:15px 2px}@media(max-width:600px){.metrics{grid-template-columns:repeat(2,1fr)}main{padding:9px}.product{grid-template-columns:1fr auto auto auto}.qty{width:55px}.customer{padding:10px}}
-</style></head><body><header><h1>🥛 Milk man</h1><div style="font-size:12px">Date-wise register · Daily litres · Commission · Monthly customer bills</div></header><main>
+
+/* DudhWala mobile-app refresh */
+:root{--green:#176b45;--deep:#104b32;--mint:#e9f5ee;--ink:#17231c;--muted:#6c7b72;--line:#e4ebe6;--paper:#f4f7f5}
+html{background:var(--paper);scroll-padding-top:80px}
+body{background:var(--paper);padding-bottom:calc(78px + env(safe-area-inset-bottom));font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{position:sticky;top:0;z-index:30;padding:14px 16px 13px;background:linear-gradient(135deg,#125b3b,#218456);box-shadow:0 5px 18px #0b38251c}
+header h1{font-size:21px;letter-spacing:-.45px;display:flex;align-items:center;gap:9px}
+header h1:before{content:"🥛";display:grid;place-items:center;width:38px;height:38px;border-radius:13px;background:#ffffff20;font-size:21px}
+header div{padding-left:47px;opacity:.86;font-size:11px!important;letter-spacing:.15px}
+main{max-width:760px;padding:14px 13px 26px}
+.bar{gap:9px;margin:10px 0}
+.field{border-radius:12px;border-color:var(--line);padding:11px 12px;background:#fff}
+button{border-radius:12px;min-height:40px;border-color:var(--line);box-shadow:0 1px 2px #142a1d08}
+button:active{transform:scale(.98)}
+.primary,.tabs .active{background:var(--green);border-color:var(--green);color:#fff}
+.metrics{gap:9px;margin:12px 0 16px}
+.metric{border:1px solid #dcebe1;border-radius:15px;background:#fff;padding:12px;box-shadow:0 2px 8px #193c2708}
+.metric small{font-size:11px;letter-spacing:.1px}
+.metric b{font-size:22px;color:var(--deep);letter-spacing:-.5px}
+.tabs{display:none!important}
+section{animation:dw-in .18s ease-out}
+@keyframes dw-in{from{opacity:.55;transform:translateY(4px)}to{opacity:1;transform:none}}
+.card{border:1px solid var(--line);border-radius:16px;padding:15px;margin:11px 0;box-shadow:0 3px 14px #183d2808}
+.title{font-size:15px;color:var(--deep);letter-spacing:-.15px;margin-bottom:11px}
+.tools{display:grid;grid-template-columns:1fr 130px;gap:8px;margin:13px 0}
+.tools .field{width:100%}
+#register>.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 13px}
+#register>.actions button{padding:11px 7px}
+#list{display:grid;gap:9px}
+.customer{background:transparent;border:0;padding:0;margin:0;box-shadow:none}
+.customer>div:first-child{display:none!important}
+.dw-customer{background:#fff;border:1px solid var(--line);border-radius:15px;overflow:hidden;box-shadow:0 2px 9px #193c2708}
+.dw-customer summary{list-style:none;display:flex;align-items:center;gap:10px;padding:14px 13px;cursor:pointer;min-height:66px}
+.dw-customer summary::-webkit-details-marker{display:none}
+.dw-customer summary:after{content:"⌄";font-size:21px;color:#738178;margin-left:auto;transition:transform .18s}
+.dw-customer[open] summary:after{transform:rotate(180deg)}
+.dw-avatar{width:38px;height:38px;flex:0 0 38px;border-radius:12px;display:grid;place-items:center;background:var(--mint);color:var(--deep);font-size:17px;font-weight:800}
+.dw-cust-name{font-size:13px;font-weight:750;color:var(--ink);line-height:1.3}
+.dw-cust-loc{font-size:11px;color:var(--muted);margin-top:3px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dw-cust-status{font-size:9px;font-weight:800;letter-spacing:.25px;border-radius:30px;padding:5px 7px;background:#eff2ef;color:#6b756e}
+.dw-cust-status.present{background:#e2f5e9;color:#176b45}
+.dw-cust-status.absent{background:#fff0ed;color:#a33225}
+.dw-customer-body{padding:0 12px 12px;border-top:1px solid #f0f3f1}
+.dw-customer-body .actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:11px 0}
+.dw-customer-body .actions button{padding:10px}
+.dw-customer-body .milk-row{padding:10px 0}
+.dw-customer-body .customer-total{padding:10px 0 2px}
+.dw-bottom-nav{position:fixed;z-index:60;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;padding:8px 5px calc(8px + env(safe-area-inset-bottom));background:#ffffffed;backdrop-filter:blur(18px);border-top:1px solid #e1e9e3;box-shadow:0 -5px 20px #173b280c}
+.dw-bottom-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;padding:4px 1px;border:0;border-radius:12px;background:transparent;color:#78847b;box-shadow:none;font-size:9px;font-weight:700;white-space:nowrap}
+.dw-bottom-nav button .dw-nav-icon{font-size:19px;line-height:1.2}
+.dw-bottom-nav button.active{background:#eaf5ee;color:var(--green)}
+#daily .card,#monthly .card,#downloads .card,#settings .card{margin-top:12px}
+#daily .totgrid>div{background:#f7faf8;border:1px solid #edf2ee;border-radius:12px;padding:10px}
+.big{font-size:19px;color:var(--deep)}
+#monthOutput,#downloadOutput{overflow-x:auto}
+.footer{padding:10px 4px 18px;line-height:1.5}
+@media(min-width:700px){body{padding-bottom:30px}.dw-bottom-nav{position:sticky;bottom:12px;max-width:720px;margin:20px auto 0;border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 28px #173b2815}.tools{grid-template-columns:1fr 170px}}
+@media(max-width:390px){.dw-cust-loc{max-width:150px}.dw-cust-status{font-size:8px;padding:4px 6px}.metric b{font-size:20px}}
+
+</style></head><body><header><h1>DudhWala</h1><div style="font-size:12px">Daily delivery · Attendance · Customer billing</div></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
 <div class="tabs" style="grid-template-columns:repeat(5,1fr)"><button class="active" data-tab="register">Attendance</button><button data-tab="daily">Daily totals</button><button data-tab="monthly">Monthly bills</button><button data-tab="downloads">Download Bills</button><button data-tab="settings">Prices & backup</button></div>
@@ -261,7 +320,55 @@ function bindMonthlyCharges(){
   $('monthOutput').innerHTML=monthHtml();bindMonthlyCharges();say('Monthly delivery charge saved');
  });
 }
-function printPage(title,body){let w=window.open('','_blank');if(!w){say('Allow pop-ups to print or save PDF');return}w.document.write('<html><head><title>'+esc(title)+'</title><style>body{font:13px Arial;padding:24px}.bill-page{page-break-after:always;break-after:page}.bill-page:last-child{page-break-after:auto;break-after:auto}table{width:100%;border-collapse:collapse}td,th{padding:7px;border-bottom:1px solid #ddd;text-align:left}h1{color:#176b45}</style></head><body><h1>'+esc(title)+'</h1>'+body+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300)}
+function printPage(title,body){let w=window.open('','_blank');if(!w){say('Allow pop-ups to print or save PDF');return}w.document.write('<html><head><title>'+esc(title)+'</title><style>body{font:13px Arial;padding:24px}.bill-page{page-break-after:always;break-after:page}.bill-page:last-child{page-break-after:auto;break-after:auto}table{width:100%;border-collapse:collapse}td,th{padding:7px;border-bottom:1px solid #ddd;text-align:left}h1{color:#176b45}</style></head><body><h1>'+esc(title)+'</h1>'+body+'
+<script>
+(function(){
+ const oldRenderList=window.renderList;
+ if(typeof oldRenderList==="function"){
+   window.renderList=function(){
+     oldRenderList();
+     document.querySelectorAll("#list article.customer").forEach(article=>{
+       if(article.parentElement && article.parentElement.classList.contains("dw-customer")) return;
+       const first=article.querySelector(":scope > div:first-child");
+       if(!first)return;
+       const name=first.querySelector("h3")?.textContent||"Customer";
+       const loc=first.querySelector(".loc")?.textContent||"";
+       const status=first.querySelector(".status")?.textContent||"NOT MARKED";
+       const statusClass=first.querySelector(".status")?.classList.contains("present")?"present":first.querySelector(".status")?.classList.contains("absent")?"absent":"";
+       const details=document.createElement("details");details.className="dw-customer";
+       const summary=document.createElement("summary");
+       const avatar=document.createElement("span");avatar.className="dw-avatar";avatar.textContent=(name.trim()[0]||"D").toUpperCase();
+       const info=document.createElement("span");info.style.cssText="min-width:0;flex:1";
+       const n=document.createElement("span");n.className="dw-cust-name";n.textContent=name;
+       const l=document.createElement("span");l.className="dw-cust-loc";l.textContent=loc||"Delivery location";
+       info.append(n,l);
+       const st=document.createElement("span");st.className="dw-cust-status "+statusClass;st.textContent=status;
+       summary.append(avatar,info,st);details.append(summary);
+       const body=document.createElement("div");body.className="dw-customer-body";
+       [...article.children].filter(el=>el!==first).forEach(el=>body.append(el));
+       details.append(body);article.replaceWith(details);
+     });
+   };
+   window.renderList();
+ }
+ const navs=[...document.querySelectorAll("[data-dw-tab]")];
+ function showTab(id){
+   ["register","daily","monthly","downloads","settings"].forEach(k=>document.getElementById(k)?.classList.toggle("hidden",k!==id));
+   document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));
+   navs.forEach(b=>b.classList.toggle("active",b.dataset.dwTab===id));
+   if(id==="daily")window.renderDaily?.();
+   if(id==="settings")window.renderPrices?.();
+   if(id==="monthly")window.fillCustomerSelect?.();
+   if(id==="downloads"){const m=document.getElementById("downloadMonth"),src=document.getElementById("month");if(m&&src)m.value=src.value;window.renderDownloadBills?.();}
+   window.scrollTo({top:0,behavior:"smooth"});
+ }
+ navs.forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.dwTab)));
+ document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+ document.querySelectorAll(".metrics,.bar").forEach(el=>{if(el.querySelector("#date"))document.getElementById("register")?.prepend(el);});
+ document.querySelector(".metrics")?.classList.add("dw-metrics");
+})();
+</script>
+</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300)}
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['register','daily','monthly','downloads','settings'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab));if(b.dataset.tab==='daily')renderDaily();if(b.dataset.tab==='settings')renderPrices();if(b.dataset.tab==='monthly')fillCustomerSelect();if(b.dataset.tab==='downloads'){ $('downloadMonth').value=$('month').value;renderDownloadBills()}});
 function fillCustomerSelect(){$('billCustomer').innerHTML=db.customers.map(c=>`<option value="${c.id}">${esc(c.name)} — ${esc(c.location)}</option>`).join('')}
 $('date').onchange=()=>{renderList();renderDaily()};$('today').onclick=()=>{$('date').value=todayISO();renderList();renderDaily()};$('search').oninput=renderList;$('filter').onchange=renderList;
