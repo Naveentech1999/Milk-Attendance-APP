@@ -470,6 +470,15 @@ button:active{transform:scale(.97)}
 @media(max-width:370px){.metrics{gap:9px}.metrics .metric{min-height:130px;padding:17px 13px 15px;border-radius:21px}.metrics .metric b{font-size:25px;margin-top:16px}.tools{grid-template-columns:minmax(0,1fr) 108px}}
 @media(prefers-reduced-motion:reduce){#register,.metrics .metric,.metrics .metric:before,.dw-customer-card,.dw-customer-content{animation:none!important;transition:none!important}}
 
+
+/* Alternating customer card surfaces for easier scanning */
+#list>.dw-customer-card:nth-child(odd){background:#ffffff!important}
+#list>.dw-customer-card:nth-child(even){background:linear-gradient(145deg,#f1f8f3 0%,#eaf4ed 100%)!important;border-color:#dcebe0!important}
+#list>.dw-customer-card:nth-child(even) .dw-customer-content{border-top-color:#dcebe0}
+#list>.dw-customer-card:nth-child(even) .dw-customer-content .milk-row{border-top-color:#dcebe0}
+#list>.dw-customer-card:nth-child(even)[open]{background:linear-gradient(145deg,#f1f8f3 0%,#eaf4ed 100%)!important}
+#list>.customer:nth-child(even){background:#f1f8f3!important}
+
 /* Daily report image actions */
 #daily #previewDaily{width:100%;min-height:48px;margin-top:13px;border:0;border-radius:14px;background:linear-gradient(100deg,#087a50,#169866);color:#fff;font-weight:850;box-shadow:0 6px 15px #087a5025}
 #daily #previewDaily:disabled{opacity:.7}
