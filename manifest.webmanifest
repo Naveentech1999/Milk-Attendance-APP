@@ -15,6 +15,18 @@
       "sizes": "192x192",
       "type": "image/jpeg",
       "purpose": "any"
+    },
+    {
+      "src": "./icons/dudhwala-512.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ]
 }
