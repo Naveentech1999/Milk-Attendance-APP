@@ -479,6 +479,14 @@ button:active{transform:scale(.97)}
 #list>.dw-customer-card:nth-child(even)[open]{background:linear-gradient(145deg,#eff8ff 0%,#e3f2ff 100%)!important}
 #list>.customer:nth-child(even){background:#f1f8f3!important}
 
+
+/* Prevent browser blue tap/focus flash on customer accordion headers */
+.dw-customer-card,.dw-customer-summary,.dw-customer-head,.dw-customer-summary *{-webkit-tap-highlight-color:transparent}
+.dw-customer-summary{background:transparent!important;outline:none;user-select:none;-webkit-user-select:none}
+.dw-customer-summary:active,.dw-customer-summary:focus,.dw-customer-summary:focus-visible{background:transparent!important;outline:none!important;box-shadow:none!important}
+.dw-customer-card:active{background:inherit}
+.dw-customer-summary:focus-visible{outline:2px solid #8ab99a!important;outline-offset:-3px;border-radius:17px}
+
 /* Daily report image actions */
 #daily #previewDaily{width:100%;min-height:48px;margin-top:13px;border:0;border-radius:14px;background:linear-gradient(100deg,#087a50,#169866);color:#fff;font-weight:850;box-shadow:0 6px 15px #087a5025}
 #daily #previewDaily:disabled{opacity:.7}
