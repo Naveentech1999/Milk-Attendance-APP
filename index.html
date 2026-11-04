@@ -393,27 +393,37 @@ async function restoreCloudForSignedInUser(user){
  })().finally(()=>{cloudRestorePromise=null});
  return cloudRestorePromise;
 }
+async function restoreCloudData(showStatus=true){
+ if(!cloud.client||!cloud.user)return false;
+ if(showStatus)cloudSay('Loading your saved customers and attendance from cloud…');
+ const {data,error}=await cloud.client.from('milk_app_state').select('payload,updated_at').eq('user_id',cloud.user.id).maybeSingle();
+ if(error){cloudSay('Could not load cloud data: '+error.message+'. Showing this device data instead.');return false}
+ if(!data?.payload){cloud.enabled=false;localStorage.removeItem('milkCloudSyncEnabled:'+cloud.user.id);cloudSay('Signed in as '+cloud.user.email+'. No cloud backup exists yet; this device data is unchanged. Upload it once to create your cloud backup.');return false}
+ const p=data.payload;
+ if(!p||!Array.isArray(p.customers)||!p.days||typeof p.days!=='object'){cloudSay('Cloud backup format is invalid. Your device data was left unchanged.');return false}
+ db={...db,...p,customers:p.customers,days:p.days,prices:{...DEFAULT_PRICES,...(p.prices||{})},monthlyCharges:p.monthlyCharges||{}};
+ try{localStorage.setItem('milkBillingSpecV3',JSON.stringify(db))}catch(e){cloudSay('Cloud data loaded, but this device could not save a local copy: '+e.message)}
+ cloud.enabled=true;localStorage.setItem('milkCloudSyncEnabled:'+cloud.user.id,'yes');renderAfterCloudLoad();
+ cloudSay('Cloud data loaded · '+db.customers.length+' customers · updated '+(data.updated_at?new Date(data.updated_at).toLocaleString():'recently')+'. Automatic sync is on.');return true;
+}
 async function cloudAuth(){
  if(!window.supabase?.createClient){cloudSay('Supabase library did not load. Check your internet connection and reload.');return}
  cloud.client=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
- cloud.client.auth.onAuthStateChange((_event,session)=>{
-  cloud.user=session?.user||null;
-  if(cloud.user){const signedInUser=cloud.user;setTimeout(()=>restoreCloudForSignedInUser(signedInUser),0);}
-  else{cloud.enabled=false;cloudRestoreUserId=null;cloudSay('Not signed in. Local data remains on this device.');}
- });
  const {data,error}=await cloud.client.auth.getSession();
  if(error){cloudSay('Auth error: '+error.message);return}
  cloud.user=data.session?.user||null;
- if(cloud.user)await restoreCloudForSignedInUser(cloud.user);
- else cloudSay('Not signed in. Local data remains on this device. Sign in under More → Supabase cloud database to restore your cloud history.');
+ cloud.enabled=!!cloud.user&&localStorage.getItem('milkCloudSyncEnabled:'+cloud.user.id)==='yes';
+ cloud.client.auth.onAuthStateChange((_event,session)=>{cloud.user=session?.user||null;if(!cloud.user){cloud.enabled=false;cloudSay('Signed out. Local data remains on this device.')}});
+ if(cloud.user){const loaded=await restoreCloudData(true);if(!loaded&&!cloud.enabled)cloudSay('Signed in as '+cloud.user.email+'. No cloud data was loaded; local data remains available.')}
+ else cloudSay('Not signed in. Local data remains on this device. Sign in under More → Supabase cloud database to load your saved data.');
 }
+
 $('cloudSignUp').onclick=async()=>{if(!cloud.client)return cloudSay('Cloud client is not ready. Reload the page.');const email=$('cloudEmail').value.trim(),password=$('cloudPassword').value;if(!email||password.length<8)return cloudSay('Enter an email and a password of at least 8 characters.');const {data,error}=await cloud.client.auth.signUp({email,password});if(error)return cloudSay('Sign-up failed: '+error.message);cloud.user=data.session?.user||null;cloudSay(cloud.user?'Account created and signed in. Upload your device data to start sync.':'Account created. Check your email to confirm, then sign in.');};
 $('cloudSignIn').onclick=async()=>{if(!cloud.client)return cloudSay('Cloud client is not ready. Reload the page.');const {data,error}=await cloud.client.auth.signInWithPassword({email:$('cloudEmail').value.trim(),password:$('cloudPassword').value});if(error)return cloudSay('Sign-in failed: '+error.message);cloud.user=data.user;await restoreCloudForSignedInUser(cloud.user);};
 $('cloudSignOut').onclick=async()=>{if(!cloud.client)return;const {error}=await cloud.client.auth.signOut();if(error)cloudSay('Sign-out failed: '+error.message);else{cloud.user=null;cloud.enabled=false;cloudSay('Signed out. This device continues saving locally.')}};
 $('cloudUpload').onclick=cloudPush;
 $('cloudDownload').onclick=cloudPull;
-cloudAuth();
-renderList();renderDaily();renderPrices();fillCustomerSelect();
+cloudAuth().finally(()=>{renderList();renderDaily();renderPrices();fillCustomerSelect();refreshMetrics()});
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./service-worker.js').catch(err => console.warn('Offline setup unavailable', err));
