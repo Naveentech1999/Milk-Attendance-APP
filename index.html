@@ -398,7 +398,7 @@ async function cloudAuth(){
  cloud.client=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
  cloud.client.auth.onAuthStateChange((_event,session)=>{
   cloud.user=session?.user||null;
-  if(cloud.user){restoreCloudForSignedInUser(cloud.user);}
+  if(cloud.user){const signedInUser=cloud.user;setTimeout(()=>restoreCloudForSignedInUser(signedInUser),0);}
   else{cloud.enabled=false;cloudRestoreUserId=null;cloudSay('Not signed in. Local data remains on this device.');}
  });
  const {data,error}=await cloud.client.auth.getSession();
