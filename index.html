@@ -418,7 +418,7 @@ async function cloudAuth(){
  cloud.user=data.session?.user||null;
  cloud.enabled=!!cloud.user&&localStorage.getItem('milkCloudSyncEnabled:'+cloud.user.id)==='yes';
  cloud.client.auth.onAuthStateChange((_event,session)=>{cloud.user=session?.user||null;if(!cloud.user){cloud.enabled=false;cloudSay('Signed out. Local data remains on this device.')}});
- if(cloud.user){const loaded=await restoreCloudData(true);if(!loaded&&!cloud.enabled)cloudSay('Signed in as '+cloud.user.email+'. No cloud data was loaded; local data remains available.')}
+ if(cloud.user){await restoreCloudForSignedInUser(cloud.user)}
  else cloudSay('Not signed in. Local data remains on this device. Sign in under More → Supabase cloud database to load your saved data.');
 }
 
@@ -427,7 +427,8 @@ $('cloudSignIn').onclick=async()=>{if(!cloud.client)return cloudSay('Cloud clien
 $('cloudSignOut').onclick=async()=>{if(!cloud.client)return;const {error}=await cloud.client.auth.signOut();if(error)cloudSay('Sign-out failed: '+error.message);else{cloud.user=null;cloud.enabled=false;cloudSay('Signed out. This device continues saving locally.')}};
 $('cloudUpload').onclick=cloudPush;
 $('cloudDownload').onclick=cloudPull;
-cloudAuth().finally(()=>{renderList();renderDaily();renderPrices();fillCustomerSelect();refreshMetrics()});
+renderList();renderDaily();renderPrices();fillCustomerSelect();refreshMetrics();
+cloudAuth().then(()=>{if(!Array.isArray(db.customers)||db.customers.length===0){db.customers=SEED.map(c=>({...c,items:(c.items||[]).map(it=>({...it}))}));}renderList();renderDaily();renderPrices();fillCustomerSelect();refreshMetrics();}).catch(err=>{console.error('Cloud startup failed',err);cloudSay('Cloud connection failed. Showing saved device customers; check More → Supabase cloud database.');renderList();renderDaily();renderPrices();fillCustomerSelect();refreshMetrics();});
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./service-worker.js').catch(err => console.warn('Offline setup unavailable', err));
