@@ -366,17 +366,49 @@ async function cloudPull(){
  if(!data.payload.customers||!data.payload.days){cloudSay('Cloud data format is not recognized; local data was not changed.');return}
  db=data.payload;localStorage.setItem('milkBillingSpecV3',JSON.stringify(db));renderAfterCloudLoad();cloud.enabled=true;localStorage.setItem('milkCloudSyncEnabled:'+cloud.user.id,'yes');cloudSay('Cloud data loaded. Automatic cloud sync is enabled.');
 }
+let cloudRestoreUserId=null,cloudRestorePromise=null;
+async function restoreCloudForSignedInUser(user){
+ if(!cloud.client||!user)return;
+ if(cloudRestoreUserId===user.id&&cloudRestorePromise)return cloudRestorePromise;
+ cloudRestoreUserId=user.id;
+ cloudRestorePromise=(async()=>{
+  cloud.enabled=false;
+  cloudSay('Signed in. Checking your saved DudhWala cloud data…');
+  const {data,error}=await cloud.client.from('milk_app_state').select('payload,updated_at').eq('user_id',user.id).maybeSingle();
+  if(error){cloudSay('Could not load cloud data: '+error.message+'. Your device data is unchanged.');return}
+  if(!data?.payload){
+   cloudSay('Signed in as '+user.email+'. No cloud backup exists yet. Your device data is unchanged; use Upload this device data only if this is the correct master copy.');
+   return;
+  }
+  const p=data.payload;
+  if(!p||!Array.isArray(p.customers)||!p.days||typeof p.days!=='object'){
+   cloudSay('Cloud data format is invalid. Your device data was not changed.');return;
+  }
+  db={...db,...p,customers:p.customers,days:p.days,prices:{...DEFAULT_PRICES,...(p.prices||{})},monthlyCharges:p.monthlyCharges||{}};
+  try{localStorage.setItem('milkBillingSpecV3',JSON.stringify(db));}catch(e){cloudSay('Cloud data loaded, but this device could not save a local copy.');}
+  cloud.enabled=true;
+  localStorage.setItem('milkCloudSyncEnabled:'+user.id,'yes');
+  renderAfterCloudLoad();
+  cloudSay('Cloud data loaded · '+db.customers.length+' customers · previous attendance restored'+(data.updated_at?' · '+new Date(data.updated_at).toLocaleString():'')+'. Automatic sync is on.');
+ })().finally(()=>{cloudRestorePromise=null});
+ return cloudRestorePromise;
+}
 async function cloudAuth(){
  if(!window.supabase?.createClient){cloudSay('Supabase library did not load. Check your internet connection and reload.');return}
  cloud.client=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+ cloud.client.auth.onAuthStateChange((_event,session)=>{
+  cloud.user=session?.user||null;
+  if(cloud.user){restoreCloudForSignedInUser(cloud.user);}
+  else{cloud.enabled=false;cloudRestoreUserId=null;cloudSay('Not signed in. Local data remains on this device.');}
+ });
  const {data,error}=await cloud.client.auth.getSession();
  if(error){cloudSay('Auth error: '+error.message);return}
- cloud.user=data.session?.user||null;cloud.enabled=!!cloud.user&&localStorage.getItem('milkCloudSyncEnabled:'+cloud.user.id)==='yes';
- cloudSay(cloud.user?'Signed in as '+cloud.user.email+(cloud.enabled?' · automatic sync enabled':' · upload to cloud to enable sync'):'Not signed in. Local data remains on this device.');
- cloud.client.auth.onAuthStateChange((_event,session)=>{cloud.user=session?.user||null;cloud.enabled=!!cloud.user&&localStorage.getItem('milkCloudSyncEnabled:'+cloud.user.id)==='yes';cloudSay(cloud.user?'Signed in as '+cloud.user.email+(cloud.enabled?' · automatic sync enabled':' · upload to cloud to enable sync'):'Signed out. Local data remains on this device.')});
+ cloud.user=data.session?.user||null;
+ if(cloud.user)await restoreCloudForSignedInUser(cloud.user);
+ else cloudSay('Not signed in. Local data remains on this device. Sign in under More → Supabase cloud database to restore your cloud history.');
 }
 $('cloudSignUp').onclick=async()=>{if(!cloud.client)return cloudSay('Cloud client is not ready. Reload the page.');const email=$('cloudEmail').value.trim(),password=$('cloudPassword').value;if(!email||password.length<8)return cloudSay('Enter an email and a password of at least 8 characters.');const {data,error}=await cloud.client.auth.signUp({email,password});if(error)return cloudSay('Sign-up failed: '+error.message);cloud.user=data.session?.user||null;cloudSay(cloud.user?'Account created and signed in. Upload your device data to start sync.':'Account created. Check your email to confirm, then sign in.');};
-$('cloudSignIn').onclick=async()=>{if(!cloud.client)return cloudSay('Cloud client is not ready. Reload the page.');const {data,error}=await cloud.client.auth.signInWithPassword({email:$('cloudEmail').value.trim(),password:$('cloudPassword').value});if(error)return cloudSay('Sign-in failed: '+error.message);cloud.user=data.user;cloud.enabled=localStorage.getItem('milkCloudSyncEnabled:'+cloud.user.id)==='yes';cloudSay('Signed in as '+data.user.email+'. Upload this device data or download an existing cloud copy.');};
+$('cloudSignIn').onclick=async()=>{if(!cloud.client)return cloudSay('Cloud client is not ready. Reload the page.');const {data,error}=await cloud.client.auth.signInWithPassword({email:$('cloudEmail').value.trim(),password:$('cloudPassword').value});if(error)return cloudSay('Sign-in failed: '+error.message);cloud.user=data.user;await restoreCloudForSignedInUser(cloud.user);};
 $('cloudSignOut').onclick=async()=>{if(!cloud.client)return;const {error}=await cloud.client.auth.signOut();if(error)cloudSay('Sign-out failed: '+error.message);else{cloud.user=null;cloud.enabled=false;cloudSay('Signed out. This device continues saving locally.')}};
 $('cloudUpload').onclick=cloudPush;
 $('cloudDownload').onclick=cloudPull;
