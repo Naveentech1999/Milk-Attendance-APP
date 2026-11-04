@@ -321,53 +321,6 @@ function bindMonthlyCharges(){
  });
 }
 function printPage(title,body){let w=window.open('','_blank');if(!w){say('Allow pop-ups to print or save PDF');return}w.document.write('<html><head><title>'+esc(title)+'</title><style>body{font:13px Arial;padding:24px}.bill-page{page-break-after:always;break-after:page}.bill-page:last-child{page-break-after:auto;break-after:auto}table{width:100%;border-collapse:collapse}td,th{padding:7px;border-bottom:1px solid #ddd;text-align:left}h1{color:#176b45}</style></head><body><h1>'+esc(title)+'</h1>'+body+'
-<script>
-(function(){
- const oldRenderList=window.renderList;
- if(typeof oldRenderList==="function"){
-   window.renderList=function(){
-     oldRenderList();
-     document.querySelectorAll("#list article.customer").forEach(article=>{
-       if(article.parentElement && article.parentElement.classList.contains("dw-customer")) return;
-       const first=article.querySelector(":scope > div:first-child");
-       if(!first)return;
-       const name=first.querySelector("h3")?.textContent||"Customer";
-       const loc=first.querySelector(".loc")?.textContent||"";
-       const status=first.querySelector(".status")?.textContent||"NOT MARKED";
-       const statusClass=first.querySelector(".status")?.classList.contains("present")?"present":first.querySelector(".status")?.classList.contains("absent")?"absent":"";
-       const details=document.createElement("details");details.className="dw-customer";
-       const summary=document.createElement("summary");
-       const avatar=document.createElement("span");avatar.className="dw-avatar";avatar.textContent=(name.trim()[0]||"D").toUpperCase();
-       const info=document.createElement("span");info.style.cssText="min-width:0;flex:1";
-       const n=document.createElement("span");n.className="dw-cust-name";n.textContent=name;
-       const l=document.createElement("span");l.className="dw-cust-loc";l.textContent=loc||"Delivery location";
-       info.append(n,l);
-       const st=document.createElement("span");st.className="dw-cust-status "+statusClass;st.textContent=status;
-       summary.append(avatar,info,st);details.append(summary);
-       const body=document.createElement("div");body.className="dw-customer-body";
-       [...article.children].filter(el=>el!==first).forEach(el=>body.append(el));
-       details.append(body);article.replaceWith(details);
-     });
-   };
-   window.renderList();
- }
- const navs=[...document.querySelectorAll("[data-dw-tab]")];
- function showTab(id){
-   ["register","daily","monthly","downloads","settings"].forEach(k=>document.getElementById(k)?.classList.toggle("hidden",k!==id));
-   document.querySelectorAll("[data-tab]").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));
-   navs.forEach(b=>b.classList.toggle("active",b.dataset.dwTab===id));
-   if(id==="daily")window.renderDaily?.();
-   if(id==="settings")window.renderPrices?.();
-   if(id==="monthly")window.fillCustomerSelect?.();
-   if(id==="downloads"){const m=document.getElementById("downloadMonth"),src=document.getElementById("month");if(m&&src)m.value=src.value;window.renderDownloadBills?.();}
-   window.scrollTo({top:0,behavior:"smooth"});
- }
- navs.forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.dwTab)));
- document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
- document.querySelectorAll(".metrics,.bar").forEach(el=>{if(el.querySelector("#date"))document.getElementById("register")?.prepend(el);});
- const metrics=document.querySelector(".metrics");if(metrics)document.getElementById("register")?.prepend(metrics);metrics?.classList.add("dw-metrics");
-})();
-</script>
 </body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300)}
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['register','daily','monthly','downloads','settings'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab));if(b.dataset.tab==='daily')renderDaily();if(b.dataset.tab==='settings')renderPrices();if(b.dataset.tab==='monthly')fillCustomerSelect();if(b.dataset.tab==='downloads'){ $('downloadMonth').value=$('month').value;renderDownloadBills()}});
 function fillCustomerSelect(){$('billCustomer').innerHTML=db.customers.map(c=>`<option value="${c.id}">${esc(c.name)} — ${esc(c.location)}</option>`).join('')}
@@ -428,4 +381,4 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./service-worker.js').catch(err => console.warn('Offline setup unavailable', err));
   });
 }
-</script></main></body></html>
+</script><script>(function(){const list=document.getElementById('list');if(list){const decorate=()=>{list.querySelectorAll(':scope > article.customer').forEach(a=>{if(a.dataset.accordionReady)return;a.dataset.accordionReady='1';const first=a.querySelector(':scope > div:first-child');if(!first)return;const name=first.querySelector('h3')?.textContent||'Customer';const loc=first.querySelector('.loc')?.textContent||'';const status=first.querySelector('.status')?.textContent||'NOT MARKED';const sc=first.querySelector('.status')?.classList.contains('present')?'present':first.querySelector('.status')?.classList.contains('absent')?'absent':'';const d=document.createElement('details');d.className='dw-customer';const s=document.createElement('summary');const av=document.createElement('span');av.className='dw-avatar';av.textContent=(name[0]||'D').toUpperCase();const info=document.createElement('span');info.style.cssText='min-width:0;flex:1';const n=document.createElement('span');n.className='dw-cust-name';n.textContent=name;const l=document.createElement('span');l.className='dw-cust-loc';l.textContent=loc||'Delivery location';info.append(n,l);const st=document.createElement('span');st.className='dw-cust-status '+sc;st.textContent=status;s.append(av,info,st);d.append(s);const body=document.createElement('div');body.className='dw-customer-body';[...a.children].filter(x=>x!==first).forEach(x=>body.append(x));d.append(body);a.replaceWith(d);});};new MutationObserver(decorate).observe(list,{childList:true});decorate();}const navs=[...document.querySelectorAll('[data-dw-tab]')];function show(id){['register','daily','monthly','downloads','settings'].forEach(k=>document.getElementById(k)?.classList.toggle('hidden',k!==id));document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));navs.forEach(b=>b.classList.toggle('active',b.dataset.dwTab===id));document.querySelector('[data-tab='+id+']')?.click();window.scrollTo({top:0,behavior:'smooth'});}navs.forEach(b=>b.addEventListener('click',()=>show(b.dataset.dwTab)));const m=document.querySelector('.metrics');if(m)document.getElementById('register')?.prepend(m);})();</script></main></body></html>
