@@ -389,6 +389,10 @@ button:active{transform:scale(.97)}
 .add-customer-feedback{min-height:0;margin:0;color:#087a50;font-size:11px;font-weight:700;line-height:1.4}
 .add-customer-feedback:empty{display:none}
 @media(max-width:380px){.add-customer-card{padding:14px}.add-product-grid{grid-template-columns:1fr 105px}.add-customer-foot{align-items:stretch;flex-direction:column}.add-customer-foot button{width:100%}}
+
+/* Daily report image actions */
+#daily #previewDaily{width:100%;min-height:48px;margin-top:13px;border:0;border-radius:14px;background:linear-gradient(100deg,#087a50,#169866);color:#fff;font-weight:850;box-shadow:0 6px 15px #087a5025}
+#daily #previewDaily:disabled{opacity:.7}
 </style></head><body><header><h1>DudhWala</h1><div style="font-size:12px">Daily delivery · Attendance · Customer billing</div></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
@@ -402,7 +406,7 @@ button:active{transform:scale(.97)}
 <section id="daily" class="hidden">
 <div class="card"><div class="title">Today's product quantities</div><div id="productTable"></div></div>
 <div class="card"><div class="title">Daily amount and company settlement</div><div class="totgrid"><div><small class="muted">Total net litres</small><div class="big" id="dLitres">0 L</div></div><div><small class="muted">Total MRP amount</small><div class="big" id="dAmount">₹0</div></div><div><small class="muted">Commission deduction</small><div class="big" id="dCommission">₹0</div></div><div><small class="muted">Amount payable to company</small><div class="big" id="dPayable">₹0</div></div></div><p class="muted">Company payment = total MRP amount − commission deduction. Customer milk bills are calculated separately using net litres × MRP per litre.</p></div>
-<button class="primary" id="printDaily">Print / Save daily report as PDF</button>
+<button class="primary" id="previewDaily">Preview daily report image</button>
 </section>
 <section id="monthly" class="hidden">
 <div class="card monthly-shell"><div class="monthly-heading"><div><div class="monthly-kicker">MONTHLY SUMMARY</div><div class="title">Customer milk bills</div><p class="muted">Choose a month to calculate every customer's bill.</p></div><span class="monthly-icon">🧾</span></div><div class="bar monthly-controls"><input class="field" id="month" type="month"><button class="primary" id="calculate">Calculate bills</button></div><div id="monthOutput"></div></div>
@@ -740,7 +744,38 @@ $('printOne').onclick=async()=>{
  const button=$('printOne');button.disabled=true;button.textContent='Creating receipt…';
  try{await downloadSelectedCustomerReceipt(x,m)}finally{button.disabled=false;button.textContent='Preview receipt image'}
 };
-$('printDaily').onclick=()=>{let t=calcDay();printPage('Daily milk settlement',`<p>Date: ${esc($('date').value)}</p><p>Net litres: ${t.litres.toFixed(2)} L</p><p>Total MRP amount: ${money(t.amount)}</p><p>Commission deduction: ${money(t.commission)}</p><h2>Company payable: ${money(t.payable)}</h2>${productBreakdownHtml(t.products)}`)};
+$('previewDaily').onclick=async()=>{const button=$('previewDaily');button.disabled=true;button.textContent='Creating report image…';try{await createDailyReportImage()}finally{button.disabled=false;button.textContent='Preview daily report image'}};
+async function createDailyReportImage(){
+ if(!window.html2canvas){say('Image library unavailable. Check your connection and reload.');return}
+ const t=calcDay(),date=$('date').value;
+ const dateLabel=date?new Date(date+'T00:00:00').toLocaleDateString(undefined,{day:'numeric',month:'long',year:'numeric'}):'';
+ const host=document.createElement('div');host.style.cssText='position:fixed;left:-12000px;top:0;width:760px;background:#fff;z-index:-1';
+ const report=document.createElement('div');report.className='dw-daily-report-image';
+ report.innerHTML='<div class="dw-report-header"><div class="dw-report-mark">🥛</div><div class="dw-report-brand">DUDHWALA</div><div class="dw-report-title">DAILY MILK REPORT</div><div class="dw-report-date">'+esc(dateLabel)+'</div></div><div class="dw-report-summary"><div><small>NET MILK</small><b>'+t.litres.toFixed(2)+' L</b></div><div><small>TOTAL MRP</small><b>'+money(t.amount)+'</b></div><div><small>COMMISSION</small><b>'+money(t.commission)+'</b></div><div><small>COMPANY PAYABLE</small><b>'+money(t.payable)+'</b></div></div><h3>PRODUCT-WISE SUMMARY</h3><div class="dw-report-table">'+productBreakdownHtml(t.products)+'</div><div class="dw-report-footer">Generated from DudhWala · Daily settlement summary</div>';
+ const style=document.createElement('style');style.textContent='.dw-daily-report-image{width:760px;padding:34px 38px;background:#fff;color:#183629;font-family:Arial,sans-serif;border:2px solid #dcebe1;border-radius:22px}.dw-report-header{text-align:center;padding:8px 0 22px}.dw-report-mark{font-size:34px}.dw-report-brand{font-size:28px;font-weight:900;letter-spacing:2px;color:#087a50}.dw-report-title{font-size:12px;letter-spacing:2px;font-weight:800;color:#64766b;margin-top:7px}.dw-report-date{display:inline-block;margin-top:13px;padding:9px 18px;border-radius:20px;background:#edf8f1;color:#07583b;font-size:13px;font-weight:800}.dw-report-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:5px 0 24px}.dw-report-summary>div{padding:15px;border-radius:13px;background:#f1f8f3;border:1px solid #e2eee5}.dw-report-summary>div:nth-child(2){background:#eef5ff;border-color:#e0eaf8}.dw-report-summary>div:nth-child(3){background:#fff5e9;border-color:#f5e8d6}.dw-report-summary>div:nth-child(4){background:#f1edff;border-color:#e8e1fa}.dw-report-summary small{display:block;font-size:10px;font-weight:800;letter-spacing:.7px;color:#687b70}.dw-report-summary b{display:block;margin-top:8px;font-size:22px;color:#07583b}.dw-daily-report-image h3{font-size:12px;letter-spacing:1px;color:#07583b;margin:0 0 10px}.dw-report-table table{width:100%;border-collapse:collapse;font-size:12px}.dw-report-table th,.dw-report-table td{padding:10px 9px;border-bottom:1px solid #e7eee9;text-align:left}.dw-report-table td:last-child,.dw-report-table th:last-child{text-align:right}.dw-report-footer{text-align:center;margin-top:25px;padding-top:15px;border-top:1px solid #e7eee9;color:#7a8980;font-size:10px}';
+ host.append(style,report);document.body.appendChild(host);
+ try{
+  const canvas=await html2canvas(report,{backgroundColor:'#fff',scale:2,useCORS:true,logging:false});
+  const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!blob)throw Error('Image creation failed');
+  const url=URL.createObjectURL(blob);showDailyReportPreview(url,dateLabel);
+ }catch(err){say('Daily report preview failed: '+err.message)}finally{host.remove()}
+}
+function showDailyReportPreview(url,dateLabel){
+ const old=document.getElementById('dailyReportPreview');if(old)old.remove();
+ const modal=document.createElement('div');modal.id='dailyReportPreview';modal.className='receipt-preview-overlay';
+ modal.innerHTML='<div class="receipt-preview-panel"><div class="receipt-preview-head"><div><b>Daily report preview</b><small>'+esc(dateLabel)+'</small></div><button type="button" class="daily-report-close receipt-close">×</button></div><div class="receipt-preview-image"><img alt="DudhWala daily milk report preview" src="'+url+'"></div><div class="receipt-preview-actions"><button type="button" class="daily-report-close secondary">Close</button><button type="button" class="primary" id="shareDailyReport">Share image</button></div><button type="button" class="secondary" id="downloadDailyReport" style="width:100%;min-height:42px">Download image</button><p class="muted">Share the report image using WhatsApp or another available app.</p></div>';
+ document.body.appendChild(modal);
+ function close(){modal.remove();URL.revokeObjectURL(url)}
+ modal.querySelectorAll('.daily-report-close').forEach(b=>b.onclick=close);
+ modal.addEventListener('click',e=>{if(e.target===modal)close()});
+ modal.querySelector('#downloadDailyReport').onclick=async()=>{
+  try{const response=await fetch(url),blob=await response.blob(),a=document.createElement('a'),safe=(dateLabel||'daily').replace(/[^a-z0-9]+/gi,'-');const downloadUrl=URL.createObjectURL(blob);a.href=downloadUrl;a.download='DudhWala-Daily-Report-'+safe+'.png';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(downloadUrl),1500);say('Daily report image downloaded.')}catch(err){say('Image download failed: '+err.message)}
+ };
+ modal.querySelector('#shareDailyReport').onclick=async()=>{
+  if(!navigator.share||!navigator.canShare){say('This browser does not support sharing image files.');return}
+  try{const response=await fetch(url),blob=await response.blob(),file=new File([blob],'DudhWala-Daily-Report.png',{type:'image/png'});if(!navigator.canShare({files:[file]})){say('This browser cannot share image files.');return}await navigator.share({files:[file],title:'DudhWala daily report',text:'Daily milk report · '+dateLabel});say('Choose WhatsApp in the share panel.')}catch(err){if(err.name!=='AbortError')say('Daily report sharing failed: '+err.message)}
+ };
+}
 function renderAfterCloudLoad(){renderList();renderDaily();renderPrices();fillCustomerSelect();refreshMetrics()}
 async function cloudPush(){
  if(!cloud.client||!cloud.user){cloudSay('Please sign in first.');return}
