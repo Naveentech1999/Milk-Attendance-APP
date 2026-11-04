@@ -291,7 +291,7 @@ button:active{transform:scale(.97)}
 </section>
 <section id="monthly" class="hidden">
 <div class="card"><div class="title">Monthly bill for every customer</div><div class="bar"><input class="field" id="month" type="month"><button class="primary" id="calculate">Calculate monthly bills</button></div><div id="monthOutput"></div><button class="primary" id="printMonthly">Print all customer bills / Save PDF</button></div>
-<div class="card"><div class="title">Individual customer bill</div><select class="field" id="billCustomer" style="width:100%"></select><button id="printOne" style="margin-top:8px">Print selected customer's bill</button> <button id="shareOne" style="margin-top:8px">Share bill on WhatsApp</button></div>
+<div class="card"><div class="title">Individual customer bill</div><select class="field" id="billCustomer" style="width:100%"></select><button class="primary" id="printOne" style="margin-top:8px;width:100%">Download selected customer bill (Image)</button> <button id="shareOne" style="margin-top:8px">Share bill on WhatsApp</button></div>
 </section>
 <section id="downloads" class="hidden">
 <div class="card"><div class="title">Download monthly customer bills (PNG)</div><p class="muted">Choose a month, set each customer’s delivery charge, then download an individual bill image.</p><div class="bar"><input class="field" id="downloadMonth" type="month"><button class="primary" id="loadDownloadBills">Show customers</button></div><div id="downloadOutput"></div></div>
@@ -498,6 +498,40 @@ function billImageStyles(){return `<style>
 .milk-bill .summary td{font-size:15px}.milk-bill .summary td:last-child{font-weight:bold}.milk-bill .good{background:#e6f7e9}.milk-bill .bad,.milk-bill tr.absent{background:#fde9e8}.milk-bill .return{background:#fff3d4}.milk-bill tr.delivered{background:#fff}.milk-bill tr.unmarked{background:#f1f4f6;color:#65717a}.milk-bill .net{background:#d9efff;font-weight:bold}.milk-bill .grand{background:#075b98;color:white;font-weight:bold}.milk-bill .grand td{font-size:20px}
 .milk-bill .bill-note,.milk-bill .bill-foot{font-size:12px;color:#526879;padding:10px 14px;margin:0}.milk-bill .bill-foot{background:#eaf4fa;line-height:1.6}
 </style>`}
+
+async function downloadSelectedCustomerReceipt(x,m){
+ if(!window.html2canvas){say('Receipt image library is unavailable. Check your internet connection and reload.');return}
+ const host=document.createElement('div');
+ host.style.cssText='position:fixed;left:-12000px;top:0;width:560px;z-index:-1;background:#fff';
+ const receipt=document.createElement('div');
+ receipt.className='dw-simple-receipt';
+ receipt.innerHTML=`
+ <div class="receipt-top"><div class="receipt-icon">🥛</div><div class="receipt-brand">DUDHWALA</div><div class="receipt-sub">MONTHLY MILK RECEIPT</div></div>
+ <div class="receipt-period">${esc(billMonthLabel(m))}</div>
+ <div class="receipt-customer"><span>CUSTOMER</span><strong>${esc(x.c.name)}</strong></div>
+ <div class="receipt-rule"></div>
+ <div class="receipt-row"><span>Milk taken days</span><strong>${x.present} days</strong></div>
+ <div class="receipt-row"><span>Milk taken</span><strong>${x.litres.toFixed(2)} L</strong></div>
+ <div class="receipt-row"><span>Milk amount</span><strong>${money(x.amount)}</strong></div>
+ <div class="receipt-row"><span>Delivery charge</span><strong>${money(x.delivery)}</strong></div>
+ <div class="receipt-rule"></div>
+ <div class="receipt-total"><span>TOTAL AMOUNT</span><strong>${money(x.total)}</strong></div>
+ <div class="receipt-footer">Thank you for choosing DudhWala</div>`;
+ const style=document.createElement('style');
+ style.textContent=`.dw-simple-receipt{width:560px;padding:34px 38px;background:#fff;color:#183629;border:2px solid #dcebe1;border-radius:24px;font-family:Arial,sans-serif;box-shadow:0 8px 28px #153b2614}.receipt-top{text-align:center;padding:4px 0 18px}.receipt-icon{font-size:34px}.receipt-brand{font-size:27px;font-weight:900;letter-spacing:2px;color:#087a50;margin-top:5px}.receipt-sub{font-size:11px;letter-spacing:2px;color:#718078;margin-top:6px}.receipt-period{text-align:center;background:#edf8f1;border-radius:10px;padding:10px;font-weight:800;color:#07583b;margin:5px 0 22px}.receipt-customer{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}.receipt-customer span,.receipt-total span{font-size:10px;letter-spacing:1.2px;color:#718078;font-weight:800}.receipt-customer strong{font-size:21px;color:#173b29}.receipt-rule{border-top:1px dashed #cbdacf;margin:15px 0}.receipt-row{display:flex;justify-content:space-between;gap:16px;padding:10px 0;font-size:15px;color:#617168}.receipt-row strong{color:#173b29;font-variant-numeric:tabular-nums}.receipt-total{display:flex;justify-content:space-between;align-items:center;gap:12px;background:linear-gradient(110deg,#e7f6ec,#f1faf4);border-radius:14px;padding:18px 16px;margin-top:16px}.receipt-total strong{font-size:26px;color:#07583b;font-weight:900}.receipt-footer{text-align:center;margin-top:25px;padding-top:15px;border-top:1px solid #edf2ee;color:#7a8980;font-size:12px}`;
+ host.append(style,receipt);document.body.appendChild(host);
+ try{
+  const canvas=await window.html2canvas(receipt,{backgroundColor:'#ffffff',scale:2,useCORS:true,logging:false});
+  const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+  if(!blob)throw new Error('Could not create receipt image');
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  const safeName=x.c.name.replace(/[^a-z0-9-_]+/gi,'-').replace(/^-|-$/g,'')||'customer';
+  a.href=url;a.download='DudhWala-Receipt-'+safeName+'-'+m+'.png';document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);say('Receipt image downloaded for '+x.c.name);
+ }catch(err){say('Could not generate receipt image: '+err.message)}
+ finally{host.remove()}
+}
+
 async function downloadCustomerBill(x,m){
  if(!window.html2canvas){say('Bill image library is unavailable. Check your internet connection and reload.');return}
  const host=document.createElement('div');host.style.cssText='position:fixed;left:-12000px;top:0;width:950px;z-index:-1;background:#fff';
@@ -549,7 +583,14 @@ $('commissionRate').onchange=()=>{db.commission=Math.max(0,+$('commissionRate').
 $('calculate').onclick=()=>{$('monthOutput').innerHTML=monthHtml();fillCustomerSelect();bindMonthlyCharges()};
 $('loadDownloadBills').onclick=renderDownloadBills;
 $('printMonthly').onclick=()=>printPage('Monthly customer milk bills',monthlyBillsPrintHtml());
-$('printOne').onclick=()=>{let x=monthRows().find(r=>r.c.id===$('billCustomer').value);if(x)printPage('Customer milk bill',customerBillPrintHtml(x,$('month').value))};
+$('printOne').onclick=async()=>{
+ const m=$('month').value;
+ if(!m){say('Please select a month and calculate monthly bills first.');return}
+ const x=monthRows().find(r=>r.c.id===$('billCustomer').value);
+ if(!x){say('Please select a customer.');return}
+ const button=$('printOne');button.disabled=true;button.textContent='Creating receipt…';
+ try{await downloadSelectedCustomerReceipt(x,m)}finally{button.disabled=false;button.textContent='Download selected customer bill (Image)'}
+};
 $('shareOne').onclick=()=>{
  let c=db.customers.find(x=>x.id===$('billCustomer').value);
  if(!c)return;
