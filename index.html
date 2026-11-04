@@ -365,7 +365,7 @@ function printPage(title,body){let w=window.open('','_blank');if(!w){say('Allow 
  navs.forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.dwTab)));
  document.querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
  document.querySelectorAll(".metrics,.bar").forEach(el=>{if(el.querySelector("#date"))document.getElementById("register")?.prepend(el);});
- document.querySelector(".metrics")?.classList.add("dw-metrics");
+ const metrics=document.querySelector(".metrics");if(metrics)document.getElementById("register")?.prepend(metrics);metrics?.classList.add("dw-metrics");
 })();
 </script>
 </body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300)}
