@@ -274,6 +274,58 @@ button:active{transform:scale(.97)}
 @media(hover:hover){#daily .dw-brand-block:hover{transform:translateY(-2px);box-shadow:0 8px 20px #173b2815}#daily .totgrid>div:hover{transform:translateY(-2px);filter:saturate(1.08)}}
 @media(prefers-reduced-motion:reduce){#daily #printDaily:before{animation:none}}
 
+
+/* Monthly billing dashboard refresh */
+#monthly .monthly-shell{padding:17px;border:0;background:linear-gradient(145deg,#fff 0%,#f1fbf5 100%);box-shadow:0 8px 26px #123e2710}
+.monthly-heading{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.monthly-kicker{font-size:9px;letter-spacing:1.5px;font-weight:900;color:#159565;margin-bottom:5px}
+.monthly-icon{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(145deg,#d9f7e5,#e7efff);font-size:25px}
+.monthly-controls{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;margin:14px 0}
+.monthly-controls .field{width:100%}
+.monthly-controls button{padding:10px 16px;background:linear-gradient(120deg,#087a50,#18a66e);border:0;box-shadow:0 5px 14px #087a5030}
+.monthly-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:13px 0 20px}
+.monthly-stat{padding:12px 10px;border-radius:15px;min-width:0}
+.monthly-stat small{display:block;font-size:8px;letter-spacing:.6px;font-weight:850;line-height:1.4;min-height:23px}
+.monthly-stat strong{display:block;font-size:clamp(13px,3.5vw,19px);margin-top:6px;overflow-wrap:anywhere}
+.stat-green{background:linear-gradient(145deg,#dff8e9,#effcf4);color:#07583b}
+.stat-blue{background:linear-gradient(145deg,#e3f1ff,#f1f7ff);color:#245b9b}
+.stat-purple{background:linear-gradient(145deg,#f0eaff,#faf7ff);color:#6944a0}
+.monthly-list-head{display:flex;align-items:center;justify-content:space-between;margin:10px 2px 11px}
+.monthly-list-head b{display:block;font-size:14px;color:#173b29}
+.monthly-list-head small{display:block;font-size:10px;color:#78877e;margin-top:3px}
+.monthly-count{font-size:9px;font-weight:900;color:#087a50;background:#e4f7eb;padding:6px 9px;border-radius:20px}
+.monthly-customer-list{display:grid;gap:9px}
+.monthly-customer{padding:13px;border:1px solid #e6eee8;border-radius:16px;background:#fff;box-shadow:0 3px 12px #183d2807}
+.monthly-customer-top{display:flex;align-items:center;gap:9px}
+.monthly-avatar{width:34px;height:34px;display:grid;place-items:center;flex:0 0 34px;border-radius:11px;background:linear-gradient(145deg,#dff7e8,#e7f0ff);color:#087a50;font-size:10px;font-weight:900}
+.monthly-customer-name{min-width:0;flex:1}
+.monthly-customer-name b{display:block;font-size:12px;color:#173b29;line-height:1.3}
+.monthly-customer-name small{display:block;font-size:10px;color:#7b8980;margin-top:3px;overflow-wrap:anywhere}
+.monthly-total{font-size:14px;color:#087a50;white-space:nowrap}
+.monthly-breakdown{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:12px 0 9px}
+.monthly-breakdown>div{background:#f6f9f7;padding:8px;border-radius:10px;min-width:0}
+.monthly-breakdown small{display:block;color:#78877e;font-size:9px}
+.monthly-breakdown b{display:block;color:#243c2e;font-size:11px;margin-top:4px;overflow-wrap:anywhere}
+.monthly-charge-wrap{display:flex;align-items:center;justify-content:space-between;border-top:1px dashed #e4ece6;padding-top:9px;color:#69796f;font-size:10px;font-weight:700}
+.monthly-charge-input{display:flex;align-items:center;gap:4px;background:#f0f8f2;border:1px solid #dcece1;border-radius:9px;padding:3px 8px;color:#087a50}
+.monthly-charge-input input{width:76px;border:0;outline:0;background:transparent;text-align:right;font:700 13px system-ui;color:#07583b;padding:4px}
+.monthly-grand-total{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px;padding:16px;border-radius:16px;background:linear-gradient(115deg,#07583b,#159765);color:#fff}
+.monthly-grand-total small{display:block;font-size:9px;letter-spacing:1px;font-weight:800;opacity:.85}
+.monthly-grand-total strong{display:block;font-size:24px;margin-top:5px}
+.monthly-grand-total>span{font-size:10px;background:#ffffff24;border-radius:20px;padding:7px 9px;white-space:nowrap}
+.monthly-share-card{border:1px solid #dcece1;background:linear-gradient(145deg,#fff,#f5f9ff)}
+.receipt-preview-overlay{position:fixed;inset:0;z-index:200;background:#10271dd9;display:flex;align-items:center;justify-content:center;padding:14px;overflow:auto}
+.receipt-preview-panel{width:min(100%,520px);max-height:94vh;overflow:auto;background:#f7faf8;border-radius:22px;padding:14px;box-shadow:0 18px 60px #0005}
+.receipt-preview-head{display:flex;justify-content:space-between;align-items:center;padding:3px 2px 12px}
+.receipt-preview-head b{display:block;color:#173b29;font-size:15px}
+.receipt-preview-head small{display:block;color:#718078;font-size:11px;margin-top:3px}
+.receipt-close{border:0;border-radius:50%;width:35px;height:35px;background:#e7eee9;color:#264532;font-size:23px}
+.receipt-preview-image{background:#e9efeb;border-radius:14px;padding:10px;display:flex;justify-content:center}
+.receipt-preview-image img{display:block;width:100%;height:auto;max-height:65vh;object-fit:contain;border-radius:7px;box-shadow:0 3px 16px #1232}
+.receipt-preview-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0 7px}
+.receipt-preview-actions .secondary{background:#fff;border:1px solid #dce7df}
+.receipt-preview-panel>.muted{text-align:center;margin:6px 0 2px}
+@media(max-width:390px){.monthly-stats{gap:5px}.monthly-stat{padding:10px 7px}.monthly-stat small{font-size:7px}.monthly-customer{padding:11px}.monthly-breakdown>div{padding:7px 5px}}
 </style></head><body><header><h1>DudhWala</h1><div style="font-size:12px">Daily delivery · Attendance · Customer billing</div></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
@@ -290,8 +342,8 @@ button:active{transform:scale(.97)}
 <button class="primary" id="printDaily">Print / Save daily report as PDF</button>
 </section>
 <section id="monthly" class="hidden">
-<div class="card"><div class="title">Monthly bill for every customer</div><div class="bar"><input class="field" id="month" type="month"><button class="primary" id="calculate">Calculate monthly bills</button></div><div id="monthOutput"></div><button class="primary" id="printMonthly">Print all customer bills / Save PDF</button></div>
-<div class="card"><div class="title">Individual customer bill</div><select class="field" id="billCustomer" style="width:100%"></select><button class="primary" id="printOne" style="margin-top:8px;width:100%">Share bill receipt on WhatsApp</button></div>
+<div class="card monthly-shell"><div class="monthly-heading"><div><div class="monthly-kicker">MONTHLY SUMMARY</div><div class="title">Customer milk bills</div><p class="muted">Choose a month to calculate every customer's bill.</p></div><span class="monthly-icon">🧾</span></div><div class="bar monthly-controls"><input class="field" id="month" type="month"><button class="primary" id="calculate">Calculate bills</button></div><div id="monthOutput"></div></div>
+<div class="card monthly-share-card"><div class="monthly-kicker">INDIVIDUAL RECEIPT</div><div class="title">Preview and share a customer bill</div><select class="field" id="billCustomer" style="width:100%"></select><button class="primary" id="printOne" style="margin-top:10px;width:100%">Preview receipt image</button><p class="muted">Review the receipt first, then choose WhatsApp to share it.</p></div>
 </section>
 <section id="downloads" class="hidden">
 <div class="card"><div class="title">Download monthly customer bills (PNG)</div><p class="muted">Choose a month, set each customer’s delivery charge, then download an individual bill image.</p><div class="bar"><input class="field" id="downloadMonth" type="month"><button class="primary" id="loadDownloadBills">Show customers</button></div><div id="downloadOutput"></div></div>
@@ -455,11 +507,12 @@ function monthRows(){
  });
 }
 function monthHtml(){
- let rows=monthRows(),total=rows.reduce((s,x)=>s+x.total,0),m=$('month').value;
- return `<p class="muted">${esc(m)} · ${Object.keys(db.days).filter(d=>d.startsWith(m)).length} dates with saved attendance. Enter a separate one-time monthly delivery charge for each customer below.</p>
- <div style="overflow-x:auto"><table><tr><th>Customer / location</th><th>Present days</th><th>Litres</th><th>Milk bill</th><th>Monthly delivery charge (₹)</th><th>Total due</th></tr>
- ${rows.map(x=>`<tr><td>${esc(x.c.name)}<div class="muted">${esc(x.c.location)}</div></td><td>${x.present}</td><td>${x.litres.toFixed(2)}</td><td>${money(x.amount)}</td><td><input class="field monthly-charge" type="number" min="0" step="1" value="${x.delivery}" style="width:105px" data-month="${esc(m)}" data-customer="${x.c.id}"></td><td><b>${money(x.total)}</b></td></tr>`).join('')}</table></div>
- <h3>All customer bills total: ${money(total)}</h3>`;
+ const rows=monthRows(),total=rows.reduce((s,x)=>s+x.total,0),m=$('month').value;
+ const delivered=rows.reduce((s,x)=>s+x.present,0),litres=rows.reduce((s,x)=>s+x.litres,0);
+ return `<div class="monthly-stats"><div class="monthly-stat stat-green"><small>ALL CUSTOMER BILLS</small><strong>${money(total)}</strong></div><div class="monthly-stat stat-blue"><small>TOTAL MILK</small><strong>${litres.toFixed(2)} L</strong></div><div class="monthly-stat stat-purple"><small>MILK-TAKEN DAYS</small><strong>${delivered}</strong></div></div>
+ <div class="monthly-list-head"><div><b>Customer breakdown</b><small>${rows.length} customers · ${esc(billMonthLabel(m))}</small></div><span class="monthly-count">ALL</span></div>
+ <div class="monthly-customer-list">${rows.map((x,i)=>`<article class="monthly-customer"><div class="monthly-customer-top"><span class="monthly-avatar">${String(i+1).padStart(2,'0')}</span><div class="monthly-customer-name"><b>${esc(x.c.name)}</b><small>${esc(x.c.location||'')}</small></div><strong class="monthly-total">${money(x.total)}</strong></div><div class="monthly-breakdown"><div><small>Milk days</small><b>${x.present}</b></div><div><small>Milk taken</small><b>${x.litres.toFixed(2)} L</b></div><div><small>Milk bill</small><b>${money(x.amount)}</b></div></div><label class="monthly-charge-wrap"><span>Delivery charge</span><span class="monthly-charge-input"><span>₹</span><input class="monthly-charge" type="number" min="0" step="1" value="${x.delivery}" data-month="${esc(m)}" data-customer="${x.c.id}"></span></label></article>`).join('')}</div>
+ <div class="monthly-grand-total"><div><small>GRAND TOTAL · ALL CUSTOMERS</small><strong>${money(total)}</strong></div><span>✓ Calculated</span></div>`;
 }
 function billMonthLabel(m){const [y,mo]=m.split('-').map(Number);return new Date(y,mo-1,1).toLocaleDateString('en-IN',{month:'long',year:'numeric'})}
 function customerBillPrintHtml(x,m){
@@ -501,14 +554,25 @@ function billImageStyles(){return `<style>
 
 async function downloadSelectedCustomerReceipt(x,m){
  if(!window.html2canvas){say('Receipt image library unavailable. Check connection and reload.');return}
- if(!navigator.share||!navigator.canShare){say('Your browser does not support sharing receipt images.');return}
  const host=document.createElement('div');host.style.cssText='position:fixed;left:-12000px;top:0;width:560px;background:#fff';
  const receipt=document.createElement('div');receipt.className='dw-simple-receipt';
- const items=Object.entries(x.products).filter(([,p])=>p.qty>0).map(([k,p])=>{const [brand,type]=k.split('|');return '<div class="receipt-product"><span>'+esc(displayProductName({brand,type}))+'</span><b>'+p.qty+' units · '+money(p.amount)+'</b></div>'}).join('')||'<div class="receipt-product">No milk recorded</div>';
+ const items=Object.entries(x.products).filter(([,p])=>p.qty>0).map(([k,p])=>{const [brand,type]=k.split('|');return '<div class="receipt-product"><span>'+esc(displayProductName({brand,type}))+'</span><b>'+p.qty+'</b></div>'}).join('')||'<div class="receipt-product">No milk recorded</div>';
  receipt.innerHTML='<div class="receipt-top"><div class="receipt-icon">🥛</div><div class="receipt-brand">DUDHWALA</div><div class="receipt-sub">MONTHLY MILK RECEIPT</div></div><div class="receipt-period">'+esc(billMonthLabel(m))+'</div><div class="receipt-customer"><small>BILL TO</small><strong>'+esc(x.c.name)+'</strong><span>'+esc(x.c.location||'')+'</span></div><h3>MILK TYPES TAKEN</h3>'+items+'<hr><div class="receipt-row"><span>Milk taken days</span><b>'+x.present+' days</b></div><div class="receipt-row"><span>Total milk</span><b>'+x.litres.toFixed(2)+' L</b></div><div class="receipt-row"><span>Milk amount</span><b>'+money(x.amount)+'</b></div><div class="receipt-row"><span>Delivery charge</span><b>'+money(x.delivery)+'</b></div><div class="receipt-total"><span>TOTAL AMOUNT</span><strong>'+money(x.total)+'</strong></div><footer>Thank you for choosing DudhWala</footer>';
  const style=document.createElement('style');style.textContent='.dw-simple-receipt{width:560px;padding:34px 38px;background:white;color:#183629;border:2px solid #dcebe1;border-radius:24px;font-family:Arial,sans-serif}.receipt-top{text-align:center;padding-bottom:18px}.receipt-icon{font-size:34px}.receipt-brand{font-size:27px;font-weight:900;letter-spacing:2px;color:#087a50}.receipt-sub{font-size:11px;letter-spacing:2px;color:#718078;margin-top:6px}.receipt-period{text-align:center;background:#edf8f1;padding:10px;font-weight:800;color:#07583b;margin:5px 0 22px}.receipt-customer{display:flex;flex-direction:column;gap:6px;margin-bottom:18px}.receipt-customer small,.dw-simple-receipt h3,.receipt-total span{font-size:10px;letter-spacing:1px;color:#718078;font-weight:800}.dw-simple-receipt h3{margin:18px 0 6px}.receipt-product,.receipt-row{display:flex;justify-content:space-between;gap:14px;padding:10px 0;border-bottom:1px solid #edf2ee;font-size:13px;color:#617168}.receipt-product b,.receipt-row b{color:#173b29;text-align:right}.receipt-total{display:flex;justify-content:space-between;align-items:center;background:#eaf7ef;border-radius:14px;padding:18px 16px;margin-top:16px}.receipt-total strong{font-size:26px;color:#07583b}footer{text-align:center;margin-top:24px;padding-top:15px;color:#7a8980;font-size:12px}';
  host.append(style,receipt);document.body.appendChild(host);
- try{const canvas=await html2canvas(receipt,{backgroundColor:'#fff',scale:2,useCORS:true});const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!blob)throw Error('Image creation failed');const safe=x.c.name.replace(/[^a-z0-9-_]+/gi,'-')||'customer';const file=new File([blob],'DudhWala-'+safe+'-'+m+'.png',{type:'image/png'});if(!navigator.canShare({files:[file]})){say('This browser cannot share image files.');return}await navigator.share({files:[file],title:'DudhWala milk receipt',text:'Monthly receipt for '+x.c.name});say('Choose WhatsApp in the share panel to send the receipt.')}catch(err){if(err.name!=='AbortError')say('Receipt sharing failed: '+err.message)}finally{host.remove()}
+ try{
+  const canvas=await html2canvas(receipt,{backgroundColor:'#fff',scale:2,useCORS:true});
+  const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));if(!blob)throw Error('Image creation failed');
+  const url=URL.createObjectURL(blob);showReceiptPreview(url,x,m);
+ }catch(err){say('Receipt preview failed: '+err.message)}finally{host.remove()}
+}
+function showReceiptPreview(url,x,m){
+ document.getElementById('receiptPreview')?.remove();
+ const modal=document.createElement('div');modal.id='receiptPreview';modal.className='receipt-preview-overlay';
+ modal.innerHTML='<div class="receipt-preview-panel"><div class="receipt-preview-head"><div><b>Receipt preview</b><small>'+esc(x.c.name)+' · '+esc(billMonthLabel(m))+'</small></div><button type="button" class="receipt-close" aria-label="Close">×</button></div><div class="receipt-preview-image"><img alt="Monthly milk bill receipt preview" src="'+url+'"></div><div class="receipt-preview-actions"><button type="button" class="receipt-close secondary">Close</button><button type="button" class="primary" id="shareReceiptNow">Share image</button></div><p class="muted">Check the details above. Select WhatsApp in the share panel.</p></div>';
+ document.body.appendChild(modal);modal.querySelectorAll('.receipt-close').forEach(b=>b.onclick=()=>{modal.remove();URL.revokeObjectURL(url)});
+ modal.addEventListener('click',e=>{if(e.target===modal){modal.remove();URL.revokeObjectURL(url)}});
+ modal.querySelector('#shareReceiptNow').onclick=async()=>{const b=modal.querySelector('#shareReceiptNow');if(!navigator.share||!navigator.canShare){say('Your browser does not support sharing image files.');return}try{const response=await fetch(url),blob=await response.blob(),safe=x.c.name.replace(/[^a-z0-9-_]+/gi,'-')||'customer',file=new File([blob],'DudhWala-'+safe+'-'+m+'.png',{type:'image/png'}');if(!navigator.canShare({files:[file]})){say('This browser cannot share image files.');return}await navigator.share({files:[file],title:'DudhWala milk receipt',text:'Monthly receipt for '+x.c.name});say('Choose WhatsApp in the share panel.')}catch(err){if(err.name!=='AbortError')say('Receipt sharing failed: '+err.message)}};
 }
 async function downloadCustomerBill(x,m){
  if(!window.html2canvas){say('Bill image library is unavailable. Check your internet connection and reload.');return}
@@ -545,7 +609,7 @@ function monthlyBillsPrintHtml(){
 }
 function bindMonthlyCharges(){
  document.querySelectorAll('.monthly-charge').forEach(i=>i.onchange=()=>{
-  let m=i.dataset.month,id=i.dataset.customer;
+  const m=i.dataset.month,id=i.dataset.customer;
   db.monthlyCharges??={};db.monthlyCharges[m]??={};
   db.monthlyCharges[m][id]=Math.max(0,Number(i.value)||0);save();
   $('monthOutput').innerHTML=monthHtml();bindMonthlyCharges();say('Monthly delivery charge saved');
@@ -560,14 +624,13 @@ $('clearDate').onclick=()=>{if(!confirm('Clear all attendance for '+$('date').va
 $('commissionRate').onchange=()=>{db.commission=Math.max(0,+$('commissionRate').value||0);save();renderDaily()};
 $('calculate').onclick=()=>{$('monthOutput').innerHTML=monthHtml();fillCustomerSelect();bindMonthlyCharges()};
 $('loadDownloadBills').onclick=renderDownloadBills;
-$('printMonthly').onclick=()=>printPage('Monthly customer milk bills',monthlyBillsPrintHtml());
 $('printOne').onclick=async()=>{
  const m=$('month').value;
  if(!m){say('Please select a month and calculate monthly bills first.');return}
  const x=monthRows().find(r=>r.c.id===$('billCustomer').value);
  if(!x){say('Please select a customer.');return}
  const button=$('printOne');button.disabled=true;button.textContent='Creating receipt…';
- try{await downloadSelectedCustomerReceipt(x,m)}finally{button.disabled=false;button.textContent='Share bill receipt on WhatsApp'}
+ try{await downloadSelectedCustomerReceipt(x,m)}finally{button.disabled=false;button.textContent='Preview receipt image'}
 };
 $('printDaily').onclick=()=>{let t=calcDay();printPage('Daily milk settlement',`<p>Date: ${esc($('date').value)}</p><p>Net litres: ${t.litres.toFixed(2)} L</p><p>Total MRP amount: ${money(t.amount)}</p><p>Commission deduction: ${money(t.commission)}</p><h2>Company payable: ${money(t.payable)}</h2>${productBreakdownHtml(t.products)}`)};
 $('backup').onclick=()=>{let a=document.createElement('a'),u=URL.createObjectURL(new Blob([JSON.stringify(db,null,2)],{type:'application/json'}));a.href=u;a.download='milk-attendance-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)};
