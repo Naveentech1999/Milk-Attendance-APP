@@ -198,6 +198,27 @@ button:active{transform:scale(.97)}
 @media(max-width:360px){.dw-customer-summary{padding:13px}.dw-customer-head h3{font-size:13px}.dw-customer-content{padding-left:11px;padding-right:11px}.metric{padding:12px;min-height:90px}.metric b{font-size:23px}}
 @media(prefers-reduced-motion:reduce){.dw-customer-card,.dw-customer-content,.metric b{animation:none!important;transition:none!important}}
 
+
+/* Colour-block dashboard metrics — no decorative circles */
+.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin:13px 0 18px}
+.metric{position:relative;isolation:isolate;overflow:hidden;min-height:104px;padding:15px 15px 13px;border:0;border-radius:17px;box-shadow:0 6px 18px #183b2618;transition:transform .22s ease,box-shadow .22s ease;animation:dw-metric-in .42s cubic-bezier(.2,.8,.2,1) both}
+.metric:before{content:none!important}
+.metric:after{content:"";position:absolute;z-index:-1;left:0;top:0;bottom:0;width:5px;border-radius:17px 0 0 17px;background:#ffffff80}
+.metric:nth-child(1){background:linear-gradient(135deg,#087a50,#16a36c);color:#fff}
+.metric:nth-child(2){background:linear-gradient(135deg,#2475c7,#3997e5);color:#fff}
+.metric:nth-child(3){background:linear-gradient(135deg,#c45c43,#e47c57);color:#fff}
+.metric:nth-child(4){background:linear-gradient(135deg,#6852b5,#8c72dc);color:#fff}
+.metric small{display:block;position:relative;z-index:1;color:#ffffffdf;font-size:10px;line-height:1.35;font-weight:800;letter-spacing:.55px;text-transform:uppercase}
+.metric b{display:block;position:relative;z-index:1;margin-top:12px;color:#fff;font-size:28px;line-height:1.05;font-weight:850;letter-spacing:-.65px;font-variant-numeric:tabular-nums;text-shadow:0 1px 1px #00000012}
+.metric:active{transform:scale(.98)}
+.metric:nth-child(1){animation-delay:.02s}.metric:nth-child(2){animation-delay:.08s}.metric:nth-child(3){animation-delay:.14s}.metric:nth-child(4){animation-delay:.20s}
+.dw-number-pop{animation:dw-number-pop .42s cubic-bezier(.2,.8,.2,1)}
+@keyframes dw-metric-in{from{opacity:0;transform:translateY(9px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes dw-number-pop{0%{transform:translateY(6px) scale(.92);opacity:.55}65%{transform:translateY(-2px) scale(1.06)}100%{transform:none;opacity:1}}
+@media(min-width:760px){.metrics{grid-template-columns:repeat(4,minmax(0,1fr))}.metric{min-height:112px}}
+@media(max-width:360px){.metrics{gap:8px}.metric{min-height:94px;padding:13px 12px}.metric small{font-size:9px}.metric b{font-size:24px;margin-top:10px}}
+@media(prefers-reduced-motion:reduce){.metric,.metric b{animation:none!important;transition:none!important}}
+
 </style></head><body><header><h1>DudhWala</h1><div style="font-size:12px">Daily delivery · Attendance · Customer billing</div></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
