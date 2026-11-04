@@ -253,6 +253,27 @@ button:active{transform:scale(.97)}
 @media(max-width:360px){#daily>.card{padding:13px}#daily .dw-product-line{gap:7px}#daily .dw-product-qty{min-width:55px}#daily .dw-product-amount{min-width:60px}#daily .totgrid>div{padding:11px}#daily .totgrid .big{font-size:19px}}
 @media(prefers-reduced-motion:reduce){#daily *{animation:none!important;transition:none!important}}
 
+
+/* Daily page visual refresh: high-contrast cards and clear animated hierarchy */
+#daily{display:block}
+#daily>.card:first-child{background:linear-gradient(145deg,#ffffff 0%,#f8fcf9 100%);border-color:#dcebe1}
+#daily>.card:first-child .title:before{content:"▦";display:inline-grid;place-items:center;width:29px;height:29px;margin-right:8px;border-radius:9px;background:#e4f5e9;color:#087a50;font-size:17px;vertical-align:middle}
+#daily>.card:nth-child(2){background:linear-gradient(145deg,#fff 0%,#fbfaff 100%);border-color:#e6e1f5}
+#daily .dw-brand-block{box-shadow:0 3px 12px #173b2809;transition:transform .22s ease,box-shadow .22s ease}
+#daily .dw-brand-block:active{transform:scale(.99)}
+#daily .dw-brand-heading{position:relative;isolation:isolate}
+#daily .dw-brand-heading:before{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(100deg,#dff3e6,#f5fbf7);opacity:.85}
+#daily .dw-product-line{transition:background .2s ease;padding-left:8px;padding-right:8px;border-radius:9px}
+#daily .dw-product-line:active{background:#f0f8f2}
+#daily .totgrid>div{transform:translateZ(0);transition:transform .2s ease,filter .2s ease}
+#daily .totgrid>div:after{content:"";position:absolute;width:72px;height:72px;right:-25px;bottom:-36px;border:1px solid #ffffffa8;border-radius:50%;box-shadow:0 0 0 9px #ffffff30,0 0 0 18px #ffffff18;pointer-events:none}
+#daily .totgrid>div:nth-child(4){background:linear-gradient(145deg,#f1edff,#e3dcff)}
+#daily #printDaily{position:relative;overflow:hidden;letter-spacing:.1px;font-weight:800}
+#daily #printDaily:before{content:"";position:absolute;inset:0;transform:translateX(-120%);background:linear-gradient(100deg,transparent,#ffffff38,transparent);animation:dw-daily-shine 2.8s ease-in-out infinite}
+@keyframes dw-daily-shine{0%,55%{transform:translateX(-120%)}85%,100%{transform:translateX(120%)}}
+@media(hover:hover){#daily .dw-brand-block:hover{transform:translateY(-2px);box-shadow:0 8px 20px #173b2815}#daily .totgrid>div:hover{transform:translateY(-2px);filter:saturate(1.08)}}
+@media(prefers-reduced-motion:reduce){#daily #printDaily:before{animation:none}}
+
 </style></head><body><header><h1>DudhWala</h1><div style="font-size:12px">Daily delivery · Attendance · Customer billing</div></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
