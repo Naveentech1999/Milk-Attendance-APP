@@ -567,12 +567,25 @@ async function downloadSelectedCustomerReceipt(x,m){
  }catch(err){say('Receipt preview failed: '+err.message)}finally{host.remove()}
 }
 function showReceiptPreview(url,x,m){
- document.getElementById('receiptPreview')?.remove();
+ const old=document.getElementById('receiptPreview');if(old)old.remove();
  const modal=document.createElement('div');modal.id='receiptPreview';modal.className='receipt-preview-overlay';
- modal.innerHTML='<div class="receipt-preview-panel"><div class="receipt-preview-head"><div><b>Receipt preview</b><small>'+esc(x.c.name)+' · '+esc(billMonthLabel(m))+'</small></div><button type="button" class="receipt-close" aria-label="Close">×</button></div><div class="receipt-preview-image"><img alt="Monthly milk bill receipt preview" src="'+url+'"></div><div class="receipt-preview-actions"><button type="button" class="receipt-close secondary">Close</button><button type="button" class="primary" id="shareReceiptNow">Share image</button></div><p class="muted">Check the details above. Select WhatsApp in the share panel.</p></div>';
- document.body.appendChild(modal);modal.querySelectorAll('.receipt-close').forEach(b=>b.onclick=()=>{modal.remove();URL.revokeObjectURL(url)});
- modal.addEventListener('click',e=>{if(e.target===modal){modal.remove();URL.revokeObjectURL(url)}});
- modal.querySelector('#shareReceiptNow').onclick=async()=>{const b=modal.querySelector('#shareReceiptNow');if(!navigator.share||!navigator.canShare){say('Your browser does not support sharing image files.');return}try{const response=await fetch(url),blob=await response.blob(),safe=x.c.name.replace(/[^a-z0-9-_]+/gi,'-')||'customer',file=new File([blob],'DudhWala-'+safe+'-'+m+'.png',{type:'image/png'}');if(!navigator.canShare({files:[file]})){say('This browser cannot share image files.');return}await navigator.share({files:[file],title:'DudhWala milk receipt',text:'Monthly receipt for '+x.c.name});say('Choose WhatsApp in the share panel.')}catch(err){if(err.name!=='AbortError')say('Receipt sharing failed: '+err.message)}};
+ modal.innerHTML='<div class="receipt-preview-panel"><div class="receipt-preview-head"><div><b>Receipt preview</b><small>'+esc(x.c.name)+' · '+esc(billMonthLabel(m))+'</small></div><button type="button" class="receipt-close">×</button></div><div class="receipt-preview-image"><img alt="Monthly milk bill receipt preview" src="'+url+'"></div><div class="receipt-preview-actions"><button type="button" class="receipt-close secondary">Close</button><button type="button" class="primary" id="shareReceiptNow">Share image</button></div><p class="muted">Review the receipt, then select WhatsApp in the share panel.</p></div>';
+ document.body.appendChild(modal);
+ function closePreview(){modal.remove();URL.revokeObjectURL(url)}
+ modal.querySelectorAll('.receipt-close').forEach(function(button){button.onclick=closePreview});
+ modal.addEventListener('click',function(event){if(event.target===modal)closePreview()});
+ modal.querySelector('#shareReceiptNow').onclick=async function(){
+  if(!navigator.share||!navigator.canShare){say('This browser does not support sharing image files.');return}
+  try{
+   const response=await fetch(url);
+   const blob=await response.blob();
+   const safe=encodeURIComponent(x.c.name).replaceAll('%','-');
+   const file=new File([blob],'DudhWala-'+safe+'-'+m+'.png',{type:'image/png'});
+   if(!navigator.canShare({files:[file]})){say('This browser cannot share image files.');return}
+   await navigator.share({files:[file],title:'DudhWala milk receipt',text:'Monthly receipt for '+x.c.name});
+   say('Choose WhatsApp in the share panel.');
+  }catch(err){if(err.name!=='AbortError')say('Receipt sharing failed: '+err.message)}
+ };
 }
 async function downloadCustomerBill(x,m){
  if(!window.html2canvas){say('Bill image library is unavailable. Check your internet connection and reload.');return}
