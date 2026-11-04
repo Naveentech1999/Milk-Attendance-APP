@@ -95,6 +95,12 @@ const SEED=[{"id":"cust001","name":"Beside My-Village Apt","location":"2nd floor
 const $=id=>document.getElementById(id);
 let db={customers:SEED,days:{},prices:DEFAULT_PRICES,commission:5,monthlyCharges:{}};
 try{const old=JSON.parse(localStorage.getItem('milkBillingSpecV3')||'null');if(old?.customers&&old?.days)db={...db,...old,prices:{...DEFAULT_PRICES,...(old.prices||{})},monthlyCharges:old.monthlyCharges||{}}}catch(e){}
+// Recover the built-in customer register if this device has an empty saved customer list.
+// Preserve existing attendance history, prices and monthly charges; do not push anything to cloud here.
+if(!Array.isArray(db.customers)||db.customers.length===0){
+ db.customers=JSON.parse(JSON.stringify(SEED));
+ try{localStorage.setItem('milkBillingSpecV3',JSON.stringify(db))}catch(e){}
+}
 // Remove only the discontinued WM extra daily product.
 // Restore Small milk packet items from the built-in customer list if an earlier
 // app version removed them; this keeps the original customer/product placement.
