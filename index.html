@@ -367,11 +367,46 @@ button:active{transform:scale(.97)}
 #prices input{max-width:125px}
 @media(min-width:560px){.cloud-form-grid{grid-template-columns:1fr 1fr}.settings-card{padding:18px}.cloud-card{padding:19px}}
 @media(max-width:370px){.cloud-secure{font-size:8px;padding:5px 6px}.cloud-auth-actions button,.cloud-data-actions button{font-size:10px;padding:8px 5px}}
+
+/* Add-customer form: clear fields and a prominent mobile-first layout */
+.add-customer-card{position:relative;overflow:hidden;margin:12px 0 16px;padding:17px;border:1px solid #dcece1;border-radius:21px;background:linear-gradient(145deg,#fff 0%,#f0faf4 100%);box-shadow:0 7px 22px #153b260d}
+.add-customer-heading{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.add-customer-icon{width:45px;height:45px;flex:0 0 45px;display:grid;place-items:center;border-radius:15px;background:linear-gradient(145deg,#087a50,#20a66b);color:#fff;font-size:28px;font-weight:400;box-shadow:0 5px 13px #087a5028}
+.add-customer-eyebrow{font-size:9px;font-weight:900;letter-spacing:1.1px;color:#159565}
+.add-customer-heading h2{margin:3px 0;font-size:17px;letter-spacing:-.35px;color:#124d34}
+.add-customer-heading p{margin:0;font-size:11px;line-height:1.45;color:#718078}
+.add-customer-form{display:grid;gap:12px}
+.add-field{display:grid;gap:6px;min-width:0}
+.add-field>span{font-size:11px;font-weight:800;color:#52665a}
+.add-field>span b{color:#d15e4e}
+.add-field .field{width:100%;min-height:45px;background:#fff}
+.add-field .field:focus{outline:0;border-color:#69b98a;box-shadow:0 0 0 3px #087a5014}
+.add-product-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(105px,.8fr);gap:9px}
+.add-customer-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:12px;border-top:1px solid #e2eee6}
+.add-customer-foot>span{font-size:10px;line-height:1.45;color:#75847b}
+.add-customer-foot>span b{display:block;color:#087a50;font-size:11px}
+.add-customer-foot button{min-height:46px;padding:10px 15px;border:0;border-radius:13px;background:linear-gradient(110deg,#087a50,#19a16a);box-shadow:0 5px 13px #087a5028;font-size:12px;font-weight:850;white-space:nowrap}
+.add-customer-feedback{min-height:0;margin:0;color:#087a50;font-size:11px;font-weight:700;line-height:1.4}
+.add-customer-feedback:empty{display:none}
+@media(max-width:380px){.add-customer-card{padding:14px}.add-product-grid{grid-template-columns:1fr 105px}.add-customer-foot{align-items:stretch;flex-direction:column}.add-customer-foot button{width:100%}}
 </style></head><body><header><h1>DudhWala</h1><div style="font-size:12px">Daily delivery · Attendance · Customer billing</div></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
 <div class="tabs" style="grid-template-columns:repeat(5,1fr)"><button class="active" data-tab="register">Attendance</button><button data-tab="daily">Daily totals</button><button data-tab="monthly">Monthly bills</button><button data-tab="downloads">Download Bills</button><button data-tab="settings">Prices & backup</button></div>
 <section id="register">
+<div class="add-customer-card">
+  <div class="add-customer-heading"><span class="add-customer-icon">＋</span><div><div class="add-customer-eyebrow">CUSTOMER MANAGEMENT</div><h2>Add a new customer</h2><p>Save a delivery location and its regular milk order.</p></div></div>
+  <form id="addCustomerForm" class="add-customer-form">
+    <label class="add-field"><span>Customer name <b>*</b></span><input class="field" id="newCustomerName" maxlength="80" placeholder="e.g. Ramesh Kumar" required></label>
+    <label class="add-field"><span>Floor / delivery location</span><input class="field" id="newCustomerLocation" maxlength="120" placeholder="e.g. 2nd floor, door side"></label>
+    <div class="add-product-grid">
+      <label class="add-field"><span>Regular milk product <b>*</b></span><select class="field" id="newCustomerProduct" required></select></label>
+      <label class="add-field"><span>Daily quantity (packets) <b>*</b></span><input class="field" id="newCustomerQty" type="number" min="0.5" step="0.5" value="1" inputmode="decimal" required></label>
+    </div>
+    <div class="add-customer-foot"><span>Customer starts as <b>Not marked</b> for today.</span><button class="primary" type="submit">＋ Add customer</button></div>
+    <p class="add-customer-feedback" id="addCustomerFeedback" role="status" aria-live="polite"></p>
+  </form>
+</div>
 <div class="tools"><input class="field" id="search" placeholder="Search customer / floor..." style="flex:1"><select class="field" id="filter"><option value="all">All</option><option value="unmarked">Not marked</option><option value="present">Present</option><option value="absent">Absent</option></select></div>
 <div class="actions"><button class="primary" id="allPresent">Mark all present</button><button id="clearDate">Clear this date</button></div>
 
@@ -675,7 +710,23 @@ function bindMonthlyCharges(){
 function printPage(title,body){let w=window.open('','_blank');if(!w){say('Allow pop-ups to print or save PDF');return}w.document.write('<html><head><title>'+esc(title)+'</title><style>body{font:13px Arial;padding:24px}.bill-page{page-break-after:always;break-after:page}.bill-page:last-child{page-break-after:auto;break-after:auto}table{width:100%;border-collapse:collapse}td,th{padding:7px;border-bottom:1px solid #ddd;text-align:left}h1{color:#176b45}</style></head><body><h1>'+esc(title)+'</h1>'+body+'</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),300)}
 document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['register','daily','monthly','downloads','settings'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab));if(b.dataset.tab==='daily')renderDaily();if(b.dataset.tab==='settings')renderPrices();if(b.dataset.tab==='monthly')fillCustomerSelect();if(b.dataset.tab==='downloads'){ $('downloadMonth').value=$('month').value;renderDownloadBills()}});
 function fillCustomerSelect(){$('billCustomer').innerHTML=db.customers.map(c=>`<option value="${c.id}">${esc(c.name)} — ${esc(c.location)}</option>`).join('')}
-$('date').onchange=()=>{renderList();renderDaily()};$('today').onclick=()=>{$('date').value=todayISO();renderList();renderDaily()};$('search').oninput=renderList;$('filter').onchange=renderList;
+$('date').onchange=()=>{renderList();renderDaily()};$('today').onclick=()=>{$('date').value=todayISO();renderList();renderDaily()};$('search').oninput=renderList;$('filter').onchange=renderList;function setupAddCustomer(){
+ const product=$('newCustomerProduct');
+ const pairs=Object.keys(db.prices).filter(k=>k.includes('|'));
+ product.innerHTML=pairs.map(k=>{const p=k.split('|');return '<option value="'+esc(k)+'">'+esc(displayProductName({brand:p[0],type:p[1]}))+' · '+esc(p[0])+'</option>'}).join('');
+ $('addCustomerForm').onsubmit=e=>{
+  e.preventDefault();
+  const name=$('newCustomerName').value.trim(),location=$('newCustomerLocation').value.trim(),qty=Number($('newCustomerQty').value),pair=product.value;
+  if(!name||!pair||!Number.isFinite(qty)||qty<=0){$('addCustomerFeedback').textContent='Please enter a name, product and a valid quantity.';return}
+  if(db.customers.some(x=>x.name.trim().toLowerCase()===name.toLowerCase()&&x.location.trim().toLowerCase()===location.toLowerCase())){ $('addCustomerFeedback').textContent='A customer with this name and location already exists.';return}
+  const p=pair.split('|'),stamp=Date.now(),id='cust'+stamp,itemId='item'+stamp;
+  db.customers.push({id,name,location,items:[{id:itemId,brand:p[0],type:p[1],qty:qty/2}]});
+  save();$('addCustomerForm').reset();$('newCustomerQty').value='1';setupAddCustomer();
+  $('search').value='';$('filter').value='all';renderList();renderDaily();fillCustomerSelect();refreshMetrics();
+  $('addCustomerFeedback').textContent=name+' added successfully. Mark attendance when ready.';
+ };
+}
+setupAddCustomer();
 $('allPresent').onclick=()=>{if(!confirm('Mark all delivery locations PRESENT for this date?'))return;db.customers.forEach(c=>getEntry(c).status='present');save();renderList()};
 $('clearDate').onclick=()=>{if(!confirm('Clear all attendance for '+$('date').value+'?'))return;delete db.days[$('date').value];save();renderList();renderDaily()};
 $('commissionRate').onchange=()=>{db.commission=Math.max(0,+$('commissionRate').value||0);save();renderDaily()};
