@@ -150,6 +150,54 @@ button:active{transform:scale(.97)}
 @media(max-width:360px){#list>.customer{padding:14px 12px}#list>.customer h3{font-size:14px}#list>.customer .milk-row label{padding:9px 8px}}
 @media(prefers-reduced-motion:reduce){#list>.customer{animation:none}}
 
+
+/* Compact animated customer accordions + refreshed dashboard metrics */
+#list{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin:12px 0 24px}
+.dw-customer-card{display:block;background:#fff;border:1px solid #e1ebe4;border-radius:19px;overflow:hidden;box-shadow:0 4px 17px #153b260b;animation:dw-card-in .3s ease both;transition:border-color .2s,box-shadow .2s}
+.dw-customer-card[open]{border-color:#bcdcc8;box-shadow:0 8px 24px #087a5012}
+.dw-customer-summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:16px;min-height:84px;position:relative}
+.dw-customer-summary::-webkit-details-marker{display:none}
+.dw-customer-head{display:flex;align-items:center;justify-content:space-between;gap:12px;min-width:0;flex:1}
+.dw-customer-head>div{min-width:0}
+.dw-customer-head h3{font-size:15px;line-height:1.3;letter-spacing:-.2px;font-weight:800;color:#173b29}
+.dw-customer-head .loc{font-size:11px;margin-top:5px;color:#78877e}
+.dw-customer-head .status{flex:0 0 auto;font-size:9px;font-weight:850;letter-spacing:.3px;padding:7px 9px;border-radius:30px;background:#eff3f0;color:#69776e}
+.dw-customer-head .status.present{background:#e4f6eb;color:#087a50}
+.dw-customer-head .status.absent{background:#fff0ed;color:#b0473d}
+.dw-expand-hint{width:29px;height:29px;flex:0 0 29px;border-radius:10px;background:#eff7f1;display:grid;place-items:center;transition:transform .25s,background .25s}
+.dw-expand-hint:before{content:"";width:8px;height:8px;border-right:2px solid #26734c;border-bottom:2px solid #26734c;transform:rotate(45deg);margin-top:-4px}
+.dw-customer-card[open] .dw-expand-hint{transform:rotate(180deg);background:#dff2e6}
+.dw-customer-content{padding:0 15px 15px;border-top:1px solid #edf2ee;animation:dw-open .24s ease-out}
+.dw-customer-content .actions{display:grid!important;grid-template-columns:1fr 1fr;gap:9px;margin:13px 0}
+.dw-customer-content .actions button{height:43px;border-radius:12px;font-size:12px;font-weight:800}
+.dw-customer-content .actions button.yes{background:#087a50;border-color:#087a50;color:white}
+.dw-customer-content .actions button.no{background:#fff1ef;border-color:#f1d8d4;color:#ae493e}
+.dw-customer-content .milk-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px;padding:13px 0;border-top:1px solid #eff3f0}
+.dw-customer-content .milk-row>div:first-child{grid-column:1/-1;font-size:13px;font-weight:800;color:#173b29}
+.dw-customer-content .milk-row>div:first-child small{display:block;margin-top:4px;font-size:10px;font-weight:500;color:#78877e}
+.dw-customer-content .milk-row label{display:block;min-width:0;border:1px solid #e7eee9;border-radius:12px;background:#f8faf8;padding:9px 10px;font-size:9px;font-weight:800;color:#65756b}
+.dw-customer-content .milk-row input.qty{display:block;width:100%;height:42px;margin-top:6px;border:1px solid #e1eae3;border-radius:9px;background:#fff;text-align:center;font-size:17px;font-weight:750;color:#173b29}
+.dw-customer-content .milk-row .row-total{grid-column:1/-1;display:flex;justify-content:space-between;gap:8px;padding:11px 12px;border-radius:11px;background:#edf8f1;color:#07583b;font-size:11px;font-weight:800}
+.dw-customer-content .customer-total{display:flex;justify-content:space-between;gap:8px;margin-top:5px;padding:13px 2px 0;border-top:1px dashed #dce8df;font-size:11px;color:#69796f}
+.dw-customer-content .customer-total b{font-size:16px;color:#07583b}
+.metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0 17px}
+.metric{position:relative;isolation:isolate;overflow:hidden;min-height:98px;padding:14px 14px 12px 16px;border:1px solid #e5ece7;border-radius:18px;background:linear-gradient(145deg,#fff 0%,#f8fcf9 100%);box-shadow:0 5px 17px #153b2609;transition:transform .22s,box-shadow .22s}
+.metric:before{content:"";position:absolute;z-index:-1;width:76px;height:76px;border-radius:50%;right:-23px;bottom:-32px;background:#e5f5eb}
+.metric:nth-child(2):before{background:#e2f3e9}
+.metric:nth-child(3):before{background:#fff0e9}
+.metric:nth-child(4):before{background:#e8f1fc}
+.metric small{display:block;font-size:10px;font-weight:750;letter-spacing:.35px;text-transform:uppercase;color:#75847b}
+.metric b{display:block;margin-top:9px;font-size:26px;line-height:1.05;font-weight:850;letter-spacing:-.7px;color:#07583b;font-variant-numeric:tabular-nums}
+.metric:nth-child(3) b{color:#b45b43}
+.metric:nth-child(4) b{color:#315f91}
+.dw-number-pop{animation:dw-number-pop .32s cubic-bezier(.2,.8,.2,1)}
+@keyframes dw-number-pop{0%{transform:translateY(5px) scale(.94);opacity:.5}65%{transform:translateY(-1px) scale(1.04)}100%{transform:none;opacity:1}}
+@keyframes dw-open{from{opacity:.4;transform:translateY(-5px)}to{opacity:1;transform:none}}
+@keyframes dw-card-in{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@media(min-width:760px){#list{grid-template-columns:repeat(2,minmax(0,1fr))}.metrics{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:360px){.dw-customer-summary{padding:13px}.dw-customer-head h3{font-size:13px}.dw-customer-content{padding-left:11px;padding-right:11px}.metric{padding:12px;min-height:90px}.metric b{font-size:23px}}
+@media(prefers-reduced-motion:reduce){.dw-customer-card,.dw-customer-content,.metric b{animation:none!important;transition:none!important}}
+
 </style></head><body><header><h1>DudhWala</h1><div style="font-size:12px">Daily delivery · Attendance · Customer billing</div></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
@@ -523,4 +571,4 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./service-worker.js').catch(err => console.warn('Offline setup unavailable', err));
   });
 }
-</script><script>(function(){const navs=[...document.querySelectorAll('[data-dw-tab]')];function show(id){['register','daily','monthly','downloads','settings'].forEach(k=>document.getElementById(k)?.classList.toggle('hidden',k!==id));document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));navs.forEach(b=>b.classList.toggle('active',b.dataset.dwTab===id));document.querySelector('[data-tab='+id+']')?.click();window.scrollTo({top:0,behavior:'smooth'});}navs.forEach(b=>b.addEventListener('click',()=>show(b.dataset.dwTab)));const m=document.querySelector('.metrics');if(m)document.getElementById('register')?.prepend(m);})();</script></main></body></html>
+</script><script>(function(){const list=document.getElementById('list');if(list){const decorate=()=>{list.querySelectorAll(':scope > article.customer').forEach(a=>{if(a.dataset.collapseReady)return;a.dataset.collapseReady='1';const first=a.querySelector(':scope > div:first-child');if(!first)return;const d=document.createElement('details');d.className='dw-customer-card';const summary=document.createElement('summary');summary.className='dw-customer-summary';const head=document.createElement('div');head.className='dw-customer-head';[...first.children].forEach(x=>head.append(x.cloneNode(true)));const hint=document.createElement('span');hint.className='dw-expand-hint';hint.setAttribute('aria-hidden','true');summary.append(head,hint);d.append(summary);const body=document.createElement('div');body.className='dw-customer-content';[...a.children].filter(x=>x!==first).forEach(x=>body.append(x));d.append(body);a.replaceWith(d);});};new MutationObserver(decorate).observe(list,{childList:true});decorate();}const navs=[...document.querySelectorAll('[data-dw-tab]')];function show(id){['register','daily','monthly','downloads','settings'].forEach(k=>document.getElementById(k)?.classList.toggle('hidden',k!==id));document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));navs.forEach(b=>b.classList.toggle('active',b.dataset.dwTab===id));document.querySelector('[data-tab='+id+']')?.click();window.scrollTo({top:0,behavior:'smooth'});}navs.forEach(b=>b.addEventListener('click',()=>show(b.dataset.dwTab)));const m=document.querySelector('.metrics');if(m)document.getElementById('register')?.prepend(m);document.querySelectorAll('.metric b').forEach(el=>{new MutationObserver(()=>{el.classList.remove('dw-number-pop');void el.offsetWidth;el.classList.add('dw-number-pop')}).observe(el,{childList:true,characterData:true,subtree:true})});})();</script></main></body></html>
