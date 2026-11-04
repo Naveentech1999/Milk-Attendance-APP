@@ -60,6 +60,67 @@ section{animation:dw-in .18s ease-out}
 @media(min-width:700px){body{padding-bottom:30px}.dw-bottom-nav{position:sticky;bottom:12px;max-width:720px;margin:20px auto 0;border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 28px #173b2815}.tools{grid-template-columns:1fr 170px}}
 @media(max-width:390px){.dw-cust-loc{max-width:150px}.dw-cust-status{font-size:8px;padding:4px 6px}.metric b{font-size:20px}}
 
+
+/* DudhWala polished attendance UI v2 */
+:root{--green:#087a50;--deep:#07583b;--mint:#e8f7ef;--ink:#14251c;--muted:#718078;--line:#e5ece7;--paper:#f5f8f6;--orange:#fff4df}
+body{background:radial-gradient(ellipse at 50% -15%,#e4f4e9 0,transparent 48%),var(--paper);color:var(--ink)}
+header{background:linear-gradient(118deg,#064d35 0%,#087a50 58%,#19a16a 100%);padding:17px 17px 18px;box-shadow:0 8px 26px #063d2924}
+header h1{font-size:23px;letter-spacing:-.7px}
+header div{font-size:11px!important;opacity:.9}
+main{padding-top:13px}
+.bar:has(#date){background:#fff;border:1px solid var(--line);border-radius:15px;padding:10px 12px;box-shadow:0 3px 14px #173d2808}
+#date{flex:1;min-width:130px}
+.metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.metric{position:relative;overflow:hidden;border:1px solid #e1ebe4;border-radius:17px;padding:13px 14px;min-height:83px;box-shadow:0 4px 16px #163c2609;transition:transform .2s,box-shadow .2s}
+.metric:after{content:"";position:absolute;width:54px;height:54px;border-radius:50%;right:-16px;top:-17px;background:#eaf6ee}
+.metric small{position:relative;z-index:1;font-size:11px;font-weight:650;color:#718078}
+.metric b{position:relative;z-index:1;font-size:25px;line-height:1.25;margin-top:7px;color:#07583b}
+.tools{grid-template-columns:minmax(0,1fr) 125px;gap:9px;margin:15px 0 10px}
+#search{min-width:0;width:100%;background:#fff}
+#filter{width:100%}
+#register>.actions{grid-template-columns:1fr 1fr;gap:9px}
+#register>.actions button{min-height:44px;border-radius:13px;font-size:12px}
+#register>.actions .primary{box-shadow:0 5px 12px #087a5025}
+#list{gap:11px}
+.dw-customer{border:1px solid #e4ece6;border-radius:18px;box-shadow:0 4px 16px #163c2609;transition:transform .2s,border-color .2s,box-shadow .2s;animation:dw-card-in .32s ease both}
+.dw-customer:has(.dw-cust-status.present){border-left:3px solid #20a66b}
+.dw-customer:has(.dw-cust-status.absent){border-left:3px solid #df7469}
+.dw-customer summary{padding:15px 13px;gap:11px;min-height:74px}
+.dw-avatar{width:42px;height:42px;flex-basis:42px;border-radius:14px;background:linear-gradient(145deg,#e2f6e9,#f0faf3);color:#087a50;box-shadow:inset 0 0 0 1px #d7eddf}
+.dw-cust-name{font-size:14px;font-weight:780;letter-spacing:-.2px}
+.dw-cust-loc{font-size:11px;margin-top:4px}
+.dw-cust-status{font-size:9px;letter-spacing:.35px;padding:6px 9px}
+.dw-cust-status.present{background:#e4f7ec;color:#087a50}
+.dw-customer summary:after{content:"";width:8px;height:8px;border-right:2px solid #84938a;border-bottom:2px solid #84938a;transform:rotate(45deg);margin:0 4px 5px 2px}
+.dw-customer[open] summary:after{transform:rotate(225deg);margin-bottom:-3px}
+.dw-customer-body{padding:12px 13px 14px;background:linear-gradient(180deg,#fcfefd,#fff);border-top:1px solid #edf2ee;animation:dw-detail-in .22s ease-out}
+.dw-customer-body .actions{margin:0 0 13px;gap:9px}
+.dw-customer-body .actions button{min-height:43px;border-radius:12px;font-size:12px;font-weight:750}
+.dw-customer-body .actions button.yes{background:#087a50;border-color:#087a50;box-shadow:0 4px 10px #087a5025}
+.dw-customer-body .actions button.no{background:#fff1ef;border-color:#f4d8d4;color:#ad4439}
+.dw-customer-body .milk-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:12px 0;border-top:1px solid #f0f3f1}
+.dw-customer-body .milk-row>div:first-child{grid-column:1/-1;font-size:13px;font-weight:800;color:#173c29;line-height:1.35}
+.dw-customer-body .milk-row>div:first-child small{display:block;margin-top:5px;font-size:10px;font-weight:550;color:#78877e}
+.dw-customer-body .milk-row label{background:#f7faf8;border:1px solid #e7eee9;border-radius:12px;padding:9px 10px;color:#607067;font-size:9px;letter-spacing:.3px}
+.dw-customer-body .milk-row label:focus-within{border-color:#72bd91;box-shadow:0 0 0 3px #087a5012}
+.dw-customer-body .milk-row .qty{width:100%;height:42px;border:1px solid #e0e9e2;border-radius:9px;background:#fff;font-size:17px;color:#153e2a}
+.dw-customer-body .milk-row .qty:disabled{opacity:.45;background:#eef1ef}
+.dw-customer-body .milk-row .row-total{grid-column:1/-1;display:flex;justify-content:space-between;gap:8px;align-items:center;border-radius:11px;background:#eaf7ef;color:#07583b;padding:11px 12px;font-size:11px;font-weight:800}
+.dw-customer-body .customer-total{margin-top:8px;padding:13px 2px 1px;border-top:1px dashed #dce8df;color:#68796f;font-size:11px}
+.dw-customer-body .customer-total b{float:right;color:#07583b;font-size:16px}
+.card{border-radius:18px;box-shadow:0 4px 18px #163c2609}
+.title{font-size:15px;font-weight:800;color:#07583b}
+.field,select.field{border-radius:12px}
+button{transition:transform .16s ease,box-shadow .16s ease,background .16s ease}
+button:active{transform:scale(.97)}
+.dw-bottom-nav{padding-top:9px;border-radius:18px 18px 0 0}
+.dw-bottom-nav button.active{background:#e8f7ef;color:#087a50}
+@keyframes dw-card-in{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+@keyframes dw-detail-in{from{opacity:.5;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@media(min-width:700px){.metrics{grid-template-columns:repeat(4,minmax(0,1fr))}.dw-customer:hover{border-color:#c9dfd0;box-shadow:0 8px 22px #163c2612;transform:translateY(-1px)}}
+@media(max-width:370px){.tools{grid-template-columns:minmax(0,1fr) 108px}.dw-cust-loc{max-width:130px}.dw-customer-body .milk-row .row-total{font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
 </style></head><body><header><h1>DudhWala</h1><div style="font-size:12px">Daily delivery · Attendance · Customer billing</div></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
