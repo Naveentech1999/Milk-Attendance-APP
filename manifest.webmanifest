@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "DudhWala",
-  "short_name": "DudhWala",
-  "description": "Milk man delivery attendance, packet tracking and monthly customer billing",
+  "name": "DoodWala",
+  "short_name": "DoodWala",
+  "description": "Milk delivery attendance, packet tracking and monthly customer billing",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
