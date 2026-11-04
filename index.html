@@ -394,19 +394,6 @@ button:active{transform:scale(.97)}
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
 <div class="tabs" style="grid-template-columns:repeat(5,1fr)"><button class="active" data-tab="register">Attendance</button><button data-tab="daily">Daily totals</button><button data-tab="monthly">Monthly bills</button><button data-tab="downloads">Download Bills</button><button data-tab="settings">Prices & backup</button></div>
 <section id="register">
-<div class="add-customer-card">
-  <div class="add-customer-heading"><span class="add-customer-icon">＋</span><div><div class="add-customer-eyebrow">CUSTOMER MANAGEMENT</div><h2>Add a new customer</h2><p>Save a delivery location and its regular milk order.</p></div></div>
-  <form id="addCustomerForm" class="add-customer-form">
-    <label class="add-field"><span>Customer name <b>*</b></span><input class="field" id="newCustomerName" maxlength="80" placeholder="e.g. Ramesh Kumar" required></label>
-    <label class="add-field"><span>Floor / delivery location</span><input class="field" id="newCustomerLocation" maxlength="120" placeholder="e.g. 2nd floor, door side"></label>
-    <div class="add-product-grid">
-      <label class="add-field"><span>Regular milk product <b>*</b></span><select class="field" id="newCustomerProduct" required></select></label>
-      <label class="add-field"><span>Daily quantity (packets) <b>*</b></span><input class="field" id="newCustomerQty" type="number" min="0.5" step="0.5" value="1" inputmode="decimal" required></label>
-    </div>
-    <div class="add-customer-foot"><span>Customer starts as <b>Not marked</b> for today.</span><button class="primary" type="submit">＋ Add customer</button></div>
-    <p class="add-customer-feedback" id="addCustomerFeedback" role="status" aria-live="polite"></p>
-  </form>
-</div>
 <div class="tools"><input class="field" id="search" placeholder="Search customer / floor..." style="flex:1"><select class="field" id="filter"><option value="all">All</option><option value="unmarked">Not marked</option><option value="present">Present</option><option value="absent">Absent</option></select></div>
 <div class="actions"><button class="primary" id="allPresent">Mark all present</button><button id="clearDate">Clear this date</button></div>
 
@@ -422,7 +409,21 @@ button:active{transform:scale(.97)}
 <div class="card monthly-share-card"><div class="monthly-kicker">INDIVIDUAL RECEIPT</div><div class="title">Preview and share a customer bill</div><select class="field" id="billCustomer" style="width:100%"></select><button class="primary" id="printOne" style="margin-top:10px;width:100%">Preview receipt image</button><p class="muted">Review the receipt first, then choose WhatsApp to share it.</p></div>
 </section>
 <section id="settings" class="hidden">
-<div class="settings-intro"><div class="settings-intro-icon">⚙️</div><div><div class="settings-eyebrow">PERSONALISE YOUR APP</div><h2>More & Settings</h2><p>Manage milk pricing, commission and secure cloud sync.</p></div></div>
+<div class="settings-intro"><div class="settings-intro-icon">⚙️</div>
+<div class="add-customer-card">
+  <div class="add-customer-heading"><span class="add-customer-icon">＋</span><div><div class="add-customer-eyebrow">CUSTOMER MANAGEMENT</div><h2>Add a new customer</h2><p>Save a delivery location and its regular milk order.</p></div></div>
+  <form id="addCustomerForm" class="add-customer-form">
+    <label class="add-field"><span>Customer name <b>*</b></span><input class="field" id="newCustomerName" maxlength="80" placeholder="e.g. Ramesh Kumar" required></label>
+    <label class="add-field"><span>Floor / delivery location</span><input class="field" id="newCustomerLocation" maxlength="120" placeholder="e.g. 2nd floor, door side"></label>
+    <div class="add-product-grid">
+      <label class="add-field"><span>Regular milk product <b>*</b></span><select class="field" id="newCustomerProduct" required></select></label>
+      <label class="add-field"><span>Daily quantity (packets) <b>*</b></span><input class="field" id="newCustomerQty" type="number" min="0.5" step="0.5" value="1" inputmode="decimal" required></label>
+    </div>
+    <div class="add-customer-foot"><span>Customer starts as <b>Not marked</b> for today.</span><button class="primary" type="submit">＋ Add customer</button></div>
+    <p class="add-customer-feedback" id="addCustomerFeedback" role="status" aria-live="polite"></p>
+  </form>
+</div>
+<div><div class="settings-eyebrow">PERSONALISE YOUR APP</div><h2>More & Settings</h2><p>Manage milk pricing, commission and secure cloud sync.</p></div></div>
 <div class="card settings-card"><div class="settings-card-heading"><span class="settings-icon price-icon">₹</span><div><div class="title">Milk prices</div><p class="muted">Set the current selling price for each product.</p></div></div><div id="prices"></div><p class="settings-note">Regular milk prices are per litre. Curd packets are priced per packet.</p></div>
 <div class="card settings-card"><div class="settings-card-heading"><span class="settings-icon commission-icon">％</span><div><div class="title">Commission</div><p class="muted">Your deduction per net litre.</p></div></div><label class="settings-label" for="commissionRate">Commission rate (₹ / litre)</label><input class="field settings-number" type="number" id="commissionRate" min="0" step=".5"><p class="settings-note">The default ₹5 per litre is provisional. Adjust it to match your commission arrangement.</p></div>
 <div class="card settings-card cloud-card"><div class="cloud-heading"><span class="cloud-logo">☁</span><div class="cloud-heading-copy"><div class="settings-eyebrow">CLOUD BACKUP & SYNC</div><div class="title">Supabase connection</div><p class="muted">Keep your DudhWala data available across devices.</p></div><span class="cloud-secure">🔒 Secure</span></div>
