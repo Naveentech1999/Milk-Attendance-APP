@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "DudhWala",
-  "short_name": "DudhWala",
+  "name": "Doodhwala",
+  "short_name": "Doodhwala",
   "description": "Milk delivery attendance, packet tracking and monthly customer billing",
   "start_url": "./",
   "scope": "./",
