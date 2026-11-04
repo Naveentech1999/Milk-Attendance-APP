@@ -384,7 +384,9 @@ async function restoreCloudForSignedInUser(user){
   if(!p||!Array.isArray(p.customers)||!p.days||typeof p.days!=='object'){
    cloudSay('Cloud data format is invalid. Your device data was not changed.');return;
   }
-  db={...db,...p,customers:p.customers,days:p.days,prices:{...DEFAULT_PRICES,...(p.prices||{})},monthlyCharges:p.monthlyCharges||{}};
+  const cloudCustomers=p.customers.length?p.customers:SEED.map(c=>({...c,items:(c.items||[]).map(it=>({...it}))}));
+ if(!p.customers.length)cloudSay('Cloud attendance found. Customer list was empty in the cloud snapshot, so restoring the built-in customer list while preserving all cloud attendance and billing history…');
+ db={...db,...p,customers:cloudCustomers,days:p.days,prices:{...DEFAULT_PRICES,...(p.prices||{})},monthlyCharges:p.monthlyCharges||{}};
   try{localStorage.setItem('milkBillingSpecV3',JSON.stringify(db));}catch(e){cloudSay('Cloud data loaded, but this device could not save a local copy.');}
   cloud.enabled=true;
   localStorage.setItem('milkCloudSyncEnabled:'+user.id,'yes');
@@ -401,7 +403,9 @@ async function restoreCloudData(showStatus=true){
  if(!data?.payload){cloud.enabled=false;localStorage.removeItem('milkCloudSyncEnabled:'+cloud.user.id);cloudSay('Signed in as '+cloud.user.email+'. No cloud backup exists yet; this device data is unchanged. Upload it once to create your cloud backup.');return false}
  const p=data.payload;
  if(!p||!Array.isArray(p.customers)||!p.days||typeof p.days!=='object'){cloudSay('Cloud backup format is invalid. Your device data was left unchanged.');return false}
- db={...db,...p,customers:p.customers,days:p.days,prices:{...DEFAULT_PRICES,...(p.prices||{})},monthlyCharges:p.monthlyCharges||{}};
+ const cloudCustomers=p.customers.length?p.customers:SEED.map(c=>({...c,items:(c.items||[]).map(it=>({...it}))}));
+ if(!p.customers.length)cloudSay('Cloud attendance found. Customer list was empty in the cloud snapshot, so restoring the built-in customer list while preserving all cloud attendance and billing history…');
+ db={...db,...p,customers:cloudCustomers,days:p.days,prices:{...DEFAULT_PRICES,...(p.prices||{})},monthlyCharges:p.monthlyCharges||{}};
  try{localStorage.setItem('milkBillingSpecV3',JSON.stringify(db))}catch(e){cloudSay('Cloud data loaded, but this device could not save a local copy: '+e.message)}
  cloud.enabled=true;localStorage.setItem('milkCloudSyncEnabled:'+cloud.user.id,'yes');renderAfterCloudLoad();
  cloudSay('Cloud data loaded · '+db.customers.length+' customers · updated '+(data.updated_at?new Date(data.updated_at).toLocaleString():'recently')+'. Automatic sync is on.');return true;
