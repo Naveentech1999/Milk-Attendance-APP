@@ -658,6 +658,20 @@ header .dw-brand-tagline{display:block;font-size:12px;font-weight:650;font-style
 .managed-customer-save{min-height:42px;margin:10px 0 5px}
 .managed-customer-remove{width:100%;min-height:40px;margin-top:7px}
 @media(max-width:380px){.managed-item-edit{grid-template-columns:minmax(0,1fr) 100px}.managed-customer-editor{padding:10px}}
+
+/* More & Settings: hide the full customer list until requested */
+.customer-manage-list{display:block;margin-top:18px;padding:0;border:1px solid #e3ebe5;border-radius:15px;background:#fff;overflow:hidden}
+.customer-manage-title{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px;padding:13px 14px;cursor:pointer;list-style:none;background:#fff}
+.customer-manage-title::-webkit-details-marker{display:none}
+.customer-manage-title>span{display:flex;flex-direction:column;gap:4px}
+.customer-manage-title b{font-size:13px;color:#174b34}
+.customer-manage-title small{font-size:11px;color:#718078;font-weight:700}
+.customer-manage-chevron{width:27px;height:27px;flex:0 0 27px;border-radius:9px;background:#eef7f1;display:grid;place-items:center;transition:transform .22s}
+.customer-manage-chevron:before{content:"";width:7px;height:7px;border-right:2px solid #26734c;border-bottom:2px solid #26734c;transform:rotate(45deg);margin-top:-4px}
+.customer-manage-list[open] .customer-manage-chevron{transform:rotate(180deg)}
+.customer-manage-body{padding:0 12px 12px;border-top:1px solid #edf2ee}
+#managedCustomers{padding-top:10px}
+.managed-customer-card:not([open]) .managed-customer-editor{display:none}
 </style></head><body><header><h1 class="dw-wordmark"><span class="dw-brand-copy"><span class="dw-brand-name">Doodhwala</span><small class="dw-brand-tagline">Daily Milk Delivery</small></span></h1></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
@@ -694,11 +708,13 @@ header .dw-brand-tagline{display:block;font-size:12px;font-weight:650;font-style
     <div class="add-customer-foot"><span>Customer starts as <b>Not marked</b> for today.</span><button class="primary" type="submit">＋ Add customer</button></div>
     <p class="add-customer-feedback" id="addCustomerFeedback" role="status" aria-live="polite"></p>
   </form>
-  <div class="customer-manage-list">
-    <div class="customer-manage-title"><b>Existing customers</b><span id="managedCustomerCount">0 customers</span></div>
-    <div id="managedCustomers"></div>
-    <p class="settings-note">Removing a customer hides them from active delivery and billing lists. Saved attendance records are retained on this device.</p>
-  </div>
+  <details class="customer-manage-list" id="existingCustomersAccordion">
+    <summary class="customer-manage-title"><span><b>Existing customers</b><small id="managedCustomerCount">0 customers</small></span><i class="customer-manage-chevron" aria-hidden="true"></i></summary>
+    <div class="customer-manage-body">
+      <div id="managedCustomers"></div>
+      <p class="settings-note">Tap a customer to edit their details and milk products. Removing a customer hides them from active delivery and billing lists; saved attendance records are retained.</p>
+    </div>
+  </details>
 
 <div class="card settings-card"><div class="settings-card-heading"><span class="settings-icon price-icon">₹</span><div><div class="title">Milk prices</div><p class="muted">Set the current selling price for each product.</p></div></div><div id="prices"></div><p class="settings-note">Regular milk prices are per litre. Curd packets are priced per packet.</p></div>
 <div class="card settings-card"><div class="settings-card-heading"><span class="settings-icon commission-icon">％</span><div><div class="title">Commission</div><p class="muted">Your deduction per net litre.</p></div></div><label class="settings-label" for="commissionRate">Commission rate (₹ / litre)</label><input class="field settings-number" type="number" id="commissionRate" min="0" step=".5"><p class="settings-note">The default ₹5 per litre is provisional. Adjust it to match your commission arrangement.</p></div>
