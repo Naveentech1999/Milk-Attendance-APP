@@ -1,4 +1,4 @@
-const CACHE='dudhwala-customer-list-v45';
+const CACHE='dudhwala-customer-list-v46';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./assets/file_000000005b788211a2750aeac24f2107.gif'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));self.skipWaiting();});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))));self.clients.claim();});
