@@ -709,6 +709,13 @@ header .dw-brand-name,header .dw-brand-tagline{display:block;margin:0;padding:0!
 .dw-hero-window{position:absolute;inset:0;width:100%;height:100%;overflow:hidden}
 .dw-hero-art{display:block;width:100%;height:100%;object-fit:contain;object-position:center}
 @media(prefers-reduced-motion:reduce){.dw-launch-splash{transition:none}}
+
+/* Dashboard bike-logo motion: travel from left to right */
+header h1.dw-wordmark{position:relative;display:block!important;width:100%;height:92px;overflow:hidden}
+header h1.dw-wordmark img{position:absolute;left:0;top:50%;transform:translateY(-50%);animation:dw-bike-logo-drive 8s linear infinite}
+@keyframes dw-bike-logo-drive{from{translate:-110% -50%}to{translate:calc(100vw) -50%}}
+@media(prefers-reduced-motion:reduce){header h1.dw-wordmark img{animation:none;position:static;transform:none;translate:none}}
+
 </style></head><body>
 <div class="dw-launch-splash" id="dwLaunchSplash" role="status" aria-label="Loading">
  <div class="dw-hero-window"><img class="dw-hero-art" src="./assets/file_000000005b788211a2750aeac24f2107.gif" alt="Flying superhero"></div>
