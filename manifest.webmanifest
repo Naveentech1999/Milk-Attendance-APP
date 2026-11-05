@@ -9,5 +9,12 @@
   "orientation": "portrait",
   "background_color": "#eaffdf",
   "theme_color": "#eaffdf",
-  "icons": []
+  "icons": [
+    {
+      "src": "./assets/Doodhman_20Logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
 }
