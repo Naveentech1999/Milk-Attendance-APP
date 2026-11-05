@@ -703,10 +703,10 @@ header .dw-brand-glass{flex:0 0 41px;display:grid;place-items:center;width:41px;
 header .dw-brand-copy{display:flex!important;flex:0 1 auto;flex-direction:column!important;align-items:flex-start;justify-content:center;gap:4px!important;min-width:0;padding:0!important;margin:0}
 header .dw-brand-name,header .dw-brand-tagline{display:block;margin:0;padding:0!important}
 
-/* Branded animated launch screen shown after the browser's native splash */
+/* Animated milk-only launch screen shown after the browser's native splash */
 .dw-launch-splash{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;align-content:center;gap:34px;padding:24px;background:radial-gradient(circle at 85% 12%,#ffffff18 0 16%,transparent 16.2%),linear-gradient(135deg,#07583b 0%,#087a50 58%,#159b6a 100%);color:#fff;opacity:1;visibility:visible;transition:opacity .55s ease,visibility .55s ease}
 .dw-launch-splash.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
-.dw-launch-content{display:flex;align-items:center;gap:18px;animation:dw-launch-enter .75s cubic-bezier(.2,.8,.2,1) both}
+.dw-launch-content{display:flex;align-items:center;justify-content:center;width:100%;animation:dw-launch-enter .75s cubic-bezier(.2,.8,.2,1) both}
 .dw-launch-glass{position:relative;width:74px;height:82px;flex:0 0 74px;display:grid;place-items:center;border:1px solid #ffffff55;border-radius:23px;background:#ffffff20;box-shadow:inset 0 0 0 1px #ffffff12,0 12px 32px #003c292b;overflow:hidden}
 .dw-launch-glass-emoji{position:relative;z-index:2;font-size:43px;filter:drop-shadow(0 3px 3px #003d2740);animation:dw-launch-bob 1.4s ease-in-out infinite}
 .dw-launch-milk{position:absolute;left:18px;right:18px;bottom:17px;height:8px;border-radius:50% 50% 9px 9px;background:#fff5cf;box-shadow:0 0 14px #fff5cf88;animation:dw-launch-fill 1.25s ease-in-out infinite alternate}
@@ -724,10 +724,9 @@ header .dw-brand-name,header .dw-brand-tagline{display:block;margin:0;padding:0!
 @keyframes dw-launch-progress{0%{transform:translateX(-110%)}100%{transform:translateX(250%)}}
 @media(prefers-reduced-motion:reduce){.dw-launch-content,.dw-launch-glass-emoji,.dw-launch-milk,.dw-launch-drop,.dw-launch-track span{animation:none!important}.dw-launch-milk{height:15px}}
 </style></head><body>
-<div class="dw-launch-splash" id="dwLaunchSplash" role="status" aria-label="Loading Doodhwala">
+<div class="dw-launch-splash" id="dwLaunchSplash" role="status" aria-label="Loading">
  <div class="dw-launch-content">
   <div class="dw-launch-glass" aria-hidden="true"><span class="dw-launch-milk"></span><span class="dw-launch-glass-emoji">🥛</span><i class="dw-launch-drop dw-launch-drop-one"></i><i class="dw-launch-drop dw-launch-drop-two"></i></div>
-  <div class="dw-launch-brand"><strong>Doodhwala</strong><span>Daily Milk Delivery</span></div>
  </div>
  <div class="dw-launch-track"><span></span></div>
 </div>
