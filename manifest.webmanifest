@@ -11,7 +11,7 @@
   "theme_color": "#eaffdf",
   "icons": [
     {
-      "src": "./assets/Doodhman_20Logo.png",
+      "src": "./assets/doodhwala-app-logo.png",
       "sizes": "any",
       "type": "image/png",
       "purpose": "any"
