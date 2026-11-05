@@ -672,6 +672,20 @@ header .dw-brand-tagline{display:block;font-size:12px;font-weight:650;font-style
 .customer-manage-body{padding:0 12px 12px;border-top:1px solid #edf2ee}
 #managedCustomers{padding-top:10px}
 .managed-customer-card:not([open]) .managed-customer-editor{display:none}
+
+/* Collapsible More & Settings sections */
+.settings-accordion{margin:10px 0 13px;border:1px solid #e1ebe4;border-radius:17px;background:#fff;box-shadow:0 3px 12px #173b2808;overflow:hidden}
+.settings-accordion-summary{list-style:none;display:flex;align-items:center;gap:11px;min-height:60px;padding:13px 15px;cursor:pointer;color:#174b34;font-size:14px;font-weight:850;-webkit-tap-highlight-color:transparent}
+.settings-accordion-summary::-webkit-details-marker{display:none}
+.settings-accordion-icon{width:34px;height:34px;flex:0 0 34px;display:grid;place-items:center;border-radius:11px;background:#e8f5ec;color:#087a50;font-size:19px;font-weight:900}
+.settings-accordion-chevron{margin-left:auto;width:10px;height:10px;border-right:2px solid #39805a;border-bottom:2px solid #39805a;transform:rotate(45deg);transition:transform .22s ease;margin-top:-5px}
+.settings-accordion[open]>.settings-accordion-summary{border-bottom:1px solid #edf2ee;background:#fbfdfb}
+.settings-accordion[open]>.settings-accordion-summary .settings-accordion-chevron{transform:rotate(225deg);margin-top:5px}
+.settings-accordion-body{padding:12px;animation:dw-open .22s ease-out}
+.settings-accordion-body>.add-customer-card,.settings-accordion-body>.card.settings-card{margin:0;border:0;box-shadow:none;padding:4px 2px;background:transparent}
+.settings-accordion-body>.add-customer-card{padding-top:3px}
+.settings-accordion-body>.card.settings-card{padding-top:4px}
+.settings-accordion-body .customer-manage-list{margin-top:17px}
 </style></head><body><header><h1 class="dw-wordmark"><span class="dw-brand-copy"><span class="dw-brand-name">Doodhwala</span><small class="dw-brand-tagline">Daily Milk Delivery</small></span></h1></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
@@ -694,6 +708,7 @@ header .dw-brand-tagline{display:block;font-size:12px;font-weight:650;font-style
 <section id="settings" class="hidden">
 <div class="settings-intro"><div class="settings-intro-icon">⚙️</div>
 <div><div class="settings-eyebrow">PERSONALISE YOUR APP</div><h2>More & Settings</h2><p>Manage milk pricing, commission and secure cloud sync.</p></div></div>
+<details class="settings-accordion" id="addCustomerAccordion"><summary class="settings-accordion-summary"><span class="settings-accordion-icon">＋</span><span>Add Customer</span><i class="settings-accordion-chevron" aria-hidden="true"></i></summary><div class="settings-accordion-body">
 <div class="add-customer-card">
   <div class="add-customer-heading"><span class="add-customer-icon">＋</span><div><div class="add-customer-eyebrow">CUSTOMER MANAGEMENT</div><h2>Add a new customer</h2><p>Save a delivery location and its regular milk order.</p></div></div>
   <form id="addCustomerForm" class="add-customer-form">
@@ -715,8 +730,11 @@ header .dw-brand-tagline{display:block;font-size:12px;font-weight:650;font-style
       <p class="settings-note">Tap a customer to edit their details and milk products. Removing a customer hides them from active delivery and billing lists; saved attendance records are retained.</p>
     </div>
   </details>
+</div></details>
 
+<details class="settings-accordion" id="milkPricesAccordion"><summary class="settings-accordion-summary"><span class="settings-accordion-icon">₹</span><span>Milk Prices</span><i class="settings-accordion-chevron" aria-hidden="true"></i></summary><div class="settings-accordion-body">
 <div class="card settings-card"><div class="settings-card-heading"><span class="settings-icon price-icon">₹</span><div><div class="title">Milk prices</div><p class="muted">Set the current selling price for each product.</p></div></div><div id="prices"></div><p class="settings-note">Regular milk prices are per litre. Curd packets are priced per packet.</p></div>
+</div></details>
 <div class="card settings-card"><div class="settings-card-heading"><span class="settings-icon commission-icon">％</span><div><div class="title">Commission</div><p class="muted">Your deduction per net litre.</p></div></div><label class="settings-label" for="commissionRate">Commission rate (₹ / litre)</label><input class="field settings-number" type="number" id="commissionRate" min="0" step=".5"><p class="settings-note">The default ₹5 per litre is provisional. Adjust it to match your commission arrangement.</p></div>
 <div class="card settings-card cloud-card"><div class="cloud-heading"><span class="cloud-logo">☁</span><div class="cloud-heading-copy"><div class="settings-eyebrow">CLOUD BACKUP & SYNC</div><div class="title">Supabase connection</div><p class="muted">Keep your Doodhwala data available across devices.</p></div><span class="cloud-secure">🔒 Secure</span></div>
 <div class="cloud-steps"><div><b>1</b><span>Sign in to your account</span></div><div><b>2</b><span>Upload this device data once to start sync</span></div><div><b>3</b><span>Use cloud download when you need to restore data</span></div></div>
