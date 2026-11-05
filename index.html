@@ -689,7 +689,7 @@ header .dw-brand-tagline{display:block;font-size:12px;font-weight:650;font-style
 
 /* Keep each More section separate and collapsed until requested */
 #existingCustomersSection .customer-manage-list{margin:0;padding:0;border:0}
-#existingCustomersSection .customer-manage-title{display:none}
+#existingCustomersSection .customer-manage-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 10px;color:#174b34;font-size:13px;font-weight:800} #existingCustomersSection .customer-manage-title small{color:#718078;font-size:11px;font-weight:700}
 #existingCustomersSection .customer-manage-body{padding:0}
 #existingCustomersSection .settings-note{margin:12px 2px 2px}
 #commissionAccordion .settings-accordion-body>.settings-card,
@@ -736,13 +736,13 @@ header .dw-brand-tagline{display:block;font-size:12px;font-weight:650;font-style
 <details class="settings-accordion" id="existingCustomersSection">
  <summary class="settings-accordion-summary"><span class="settings-accordion-icon">👥</span><span>Existing Customers</span><i class="settings-accordion-chevron" aria-hidden="true"></i></summary>
  <div class="settings-accordion-body">
-  <details class="customer-manage-list" id="existingCustomersAccordion">
-    <summary class="customer-manage-title"><span><b>Existing customers</b><small id="managedCustomerCount">0 customers</small></span><i class="customer-manage-chevron" aria-hidden="true"></i></summary>
+  <div class="customer-manage-list" id="existingCustomersAccordion">
+    <div class="customer-manage-title"><b>Edit / update existing customers</b><small id="managedCustomerCount">0 customers</small></div>
     <div class="customer-manage-body">
       <div id="managedCustomers"></div>
-      <p class="settings-note">Tap a customer to edit their details and milk products. Removing a customer hides them from active delivery and billing lists; saved attendance records are retained.</p>
+      <p class="settings-note">Open a customer to edit their name, location, milk products and daily quantities. Choose Save changes to update, or Remove customer to remove them from active delivery and billing lists. Saved attendance records are retained.</p>
     </div>
-  </details>
+  </div>
  </div>
 </details>
 
