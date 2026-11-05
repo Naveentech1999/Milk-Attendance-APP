@@ -703,32 +703,15 @@ header .dw-brand-glass{flex:0 0 41px;display:grid;place-items:center;width:41px;
 header .dw-brand-copy{display:flex!important;flex:0 1 auto;flex-direction:column!important;align-items:flex-start;justify-content:center;gap:4px!important;min-width:0;padding:0!important;margin:0}
 header .dw-brand-name,header .dw-brand-tagline{display:block;margin:0;padding:0!important}
 
-/* Animated milk-only launch screen shown after the browser's native splash */
-.dw-launch-splash{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;align-content:center;gap:34px;padding:24px;background:radial-gradient(circle at 85% 12%,#ffffff18 0 16%,transparent 16.2%),linear-gradient(135deg,#07583b 0%,#087a50 58%,#159b6a 100%);color:#fff;opacity:1;visibility:visible;transition:opacity .55s ease,visibility .55s ease}
+/* Animated original Doodhwala logo launch screen */
+.dw-launch-splash{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:24px;background:#fff;opacity:1;visibility:visible;transition:opacity .55s ease,visibility .55s ease}
 .dw-launch-splash.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
-.dw-launch-content{display:flex;align-items:center;justify-content:center;width:100%;animation:dw-launch-enter .75s cubic-bezier(.2,.8,.2,1) both}
-.dw-launch-glass{position:relative;width:74px;height:82px;flex:0 0 74px;display:grid;place-items:center;border:1px solid #ffffff55;border-radius:23px;background:#ffffff20;box-shadow:inset 0 0 0 1px #ffffff12,0 12px 32px #003c292b;overflow:hidden}
-.dw-launch-glass-emoji{position:relative;z-index:2;font-size:43px;filter:drop-shadow(0 3px 3px #003d2740);animation:dw-launch-bob 1.4s ease-in-out infinite}
-.dw-launch-milk{position:absolute;left:18px;right:18px;bottom:17px;height:8px;border-radius:50% 50% 9px 9px;background:#fff5cf;box-shadow:0 0 14px #fff5cf88;animation:dw-launch-fill 1.25s ease-in-out infinite alternate}
-.dw-launch-drop{position:absolute;z-index:3;top:8px;width:5px;height:8px;border-radius:70% 30% 65% 35%;background:#fff7d9;opacity:0;animation:dw-launch-drop 1.5s ease-in infinite}
-.dw-launch-drop-one{left:20px}.dw-launch-drop-two{right:19px;animation-delay:.55s}
-.dw-launch-brand{display:flex;flex-direction:column;gap:5px;animation:dw-launch-enter .85s .08s both}
-.dw-launch-brand strong{font-size:clamp(29px,7vw,39px);line-height:1;font-weight:950;letter-spacing:-1.2px}
-.dw-launch-brand span{font-size:clamp(13px,3.5vw,16px);font-weight:650;font-style:italic;letter-spacing:.2px;opacity:.96}
-.dw-launch-track{width:126px;height:3px;border-radius:5px;background:#ffffff35;overflow:hidden}
-.dw-launch-track span{display:block;width:42%;height:100%;border-radius:5px;background:#fff;animation:dw-launch-progress 1.25s ease-in-out infinite}
-@keyframes dw-launch-enter{from{opacity:0;transform:translateY(13px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes dw-launch-bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-5px) rotate(3deg)}}
-@keyframes dw-launch-fill{from{height:7px}to{height:25px}}
-@keyframes dw-launch-drop{0%{transform:translateY(0) scale(.6);opacity:0}25%{opacity:1}100%{transform:translateY(54px) scale(1);opacity:0}}
-@keyframes dw-launch-progress{0%{transform:translateX(-110%)}100%{transform:translateX(250%)}}
-@media(prefers-reduced-motion:reduce){.dw-launch-content,.dw-launch-glass-emoji,.dw-launch-milk,.dw-launch-drop,.dw-launch-track span{animation:none!important}.dw-launch-milk{height:15px}}
+.dw-launch-logo{display:block;width:min(82vw,420px);height:auto;object-fit:contain;animation:dw-logo-float 1.8s ease-in-out infinite}
+@keyframes dw-logo-float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-9px) scale(1.025)}}
+@media(prefers-reduced-motion:reduce){.dw-launch-logo{animation:none}}
 </style></head><body>
-<div class="dw-launch-splash" id="dwLaunchSplash" role="status" aria-label="Loading">
- <div class="dw-launch-content">
-  <div class="dw-launch-glass" aria-hidden="true"><span class="dw-launch-milk"></span><span class="dw-launch-glass-emoji">🥛</span><i class="dw-launch-drop dw-launch-drop-one"></i><i class="dw-launch-drop dw-launch-drop-two"></i></div>
- </div>
- <div class="dw-launch-track"><span></span></div>
+<div class="dw-launch-splash" id="dwLaunchSplash" role="status" aria-label="Loading Doodhwala">
+ <img class="dw-launch-logo" src="./icons/dudhwala-512.jpg" alt="Doodhwala">
 </div>
 <script>
 (()=>{const splash=document.getElementById('dwLaunchSplash');if(!splash)return;let closed=false;const close=()=>{if(closed)return;closed=true;splash.classList.add('is-hidden');setTimeout(()=>splash.remove(),650)};const finish=()=>setTimeout(close,1800);if(document.readyState==='complete')finish();else window.addEventListener('load',finish,{once:true});setTimeout(close,5000);})();
