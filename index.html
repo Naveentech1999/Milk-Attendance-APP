@@ -636,6 +636,28 @@ header .dw-brand-tagline{display:block;font-size:12px;font-weight:650;font-style
 .managed-customer-editor .managed-customer-fields{margin:11px 0}
 .managed-customer-editor .managed-item-edit{margin:10px 0}
 .managed-customer-editor .managed-customer-remove{width:100%;margin-top:7px}
+
+/* More & Settings: compact customer list with tap-to-edit accordion */
+.customer-manage-list{margin-top:20px;padding-top:16px}
+.customer-manage-title{position:sticky;top:0;z-index:2;padding:9px 2px;background:#fff}
+#managedCustomers{display:grid;gap:9px}
+.managed-customer-card{padding:0;margin:0;border:1px solid #e3ebe5;border-radius:14px;background:#fff;overflow:hidden;box-shadow:0 2px 9px #173b2608;transition:border-color .2s,box-shadow .2s}
+.managed-customer-card[open]{border-color:#b8d9c4;box-shadow:0 6px 18px #087a5012}
+.managed-customer-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:62px;padding:13px 14px;cursor:pointer;list-style:none;-webkit-tap-highlight-color:transparent}
+.managed-customer-summary::-webkit-details-marker{display:none}
+.managed-customer-identity{display:flex;flex-direction:column;gap:4px;min-width:0}
+.managed-customer-identity b{font-size:13px;font-weight:800;color:#183b2a;overflow-wrap:anywhere}
+.managed-customer-identity small{font-size:11px;color:#75847b;overflow-wrap:anywhere}
+.managed-customer-chevron{width:27px;height:27px;flex:0 0 27px;display:grid;place-items:center;border-radius:9px;background:#eef7f1;transition:transform .22s,background .22s}
+.managed-customer-chevron:before{content:"";width:7px;height:7px;border-right:2px solid #26734c;border-bottom:2px solid #26734c;transform:rotate(45deg);margin-top:-4px}
+.managed-customer-card[open] .managed-customer-chevron{transform:rotate(180deg);background:#dff2e6}
+.managed-customer-editor{padding:12px 13px 14px;border-top:1px solid #edf2ee;animation:dw-open .22s ease-out}
+.managed-customer-fields{grid-template-columns:minmax(0,1fr);gap:9px;margin:0 0 10px}
+.managed-item-edit{grid-template-columns:minmax(0,1fr) 112px;gap:9px;margin:10px 0;padding:10px;border:1px solid #edf1ee;border-radius:11px;background:#f9fbf9}
+.managed-customer-editor .field{border-radius:9px;background:#fff}
+.managed-customer-save{min-height:42px;margin:10px 0 5px}
+.managed-customer-remove{width:100%;min-height:40px;margin-top:7px}
+@media(max-width:380px){.managed-item-edit{grid-template-columns:minmax(0,1fr) 100px}.managed-customer-editor{padding:10px}}
 </style></head><body><header><h1 class="dw-wordmark"><span class="dw-brand-copy"><span class="dw-brand-name">Doodhwala</span><small class="dw-brand-tagline">Daily Milk Delivery</small></span></h1></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
@@ -1041,6 +1063,10 @@ $('date').onchange=()=>{renderList();renderDaily()};$('today').onclick=()=>{$('d
   const products=(c.items||[]).map(it=>'<div class="managed-item-edit"><label>Milk product<select class="field" data-edit-product="'+esc(c.id)+'" data-item-id="'+esc(it.id)+'">'+options(key(it))+'</select></label><label>Daily quantity (packets)<input class="field" type="number" min="0.5" step="0.5" value="'+esc((Number(it.qty||0)*2).toString())+'" data-edit-qty="'+esc(c.id)+'" data-item-id="'+esc(it.id)+'"></label></div>').join('');
   return '<details class="managed-customer-card" data-managed-id="'+esc(c.id)+'"><summary class="managed-customer-summary"><span class="managed-customer-identity"><b>'+esc(c.name)+'</b><small>'+esc(c.location||'No location')+'</small></span><span class="managed-customer-chevron" aria-hidden="true"></span></summary><div class="managed-customer-editor"><div class="managed-customer-fields"><label>Customer name<input class="field" type="text" maxlength="120" value="'+esc(c.name)+'" data-edit-name="'+esc(c.id)+'"></label><label>Location / address<input class="field" type="text" maxlength="120" value="'+esc(c.location||'')+'" data-edit-location="'+esc(c.id)+'"></label></div>'+products+'<button type="button" class="managed-customer-save" data-save-customer="'+esc(c.id)+'">Save changes</button><button type="button" class="managed-customer-remove" data-remove-customer="'+esc(c.id)+'">Remove customer</button></div></details>';
  }).join('')||'<p class="muted">No active customers.</p>';
+ host.querySelectorAll('.managed-customer-card').forEach(card=>card.addEventListener('toggle',()=>{
+  if(!card.open)return;
+  host.querySelectorAll('.managed-customer-card[open]').forEach(other=>{if(other!==card)other.open=false;});
+ }));
  host.querySelectorAll('[data-save-customer]').forEach(button=>button.onclick=()=>{
   const customer=db.customers.find(x=>x.id===button.dataset.saveCustomer);if(!customer)return;
   const id=customer.id, name=host.querySelector('[data-edit-name="'+id+'"]').value.trim(), location=host.querySelector('[data-edit-location="'+id+'"]').value.trim();
