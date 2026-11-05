@@ -1135,6 +1135,7 @@ $('date').onchange=()=>{renderList();renderDaily()};$('today').onclick=()=>{$('d
   customer.name=name;customer.location=location;
   updates.forEach(({it,pair,qty})=>{const p=pair.split('|');it.brand=p[0];it.type=p.slice(1).join('|');it.qty=qty/2});
   save();renderManagedCustomers();renderList();renderDaily();fillCustomerSelect();refreshMetrics();
+  $('addCustomerFeedback').textContent='';$('existingCustomersSection').open=true;
   $('existingCustomersFeedback').textContent=name+' details updated.';
  });
  host.querySelectorAll('[data-remove-customer]').forEach(button=>button.onclick=()=>{
@@ -1142,6 +1143,7 @@ $('date').onchange=()=>{renderList();renderDaily()};$('today').onclick=()=>{$('d
   if(!confirm('Remove '+customer.name+' from the active customer list? Their saved attendance records will remain stored, but they will no longer appear in active delivery and billing lists.'))return;
   db.customers=db.customers.filter(x=>x.id!==customer.id);
   save();renderManagedCustomers();renderList();renderDaily();fillCustomerSelect();refreshMetrics();
+  $('addCustomerFeedback').textContent='';$('existingCustomersSection').open=true;
   $('existingCustomersFeedback').textContent=customer.name+' removed from active customers. Saved attendance records were retained.';
  });
 }
