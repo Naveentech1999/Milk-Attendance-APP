@@ -703,17 +703,15 @@ header .dw-brand-glass{flex:0 0 41px;display:grid;place-items:center;width:41px;
 header .dw-brand-copy{display:flex!important;flex:0 1 auto;flex-direction:column!important;align-items:flex-start;justify-content:center;gap:4px!important;min-width:0;padding:0!important;margin:0}
 header .dw-brand-name,header .dw-brand-tagline{display:block;margin:0;padding:0!important}
 
-/* Doodhwala launch: flying superhero with the wordmark visible on the same screen */
-.dw-launch-splash{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:0;background:#eaffdf;opacity:1;visibility:visible;transition:opacity .45s ease,visibility .45s ease;overflow:hidden}
+/* Minimal launch splash: show only the supplied flying superhero GIF */
+.dw-launch-splash{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:0;background:#eaffdf;opacity:1;visibility:visible;transition:opacity .4s ease,visibility .4s ease;overflow:hidden}
 .dw-launch-splash.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
-.dw-hero-window{width:min(100vw,520px);height:min(100vh,520px);display:flex;align-items:center;justify-content:center;overflow:hidden}
-.dw-hero-art{display:block;width:100%;height:100%;object-fit:contain;object-position:center;transform:translateX(-125vw) scale(.86);opacity:.15}
-.dw-launch-splash.dw-play .dw-hero-art{animation:dw-hero-fly 1.35s cubic-bezier(.2,.78,.22,1) forwards}
-@keyframes dw-hero-fly{0%{transform:translateX(-125vw) scale(.86);opacity:.15}70%{transform:translateX(5px) scale(1.025);opacity:1}100%{transform:translateX(0) scale(1);opacity:1}}
-@media(prefers-reduced-motion:reduce){.dw-hero-art{animation:none!important;transform:none!important;opacity:1!important}}
+.dw-hero-window{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.dw-hero-art{display:block;width:min(100vw,100vh);height:min(100vw,100vh);object-fit:contain;object-position:center}
+@media(prefers-reduced-motion:reduce){.dw-launch-splash{transition:none}}
 </style></head><body>
 <div class="dw-launch-splash" id="dwLaunchSplash" role="status" aria-label="Loading">
- <div class="dw-hero-window"><img class="dw-hero-art" src="./assets/file_00000000cc6481fa8c1e3941b311e579.png" alt="Flying superhero"></div>
+ <div class="dw-hero-window"><img class="dw-hero-art" src="./assets/file_000000005b788211a2750aeac24f2107.gif" alt="Flying superhero"></div>
 </div>
 <script>
 (()=>{const splash=document.getElementById('dwLaunchSplash');if(!splash)return;let closed=false;const close=()=>{if(closed)return;closed=true;splash.classList.add('is-hidden');setTimeout(()=>splash.remove(),500)};splash.classList.add('dw-play');const finish=()=>setTimeout(close,2100);if(document.readyState==='complete')finish();else window.addEventListener('load',finish,{once:true});setTimeout(close,7000);})();
