@@ -686,6 +686,15 @@ header .dw-brand-tagline{display:block;font-size:12px;font-weight:650;font-style
 .settings-accordion-body>.add-customer-card{padding-top:3px}
 .settings-accordion-body>.card.settings-card{padding-top:4px}
 .settings-accordion-body .customer-manage-list{margin-top:17px}
+
+/* Keep each More section separate and collapsed until requested */
+#existingCustomersSection .customer-manage-list{margin:0;padding:0;border:0}
+#existingCustomersSection .customer-manage-title{display:none}
+#existingCustomersSection .customer-manage-body{padding:0}
+#existingCustomersSection .settings-note{margin:12px 2px 2px}
+#commissionAccordion .settings-accordion-body>.settings-card,
+#supabaseAccordion .settings-accordion-body>.cloud-card{margin:0;border:0;box-shadow:none;padding:4px 2px;background:transparent}
+#supabaseAccordion .settings-accordion-body{padding:12px}
 </style></head><body><header><h1 class="dw-wordmark"><span class="dw-brand-copy"><span class="dw-brand-name">Doodhwala</span><small class="dw-brand-tagline">Daily Milk Delivery</small></span></h1></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
@@ -723,6 +732,10 @@ header .dw-brand-tagline{display:block;font-size:12px;font-weight:650;font-style
     <div class="add-customer-foot"><span>Customer starts as <b>Not marked</b> for today.</span><button class="primary" type="submit">＋ Add customer</button></div>
     <p class="add-customer-feedback" id="addCustomerFeedback" role="status" aria-live="polite"></p>
   </form>
+</div></details>
+<details class="settings-accordion" id="existingCustomersSection">
+ <summary class="settings-accordion-summary"><span class="settings-accordion-icon">👥</span><span>Existing Customers</span><i class="settings-accordion-chevron" aria-hidden="true"></i></summary>
+ <div class="settings-accordion-body">
   <details class="customer-manage-list" id="existingCustomersAccordion">
     <summary class="customer-manage-title"><span><b>Existing customers</b><small id="managedCustomerCount">0 customers</small></span><i class="customer-manage-chevron" aria-hidden="true"></i></summary>
     <div class="customer-manage-body">
@@ -730,18 +743,20 @@ header .dw-brand-tagline{display:block;font-size:12px;font-weight:650;font-style
       <p class="settings-note">Tap a customer to edit their details and milk products. Removing a customer hides them from active delivery and billing lists; saved attendance records are retained.</p>
     </div>
   </details>
-</div></details>
+ </div>
+</details>
+
 
 <details class="settings-accordion" id="milkPricesAccordion"><summary class="settings-accordion-summary"><span class="settings-accordion-icon">₹</span><span>Milk Prices</span><i class="settings-accordion-chevron" aria-hidden="true"></i></summary><div class="settings-accordion-body">
 <div class="card settings-card"><div class="settings-card-heading"><span class="settings-icon price-icon">₹</span><div><div class="title">Milk prices</div><p class="muted">Set the current selling price for each product.</p></div></div><div id="prices"></div><p class="settings-note">Regular milk prices are per litre. Curd packets are priced per packet.</p></div>
 </div></details>
-<div class="card settings-card"><div class="settings-card-heading"><span class="settings-icon commission-icon">％</span><div><div class="title">Commission</div><p class="muted">Your deduction per net litre.</p></div></div><label class="settings-label" for="commissionRate">Commission rate (₹ / litre)</label><input class="field settings-number" type="number" id="commissionRate" min="0" step=".5"><p class="settings-note">The default ₹5 per litre is provisional. Adjust it to match your commission arrangement.</p></div>
-<div class="card settings-card cloud-card"><div class="cloud-heading"><span class="cloud-logo">☁</span><div class="cloud-heading-copy"><div class="settings-eyebrow">CLOUD BACKUP & SYNC</div><div class="title">Supabase connection</div><p class="muted">Keep your Doodhwala data available across devices.</p></div><span class="cloud-secure">🔒 Secure</span></div>
+<details class="settings-accordion" id="commissionAccordion"><summary class="settings-accordion-summary"><span class="settings-accordion-icon">％</span><span>Commission</span><i class="settings-accordion-chevron" aria-hidden="true"></i></summary><div class="settings-accordion-body"><div class="card settings-card"><div class="settings-card-heading"><span class="settings-icon commission-icon">％</span><div><div class="title">Commission</div><p class="muted">Your deduction per net litre.</p></div></div><label class="settings-label" for="commissionRate">Commission rate (₹ / litre)</label><input class="field settings-number" type="number" id="commissionRate" min="0" step=".5"><p class="settings-note">The default ₹5 per litre is provisional. Adjust it to match your commission arrangement.</p></div></div></details>
+<details class="settings-accordion" id="supabaseAccordion"><summary class="settings-accordion-summary"><span class="settings-accordion-icon">☁</span><span>Supabase Database</span><i class="settings-accordion-chevron" aria-hidden="true"></i></summary><div class="settings-accordion-body"><div class="card settings-card cloud-card"><div class="cloud-heading"><span class="cloud-logo">☁</span><div class="cloud-heading-copy"><div class="settings-eyebrow">CLOUD BACKUP & SYNC</div><div class="title">Supabase connection</div><p class="muted">Keep your Doodhwala data available across devices.</p></div><span class="cloud-secure">🔒 Secure</span></div>
 <div class="cloud-steps"><div><b>1</b><span>Sign in to your account</span></div><div><b>2</b><span>Upload this device data once to start sync</span></div><div><b>3</b><span>Use cloud download when you need to restore data</span></div></div>
 <div class="cloud-form-grid"><div><label class="settings-label" for="cloudEmail">Email address</label><input class="field" id="cloudEmail" type="email" autocomplete="username" placeholder="Enter your email"></div><div><label class="settings-label" for="cloudPassword">Password</label><input class="field" id="cloudPassword" type="password" autocomplete="current-password" placeholder="Enter your password"></div></div>
 <div class="cloud-auth-actions"><button class="primary" id="cloudSignIn">Sign in</button><button id="cloudSignUp">Create account</button><button class="cloud-signout" id="cloudSignOut">Sign out</button></div>
 <div class="cloud-data-actions"><button class="primary" id="cloudUpload"><span>↑</span> Upload device data</button><button id="cloudDownload"><span>↓</span> Download cloud data</button></div>
-<div class="cloud-status-wrap"><span class="cloud-status-dot"></span><p id="cloudStatus" class="muted">Not connected. Your existing local data remains on this device.</p></div>
+<div class="cloud-status-wrap"><span class="cloud-status-dot"></span><p id="cloudStatus" class="muted">Not connected. Your existing local data remains on this device.</p></div></div></details>
 </div>
 </section><p id="msg" class="muted"></p><div class="footer">Previous dates are retained separately. Unmarked and absent customers are excluded from daily and monthly bills.</div>
 <nav class="dw-bottom-nav" aria-label="Main navigation"><button class="active" data-dw-tab="register"><span class="dw-nav-icon">☑</span><span>Attendance</span></button><button data-dw-tab="daily"><span class="dw-nav-icon">📊</span><span>Daily</span></button><button data-dw-tab="monthly"><span class="dw-nav-icon">🧾</span><span>Monthly</span></button><button data-dw-tab="settings"><span class="dw-nav-icon">⚙</span><span>More</span></button></nav></main>
