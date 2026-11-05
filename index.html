@@ -580,9 +580,9 @@ header .dw-brand-tagline{display:block;font-size:12px;font-weight:650;font-style
 <div id="list"></div>
 </section>
 <section id="daily" class="hidden">
-<div class="card"><div class="title">Today's product quantities</div><div id="productTable"></div></div>
-<div class="card"><div class="title">Daily amount and company settlement</div><div class="totgrid"><div><small class="muted">Total net litres</small><div class="big" id="dLitres">0 L</div></div><div><small class="muted">Total MRP amount</small><div class="big" id="dAmount">₹0</div></div><div><small class="muted">Commission deduction</small><div class="big" id="dCommission">₹0</div></div><div><small class="muted">Amount payable to company</small><div class="big" id="dPayable">₹0</div></div></div><p class="muted">Company payment = total MRP amount − commission deduction. Customer milk bills are calculated separately using net litres × MRP per litre.</p></div>
 <button class="primary" id="previewDaily">Preview daily report image</button>
+<div class="card"><div class="title">Milk types & quantities</div><div id="productTable"></div></div>
+<div class="card"><div class="title">Daily total</div><div class="totgrid dw-daily-total"><div><small class="muted">Total litres</small><div class="big" id="dLitres">0 L</div></div><div><small class="muted">Bill amount</small><div class="big" id="dAmount">₹0</div></div></div></div>
 </section>
 <section id="monthly" class="hidden">
 <div class="card monthly-shell"><div class="monthly-heading"><div><div class="monthly-kicker">MONTHLY SUMMARY</div><div class="title">Customer milk bills</div><p class="muted">Choose a month to calculate every customer's bill.</p></div><span class="monthly-icon">🧾</span></div><div class="bar monthly-controls"><input class="field" id="month" type="month"><button class="primary" id="calculate">Calculate bills</button></div><div id="monthOutput"></div></div>
@@ -681,20 +681,17 @@ function renderList(){let q=$('search').value.toLowerCase(),f=$('filter').value;
 document.querySelectorAll('[data-status]').forEach(b=>b.onclick=()=>{let c=db.customers.find(x=>x.id===b.dataset.id);getEntry(c).status=b.dataset.status;save();renderList();refreshMetrics()});
 document.querySelectorAll('[data-field]').forEach(i=>i.oninput=()=>{let c=db.customers.find(x=>x.id===i.dataset.c),e=getEntry(c);e.items[i.dataset.i]??={extra:0,returns:0};e.items[i.dataset.i][i.dataset.field]=Math.max(0,+i.value||0)/2;save();let it=c.items.find(x=>x.id===i.dataset.i),q=net(c,it),box=document.querySelector(`[data-row-total="${c.id}|${it.id}"]`);if(box)box.innerHTML=`Net: ${Math.round(q*2)} pkt<br>Amount: ${money(itemAmount(c,it))}`;let ct=document.querySelector(`[data-customer-total="${c.id}"]`);if(ct)ct.innerHTML=`Customer daily amount: <b>${money(c.items.reduce((a,x)=>a+net(c,x)*price(x),0))}</b>`;refreshMetrics();if(!document.getElementById('daily').classList.contains('hidden'))renderDaily()});refreshMetrics()}
 function renderDaily(){
- let t=calcDay();
+ const t=calcDay();
  const allKeys=[...new Set(db.customers.flatMap(c=>c.items.map(it=>key(it))))];
  const sections=orderedProductSections(t.products,allKeys);
  const rowsHtml=sections.map((section,idx)=>{
-  const subtotal=section.rows.reduce((sum,x)=>sum+x.value.amount,0);
-  return `<section class="dw-brand-block" style="--dw-delay:${idx*70}ms"><div class="dw-brand-heading"><span>${esc(section.title)}</span><b>${money(subtotal)}</b></div><div class="dw-product-list">`+
-   section.rows.map(x=>`<div class="dw-product-line"><div class="dw-product-name">${esc(x.type)}<small>${isPacketKey(x.key)?'Packet product':'Milk · per litre'}</small></div><div class="dw-product-qty">${isPacketKey(x.key)?(x.value.qty*2).toFixed(0)+' pkt':x.value.qty.toFixed(2)+' L'}</div><div class="dw-product-amount">${money(x.value.amount)}</div></div>`).join('')+
+  return `<section class="dw-brand-block" style="--dw-delay:${idx*70}ms"><div class="dw-brand-heading"><span>${esc(section.title)}</span></div><div class="dw-product-list">`+
+   section.rows.map(x=>`<div class="dw-product-line"><div class="dw-product-name">${esc(x.type)}</div><div class="dw-product-qty">${isPacketKey(x.key)?(x.value.qty*2).toFixed(0)+' pkt':x.value.qty.toFixed(2)+' L'}</div></div>`).join('')+
    `</div></section>`;
  }).join('');
- $('productTable').innerHTML=sections.length?'<div class="dw-daily-brands">'+rowsHtml+'</div>':'<p class="muted">No products configured.</p>';
+ $('productTable').innerHTML=sections.length?'<div class="dw-daily-brands">'+rowsHtml+'</div>':'<p class="muted">No milk quantities recorded.</p>';
  $('dLitres').textContent=t.litres.toFixed(2)+' L';
  $('dAmount').textContent=money(t.amount);
- $('dCommission').textContent=money(t.commission);
- $('dPayable').textContent=money(t.payable);
  document.querySelectorAll('#daily .big').forEach(el=>{el.classList.remove('dw-daily-pop');void el.offsetWidth;el.classList.add('dw-daily-pop')});
 }
 function renderPrices(){$('prices').innerHTML=Object.entries(db.prices).map(([k,v])=>`<div class="product"><div>${esc(k.replace('|',' '))}<small>${isPacketKey(k)?'Per packet':'Per litre'}</small></div><input class="field" type="number" min="0" step=".5" value="${v}" data-price="${esc(k)}"></div>`).join('');document.querySelectorAll('[data-price]').forEach(i=>i.onchange=()=>{db.prices[i.dataset.price]=Math.max(0,+i.value||0);save();renderList();renderDaily();say('Price saved')});$('commissionRate').value=db.commission}
@@ -724,14 +721,12 @@ function orderedProductSections(products,extraKeys=[]){
 }
 function productBreakdownHtml(products){
  const sections=orderedProductSections(products);
- if(!sections.length)return '<p class="muted">No milk products recorded.</p>';
- const rowsHtml=sections.map(section=>{
-  const subtotal=section.rows.reduce((sum,x)=>sum+x.value.amount,0);
-  return '<tr><th colspan="3" style="background:#eaf4ed;color:#175b3b;padding:9px 7px">'+esc(section.title)+'</th></tr>'+
-   section.rows.map(x=>'<tr><td>'+esc(x.brand+' '+x.type)+'</td><td>'+(isPacketKey(x.key)?(x.value.qty*2).toFixed(0)+' packets':x.value.qty.toFixed(2)+' L')+'</td><td>'+money(x.value.amount)+'</td></tr>').join('')+
-   '<tr><td colspan="2" style="text-align:right;font-weight:700">Total '+esc(section.title)+'</td><td style="font-weight:700">'+money(subtotal)+'</td></tr>';
- }).join('');
- return '<table><tr><th>Brand / milk type</th><th>Net quantity</th><th>Amount</th></tr>'+rowsHtml+'</table>';
+ if(!sections.length)return '<p class="muted">No milk quantities recorded.</p>';
+ const rowsHtml=sections.map(section=>
+  '<tr><th colspan="2" style="background:#eaf4ed;color:#175b3b;padding:9px 7px">'+esc(section.title)+'</th></tr>'+
+  section.rows.map(x=>'<tr><td>'+esc(x.type)+'</td><td style="text-align:right;font-weight:700">'+(isPacketKey(x.key)?(x.value.qty*2).toFixed(0)+' packets':x.value.qty.toFixed(2)+' L')+'</td></tr>').join('')
+ ).join('');
+ return '<table><tr><th>Milk type</th><th style="text-align:right">Quantity</th></tr>'+rowsHtml+'</table>';
 }
 function monthRows(){
  const m=$('month').value,[year,month]=m.split('-').map(Number),daysInMonth=new Date(year,month,0).getDate();
@@ -927,8 +922,8 @@ async function createDailyReportImage(){
  const dateLabel=date?new Date(date+'T00:00:00').toLocaleDateString(undefined,{day:'numeric',month:'long',year:'numeric'}):'';
  const host=document.createElement('div');host.style.cssText='position:fixed;left:-12000px;top:0;width:760px;background:#fff;z-index:-1';
  const report=document.createElement('div');report.className='dw-daily-report-image';
- report.innerHTML='<div class="dw-report-header"><div class="dw-report-mark">🥛</div><div class="dw-report-brand">DOODHWALA</div><div class="dw-report-title">DAILY MILK REPORT</div><div class="dw-report-date">'+esc(dateLabel)+'</div></div><div class="dw-report-summary"><div><small>NET MILK</small><b>'+t.litres.toFixed(2)+' L</b></div><div><small>TOTAL MRP</small><b>'+money(t.amount)+'</b></div><div><small>COMMISSION</small><b>'+money(t.commission)+'</b></div><div><small>COMPANY PAYABLE</small><b>'+money(t.payable)+'</b></div></div><h3>PRODUCT-WISE SUMMARY</h3><div class="dw-report-table">'+productBreakdownHtml(t.products)+'</div><div class="dw-report-footer">Generated from Doodhwala · Daily settlement summary</div>';
- const style=document.createElement('style');style.textContent='.dw-daily-report-image{width:760px;padding:34px 38px;background:#fff;color:#183629;font-family:Arial,sans-serif;border:2px solid #dcebe1;border-radius:22px}.dw-report-header{text-align:center;padding:8px 0 22px}.dw-report-mark{font-size:34px}.dw-report-brand{font-size:28px;font-weight:900;letter-spacing:2px;color:#087a50}.dw-report-title{font-size:12px;letter-spacing:2px;font-weight:800;color:#64766b;margin-top:7px}.dw-report-date{display:inline-block;margin-top:13px;padding:9px 18px;border-radius:20px;background:#edf8f1;color:#07583b;font-size:13px;font-weight:800}.dw-report-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:5px 0 24px}.dw-report-summary>div{padding:15px;border-radius:13px;background:#f1f8f3;border:1px solid #e2eee5}.dw-report-summary>div:nth-child(2){background:#eef5ff;border-color:#e0eaf8}.dw-report-summary>div:nth-child(3){background:#fff5e9;border-color:#f5e8d6}.dw-report-summary>div:nth-child(4){background:#f1edff;border-color:#e8e1fa}.dw-report-summary small{display:block;font-size:10px;font-weight:800;letter-spacing:.7px;color:#687b70}.dw-report-summary b{display:block;margin-top:8px;font-size:22px;color:#07583b}.dw-daily-report-image h3{font-size:12px;letter-spacing:1px;color:#07583b;margin:0 0 10px}.dw-report-table table{width:100%;border-collapse:collapse;font-size:12px}.dw-report-table th,.dw-report-table td{padding:10px 9px;border-bottom:1px solid #e7eee9;text-align:left}.dw-report-table td:last-child,.dw-report-table th:last-child{text-align:right}.dw-report-footer{text-align:center;margin-top:25px;padding-top:15px;border-top:1px solid #e7eee9;color:#7a8980;font-size:10px}';
+ report.innerHTML='<div class="dw-report-header"><div class="dw-report-mark">🥛</div><div class="dw-report-brand">DOODHWALA</div><div class="dw-report-title">DAILY MILK REPORT</div><div class="dw-report-date">'+esc(dateLabel)+'</div></div><h3>MILK TYPES & QUANTITIES</h3><div class="dw-report-table">'+productBreakdownHtml(t.products)+'</div><div class="dw-report-summary dw-report-total"><div><small>TOTAL LITRES</small><b>'+t.litres.toFixed(2)+' L</b></div><div><small>BILL AMOUNT</small><b>'+money(t.amount)+'</b></div></div><div class="dw-report-footer">Generated from Doodhwala · Daily milk summary</div>';
+ const style=document.createElement('style');style.textContent='.dw-daily-report-image{width:760px;padding:34px 38px;background:#fff;color:#183629;font-family:Arial,sans-serif;border:2px solid #dcebe1;border-radius:22px}.dw-report-header{text-align:center;padding:8px 0 22px}.dw-report-mark{font-size:34px}.dw-report-brand{font-size:28px;font-weight:900;letter-spacing:2px;color:#087a50}.dw-report-title{font-size:12px;letter-spacing:2px;font-weight:800;color:#64766b;margin-top:7px}.dw-report-date{display:inline-block;margin-top:13px;padding:9px 18px;border-radius:20px;background:#edf8f1;color:#07583b;font-size:13px;font-weight:800}.dw-report-summary{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:5px 0 24px}.dw-report-total{margin:22px 0 0}.dw-report-total>div{background:#eaf4ed!important;border-color:#d7eadc!important}.dw-daily-total{grid-template-columns:1fr 1fr}.dw-report-summary>div{padding:15px;border-radius:13px;background:#f1f8f3;border:1px solid #e2eee5}.dw-report-summary>div:nth-child(2){background:#eef5ff;border-color:#e0eaf8}.dw-report-summary>div:nth-child(3){background:#fff5e9;border-color:#f5e8d6}.dw-report-summary>div:nth-child(4){background:#f1edff;border-color:#e8e1fa}.dw-report-summary small{display:block;font-size:10px;font-weight:800;letter-spacing:.7px;color:#687b70}.dw-report-summary b{display:block;margin-top:8px;font-size:22px;color:#07583b}.dw-daily-report-image h3{font-size:12px;letter-spacing:1px;color:#07583b;margin:0 0 10px}.dw-report-table table{width:100%;border-collapse:collapse;font-size:12px}.dw-report-table th,.dw-report-table td{padding:10px 9px;border-bottom:1px solid #e7eee9;text-align:left}.dw-report-table td:last-child,.dw-report-table th:last-child{text-align:right}.dw-report-footer{text-align:center;margin-top:25px;padding-top:15px;border-top:1px solid #e7eee9;color:#7a8980;font-size:10px}';
  host.append(style,report);document.body.appendChild(host);
  try{
   const canvas=await html2canvas(report,{backgroundColor:'#fff',scale:2,useCORS:true,logging:false});
