@@ -704,23 +704,19 @@ header .dw-brand-copy{display:flex!important;flex:0 1 auto;flex-direction:column
 header .dw-brand-name,header .dw-brand-tagline{display:block;margin:0;padding:0!important}
 
 /* Doodhwala launch: flying superhero with the wordmark visible on the same screen */
-.dw-launch-splash{position:fixed;inset:0;z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:24px;background:#eaffdf;opacity:1;visibility:visible;transition:opacity .55s ease,visibility .55s ease;overflow:hidden}
+.dw-launch-splash{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:0;background:#eaffdf;opacity:1;visibility:visible;transition:opacity .45s ease,visibility .45s ease;overflow:hidden}
 .dw-launch-splash.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
-.dw-hero-window{width:min(92vw,460px);height:min(66vh,92vw,390px);overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center}
+.dw-hero-window{width:min(100vw,520px);height:min(100vh,520px);display:flex;align-items:center;justify-content:center;overflow:hidden}
 .dw-hero-art{display:block;width:100%;height:100%;object-fit:contain;object-position:center;transform:translateX(-125vw) scale(.86);opacity:.15}
-.dw-launch-wordmark{margin:0;color:#087a50;font-size:clamp(36px,10vw,64px);font-weight:900;letter-spacing:-2px;line-height:1.05;text-align:center;text-shadow:0 2px 0 #ffffff}
 .dw-launch-splash.dw-play .dw-hero-art{animation:dw-hero-fly 1.35s cubic-bezier(.2,.78,.22,1) forwards}
-.dw-launch-splash.dw-play .dw-launch-wordmark{animation:dw-word-pop .55s cubic-bezier(.2,.8,.2,1) .12s both}
 @keyframes dw-hero-fly{0%{transform:translateX(-125vw) scale(.86);opacity:.15}70%{transform:translateX(5px) scale(1.025);opacity:1}100%{transform:translateX(0) scale(1);opacity:1}}
-@keyframes dw-word-pop{from{opacity:.2;transform:translateY(10px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
-@media(prefers-reduced-motion:reduce){.dw-hero-art,.dw-launch-wordmark{animation:none!important;transform:none!important;opacity:1!important}}
+@media(prefers-reduced-motion:reduce){.dw-hero-art{animation:none!important;transform:none!important;opacity:1!important}}
 </style></head><body>
-<div class="dw-launch-splash" id="dwLaunchSplash" role="status" aria-label="Loading Doodhwala">
- <div class="dw-hero-window"><img class="dw-hero-art" src="./assets/file_00000000cc6481fa8c1e3941b311e579.png" alt="Doodhwala superhero"></div>
- <h2 class="dw-launch-wordmark">Doodhwala</h2>
+<div class="dw-launch-splash" id="dwLaunchSplash" role="status" aria-label="Loading">
+ <div class="dw-hero-window"><img class="dw-hero-art" src="./assets/file_00000000cc6481fa8c1e3941b311e579.png" alt="Flying superhero"></div>
 </div>
 <script>
-(()=>{const splash=document.getElementById('dwLaunchSplash');if(!splash)return;let closed=false;const close=()=>{if(closed)return;closed=true;splash.classList.add('is-hidden');setTimeout(()=>splash.remove(),650)};splash.classList.add('dw-play');const finish=()=>setTimeout(close,2900);if(document.readyState==='complete')finish();else window.addEventListener('load',finish,{once:true});setTimeout(close,9000);})();
+(()=>{const splash=document.getElementById('dwLaunchSplash');if(!splash)return;let closed=false;const close=()=>{if(closed)return;closed=true;splash.classList.add('is-hidden');setTimeout(()=>splash.remove(),500)};splash.classList.add('dw-play');const finish=()=>setTimeout(close,2100);if(document.readyState==='complete')finish();else window.addEventListener('load',finish,{once:true});setTimeout(close,7000);})();
 </script><header><h1 class="dw-wordmark"><span class="dw-brand-glass" aria-hidden="true">🥛</span><span class="dw-brand-copy"><span class="dw-brand-name">Doodhwala</span><small class="dw-brand-tagline">Daily Milk Delivery</small></span></h1></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
