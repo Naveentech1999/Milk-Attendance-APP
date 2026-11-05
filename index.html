@@ -937,6 +937,7 @@ function setupAddCustomer(){
  };
 }
 setupAddCustomer();
+renderManagedCustomers();
 $('allPresent').onclick=()=>{if(!confirm('Mark all delivery locations PRESENT for this date?'))return;db.customers.forEach(c=>getEntry(c).status='present');save();renderList()};
 $('clearDate').onclick=()=>{if(!confirm('Clear all attendance for '+$('date').value+'?'))return;delete db.days[$('date').value];save();renderList();renderDaily()};
 $('commissionRate').onchange=()=>{db.commission=Math.max(0,+$('commissionRate').value||0);save();renderDaily()};
