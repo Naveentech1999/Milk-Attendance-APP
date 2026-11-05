@@ -695,7 +695,14 @@ header .dw-brand-tagline{display:block;font-size:12px;font-weight:650;font-style
 #commissionAccordion .settings-accordion-body>.settings-card,
 #supabaseAccordion .settings-accordion-body>.cloud-card{margin:0;border:0;box-shadow:none;padding:4px 2px;background:transparent}
 #supabaseAccordion .settings-accordion-body{padding:12px}
-</style></head><body><header><h1 class="dw-wordmark"><span class="dw-brand-copy"><span class="dw-brand-name">Doodhwala</span><small class="dw-brand-tagline">Daily Milk Delivery</small></span></h1></header><main>
+
+/* Keep the milk glass and both brand lines side by side in the header */
+header h1.dw-wordmark{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important;gap:11px!important;width:100%;margin:0;}
+header h1.dw-wordmark:before{content:none!important;display:none!important}
+header .dw-brand-glass{flex:0 0 41px;display:grid;place-items:center;width:41px;height:41px;padding:0!important;border-radius:14px;background:#ffffff24;box-shadow:inset 0 0 0 1px #ffffff25;font-size:23px;line-height:1}
+header .dw-brand-copy{display:flex!important;flex:0 1 auto;flex-direction:column!important;align-items:flex-start;justify-content:center;gap:4px!important;min-width:0;padding:0!important;margin:0}
+header .dw-brand-name,header .dw-brand-tagline{display:block;margin:0;padding:0!important}
+</style></head><body><header><h1 class="dw-wordmark"><span class="dw-brand-glass" aria-hidden="true">🥛</span><span class="dw-brand-copy"><span class="dw-brand-name">Doodhwala</span><small class="dw-brand-tagline">Daily Milk Delivery</small></span></h1></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
 <div class="tabs" style="grid-template-columns:repeat(5,1fr)"><button class="active" data-tab="register">Attendance</button><button data-tab="daily">Daily totals</button><button data-tab="monthly">Monthly bills</button><button data-tab="downloads">Download Bills</button><button data-tab="settings">Prices & backup</button></div>
