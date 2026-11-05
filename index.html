@@ -732,7 +732,7 @@ header .dw-brand-name,header .dw-brand-tagline{display:block;margin:0;padding:0!
  <div class="dw-launch-track"><span></span></div>
 </div>
 <script>
-(()=>{const splash=document.getElementById('dwLaunchSplash');if(!splash)return;let closed=false;const close=()=>{if(closed)return;closed=true;splash.classList.add('is-hidden');setTimeout(()=>splash.remove(),650)};const finish=()=>setTimeout(close,650);if(document.readyState==='complete')finish();else window.addEventListener('load',finish,{once:true});setTimeout(close,4200);})();
+(()=>{const splash=document.getElementById('dwLaunchSplash');if(!splash)return;let closed=false;const close=()=>{if(closed)return;closed=true;splash.classList.add('is-hidden');setTimeout(()=>splash.remove(),650)};const finish=()=>setTimeout(close,1800);if(document.readyState==='complete')finish();else window.addEventListener('load',finish,{once:true});setTimeout(close,5000);})();
 </script><header><h1 class="dw-wordmark"><span class="dw-brand-glass" aria-hidden="true">🥛</span><span class="dw-brand-copy"><span class="dw-brand-name">Doodhwala</span><small class="dw-brand-tagline">Daily Milk Delivery</small></span></h1></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
