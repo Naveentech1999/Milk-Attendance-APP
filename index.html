@@ -755,13 +755,18 @@ header{background:linear-gradient(120deg,#e96800 0%,#fc8019 58%,#ff9f43 100%);co
 /* Plain orange dashboard header: no logo, wordmark, tagline or decoration */
 header.dw-dashboard-header{display:block!important;height:76px!important;min-height:76px!important;padding:0!important;background:#fc8019!important;background-image:none!important;box-shadow:none!important;overflow:hidden!important}
 header.dw-dashboard-header:before,header.dw-dashboard-header:after{content:none!important;display:none!important;animation:none!important}
+
+/* Doodhwala cow logo anchored at the left of the orange dashboard header */
+header.dw-dashboard-header{display:flex!important;align-items:center!important;justify-content:flex-start!important;height:82px!important;min-height:82px!important;padding:5px 14px!important;background:#fc8019!important;background-image:none!important;box-shadow:none!important;overflow:hidden!important}
+header.dw-dashboard-header:before,header.dw-dashboard-header:after{content:none!important;display:none!important;animation:none!important}
+header.dw-dashboard-header img.dw-dashboard-logo{display:block!important;position:static!important;flex:0 0 auto!important;width:auto!important;height:72px!important;max-width:min(112px,38vw)!important;max-height:72px!important;object-fit:contain!important;margin:0!important;padding:0!important;transform:none!important;translate:none!important;animation:none!important}
 </style></head><body>
 <div class="dw-launch-splash" id="dwLaunchSplash" role="status" aria-label="Loading">
  <div class="dw-hero-window"><img class="dw-hero-art" src="./assets/milk-delivery-rider.gif.gif" alt="Milk delivery rider on scooter"></div>
 </div>
 <script>
 (()=>{const splash=document.getElementById('dwLaunchSplash');if(!splash)return;let closed=false;const close=()=>{if(closed)return;closed=true;splash.classList.add('is-hidden');setTimeout(()=>splash.remove(),500)};splash.classList.add('dw-play');const finish=()=>setTimeout(close,2100);if(document.readyState==='complete')finish();else window.addEventListener('load',finish,{once:true});setTimeout(close,7000);})();
-</script><header class="dw-dashboard-header" aria-label="Dashboard"></header><main>
+</script><header class="dw-dashboard-header" aria-label="Dashboard"><img class="dw-dashboard-logo" src="./assets/file_00000000d4ec81faa86c6300e34d6aeb.png" alt="Doodhwala logo"></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
 <div class="tabs" style="grid-template-columns:repeat(5,1fr)"><button class="active" data-tab="register">Attendance</button><button data-tab="daily">Daily totals</button><button data-tab="monthly">Monthly bills</button><button data-tab="downloads">Download Bills</button><button data-tab="settings">Prices & backup</button></div>
