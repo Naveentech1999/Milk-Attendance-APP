@@ -606,6 +606,20 @@ header .dw-brand-tagline{display:block;font-size:12px;font-weight:650;font-style
 .dw-edit-note{margin:9px 0 0;font-size:10px}
 .add-product-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media(max-width:420px){.add-product-grid{grid-template-columns:1fr}}
+
+/* Inline customer editor and clearly separated second-product entry */
+.dw-inline-edit{margin-top:12px;border:1px solid #dcebe1;border-radius:13px;background:#f8fbf9;overflow:hidden}
+.dw-inline-edit>summary{list-style:none;cursor:pointer;padding:12px;font-size:12px;font-weight:850;color:#087a50}
+.dw-inline-edit>summary::-webkit-details-marker{display:none}
+.dw-inline-edit-fields{padding:0 11px 11px;display:grid;gap:9px;animation:dw-open .2s ease-out}
+.dw-inline-edit-fields>label,.dw-inline-product label{display:grid;gap:5px;font-size:10px;font-weight:800;color:#52665a}
+.dw-inline-edit-fields .field{width:100%;min-width:0;background:#fff}
+.dw-inline-product{display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:8px;padding-top:8px;border-top:1px solid #e5eee8}
+.dw-inline-save{width:100%;padding:11px;border:0;border-radius:10px;background:#087a50;color:white;font-size:12px;font-weight:850}
+.add-product-grid label:nth-child(n+3){padding:10px;border:1px dashed #9bc9aa;border-radius:12px;background:#f3faf5}
+.add-product-grid label:nth-child(n+3)>span{color:#087a50}
+.add-product-grid label:nth-child(n+3) .field{border-color:#cfe5d5}
+@media(max-width:380px){.dw-inline-product{grid-template-columns:minmax(0,1fr) 95px}}
 </style></head><body><header><h1 class="dw-wordmark"><span class="dw-brand-copy"><span class="dw-brand-name">Doodhwala</span><small class="dw-brand-tagline">Daily Milk Delivery</small></span></h1></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
@@ -724,6 +738,8 @@ function displayProductName(it){if(isCurd(it))return 'Heritage Curd packet';if(i
 function renderList(){
  let q=$('search').value.toLowerCase(),f=$('filter').value;
  let arr=db.customers.filter(c=>(c.name+' '+c.location).toLowerCase().includes(q)&&(f==='all'||status(c)===f));
+ const editPairs=Object.keys(db.prices).filter(k=>k.includes('|'));
+ const editOptions=selected=>'<option value="">Choose milk product</option>'+editPairs.map(k=>{const p=k.split('|');return '<option value="'+esc(k)+'" '+(k===selected?'selected':'')+'>'+esc(displayProductName({brand:p[0],type:p[1]}))+' · '+esc(p[0])+'</option>'}).join('');
  $('list').innerHTML=arr.map(c=>{
   let s=status(c),initial=(c.name||'?').trim().charAt(0).toUpperCase();
   return `<details class="dw-customer-card" data-customer-card="${esc(c.id)}">
@@ -736,10 +752,44 @@ function renderList(){
     <div class="actions"><button type="button" class="${s==='present'?'yes':''}" data-status="present" data-id="${esc(c.id)}">✓ Present</button><button type="button" class="${s==='absent'?'no':''}" data-status="absent" data-id="${esc(c.id)}">✕ Absent</button></div>
     ${(c.items||[]).map(it=>{let v=getVal(c,it);return `<div class="product milk-row" data-c="${esc(c.id)}" data-i="${esc(it.id)}"><div>${esc(displayProductName(it))}<small>Regular delivery: ${(it.qty*2).toFixed(0)} packets · Rate: ₹${price(it).toFixed(2)} / ${isPacketItem(it)?'packet':'litre'}</small></div><label>➕ EXTRA PACKETS<input class="qty" type="number" min="0" step="1" inputmode="numeric" placeholder="0" value="${((+v.extra||0)*2)}" data-field="extra" data-c="${esc(c.id)}" data-i="${esc(it.id)}" ${s!=='present'?'disabled':''}></label><label>↩ RETURN PACKETS<input class="qty" type="number" min="0" step="1" inputmode="numeric" placeholder="0" value="${((+v.returns||0)*2)}" data-field="returns" data-c="${esc(c.id)}" data-i="${esc(it.id)}" ${s!=='present'?'disabled':''}></label><span class="pill row-total" data-row-total="${esc(c.id)}|${esc(it.id)}"><span>NET: ${s==='present'?Math.round(net(c,it)*2):0} packets</span><span>AMOUNT: ${money(s==='present'?itemAmount(c,it):0)}</span></span></div>`}).join('')}
     <div class="muted customer-total" data-customer-total="${esc(c.id)}">Customer daily amount: <b>${money(s==='present'?c.items.reduce((a,it)=>a+itemAmount(c,it),0):0)}</b></div>
-    <p class="muted dw-edit-note">To change the customer's name, location or regular milk products, open More → Existing customers.</p>
+    <details class="dw-inline-edit"><summary>✎ Edit customer details and milk products</summary>
+     <div class="dw-inline-edit-fields">
+      <label>Customer name<input class="field" type="text" maxlength="120" value="${esc(c.name)}" data-inline-name="${esc(c.id)}"></label>
+      <label>Floor / location<input class="field" type="text" maxlength="120" value="${esc(c.location||'')}" data-inline-location="${esc(c.id)}"></label>
+      ${(c.items||[]).map((it,index)=>'<div class="dw-inline-product"><label>Milk product '+(index+1)+'<select class="field" data-inline-product="'+esc(c.id)+'" data-item-id="'+esc(it.id)+'">'+editOptions(key(it))+'</select></label><label>Daily packets<input class="field" type="number" min="0.5" step="0.5" value="'+esc(String(Number(it.qty||0)*2))+'" data-inline-qty="'+esc(c.id)+'" data-item-id="'+esc(it.id)+'"></label></div>').join('')}
+      ${(c.items||[]).length<2?'<div class="dw-inline-product dw-inline-add"><label>Second milk product (optional)<select class="field" data-inline-new-product="'+esc(c.id)+'">'+editOptions('')+'</select></label><label>Daily packets<input class="field" type="number" min="0.5" step="0.5" placeholder="If adding second" data-inline-new-qty="'+esc(c.id)+'"></label></div>':''}
+      <button type="button" class="dw-inline-save" data-inline-save="${esc(c.id)}">Save customer changes</button>
+     </div>
+    </details>
    </div>
   </details>`;
  }).join('')||'<div class="card muted">No matching customers.</div>';
+ document.querySelectorAll('[data-inline-save]').forEach(button=>button.onclick=()=>{
+  const id=button.dataset.inlineSave,customer=db.customers.find(x=>x.id===id);if(!customer)return;
+  const name=document.querySelector('[data-inline-name="'+CSS.escape(id)+'"]').value.trim();
+  const location=document.querySelector('[data-inline-location="'+CSS.escape(id)+'"]').value.trim();
+  if(!name){alert('Please enter a customer name.');return}
+  if(db.customers.some(x=>x.id!==id&&x.name.trim().toLowerCase()===name.toLowerCase()&&(x.location||'').trim().toLowerCase()===location.toLowerCase())){alert('A customer with this name and location already exists.');return}
+  const updates=[];
+  for(const it of customer.items||[]){
+   const product=document.querySelector('[data-inline-product="'+CSS.escape(id)+'"][data-item-id="'+CSS.escape(it.id)+'"]');
+   const quantity=document.querySelector('[data-inline-qty="'+CSS.escape(id)+'"][data-item-id="'+CSS.escape(it.id)+'"]');
+   const qty=Number(quantity?.value),pair=product?.value||'';
+   if(!product||!quantity||!pair.includes('|')||!Number.isFinite(qty)||qty<=0){alert('Choose a milk product and enter a valid daily packet quantity for each item.');return}
+   updates.push({it,pair,qty});
+  }
+  const newProduct=document.querySelector('[data-inline-new-product="'+CSS.escape(id)+'"]');
+  const newQty=document.querySelector('[data-inline-new-qty="'+CSS.escape(id)+'"]');
+  if(newProduct?.value&&(!Number.isFinite(Number(newQty.value))||Number(newQty.value)<=0)){alert('Enter a valid daily quantity for the second product.');return}
+  if(newProduct?.value&&updates.some(x=>x.pair===newProduct.value)){alert('Choose a different second milk product.');return}
+  if(!confirm('Save customer details? Changes to existing milk products and quantities also affect calculations for saved attendance linked to those products.'))return;
+  customer.name=name;customer.location=location;
+  updates.forEach(({it,pair,qty})=>{const p=pair.split('|');it.brand=p[0];it.type=p.slice(1).join('|');it.qty=qty/2});
+  if(newProduct?.value){const p=newProduct.value.split('|'),stamp=Date.now();customer.items.push({id:'item'+stamp+'_2',brand:p[0],type:p.slice(1).join('|'),qty:Number(newQty.value)/2});}
+  save();renderList();renderManagedCustomers();renderDaily();fillCustomerSelect();refreshMetrics();
+  const card=document.querySelector('[data-customer-card="'+CSS.escape(id)+'"]');if(card)card.open=true;
+  say(name+' customer details updated.');
+ });
  document.querySelectorAll('[data-status]').forEach(b=>b.onclick=()=>{
   let c=db.customers.find(x=>x.id===b.dataset.id);if(!c)return;
   getEntry(c).status=b.dataset.status;save();renderList();refreshMetrics();
