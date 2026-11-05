@@ -704,10 +704,10 @@ header .dw-brand-copy{display:flex!important;flex:0 1 auto;flex-direction:column
 header .dw-brand-name,header .dw-brand-tagline{display:block;margin:0;padding:0!important}
 
 /* Minimal launch splash: show only the supplied flying superhero GIF */
-.dw-launch-splash{position:fixed;inset:0;z-index:10000;display:block;padding:0;background:transparent;opacity:1;visibility:visible;transition:opacity .4s ease,visibility .4s ease;overflow:hidden}
+.dw-launch-splash{position:fixed;inset:0;z-index:10000;display:block;padding:0;background:#eaffdf;opacity:1;visibility:visible;transition:opacity .4s ease,visibility .4s ease;overflow:hidden}
 .dw-launch-splash.is-hidden{opacity:0;visibility:hidden;pointer-events:none}
 .dw-hero-window{position:absolute;inset:0;width:100%;height:100%;overflow:hidden}
-.dw-hero-art{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
+.dw-hero-art{display:block;width:100%;height:100%;object-fit:contain;object-position:center}
 @media(prefers-reduced-motion:reduce){.dw-launch-splash{transition:none}}
 </style></head><body>
 <div class="dw-launch-splash" id="dwLaunchSplash" role="status" aria-label="Loading">
@@ -715,7 +715,7 @@ header .dw-brand-name,header .dw-brand-tagline{display:block;margin:0;padding:0!
 </div>
 <script>
 (()=>{const splash=document.getElementById('dwLaunchSplash');if(!splash)return;let closed=false;const close=()=>{if(closed)return;closed=true;splash.classList.add('is-hidden');setTimeout(()=>splash.remove(),500)};splash.classList.add('dw-play');const finish=()=>setTimeout(close,2100);if(document.readyState==='complete')finish();else window.addEventListener('load',finish,{once:true});setTimeout(close,7000);})();
-</script><header><h1 class="dw-wordmark"><span class="dw-brand-glass" aria-hidden="true">🥛</span><span class="dw-brand-copy"><span class="dw-brand-name">Doodhwala</span><small class="dw-brand-tagline">Daily Milk Delivery</small></span></h1></header><main>
+</script><header><h1 class="dw-wordmark" style="display:flex;align-items:center;gap:12px"><img src="./assets/Doodhman_20Logo.png" alt="Doodhwala logo" style="display:block;width:min(180px,48vw);max-height:76px;object-fit:contain"><span class="dw-brand-copy"><span class="dw-brand-name">Doodhwala</span><small class="dw-brand-tagline">Daily Milk Delivery</small></span></h1></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
 <div class="tabs" style="grid-template-columns:repeat(5,1fr)"><button class="active" data-tab="register">Attendance</button><button data-tab="daily">Daily totals</button><button data-tab="monthly">Monthly bills</button><button data-tab="downloads">Download Bills</button><button data-tab="settings">Prices & backup</button></div>
