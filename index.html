@@ -396,6 +396,12 @@ button:active{transform:scale(.97)}
 .managed-customer-row b{font-size:13px;color:#183629;overflow-wrap:anywhere}
 .managed-customer-row small{font-size:11px;color:#718078}
 .managed-customer-remove{flex:0 0 auto;background:#fff1ef!important;color:#a33225!important;border:1px solid #f1d2ce!important;border-radius:10px;padding:8px 12px;font-size:11px;font-weight:800}
+.managed-customer-card{padding:10px 0;border-bottom:1px solid #e5eee8}
+.managed-customer-fields{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.managed-customer-fields label,.managed-item-edit label{display:flex;flex-direction:column;gap:5px;font-size:11px;font-weight:700;color:#52665b}
+.managed-customer-fields .field,.managed-item-edit .field{min-width:0;width:100%;font-size:13px;padding:9px}
+.managed-item-edit{display:grid;grid-template-columns:minmax(0,1fr) 115px;gap:8px;margin:8px 0}
+.managed-customer-save{width:100%;margin:5px 0 2px;padding:10px;border:0;border-radius:10px;background:#e6f5eb;color:#087a50;font-weight:800;font-size:12px}
 
 @media(max-width:380px){.add-customer-card{padding:14px}.add-product-grid{grid-template-columns:1fr 105px}.add-customer-foot{align-items:stretch;flex-direction:column}.add-customer-foot button{width:100%}}
 
@@ -910,7 +916,32 @@ function fillCustomerSelect(){$('billCustomer').innerHTML=db.customers.map(c=>`<
 $('date').onchange=()=>{renderList();renderDaily()};$('today').onclick=()=>{$('date').value=todayISO();renderList();renderDaily()};$('search').oninput=renderList;$('filter').onchange=renderList;function renderManagedCustomers(){
  const host=$('managedCustomers');if(!host)return;
  $('managedCustomerCount').textContent=db.customers.length+' customers';
- host.innerHTML=db.customers.map(c=>'<div class="managed-customer-row"><div><b>'+esc(c.name)+'</b><small>'+esc(c.location||'No location')+'</small></div><button type="button" class="managed-customer-remove" data-remove-customer="'+esc(c.id)+'">Remove</button></div>').join('')||'<p class="muted">No active customers.</p>';
+ const pairs=Object.keys(db.prices).filter(k=>k.includes('|'));
+ const options=selected=>pairs.map(k=>{const p=k.split('|');return '<option value="'+esc(k)+'" '+(k===selected?'selected':'')+'>'+esc(displayProductName({brand:p[0],type:p[1]}))+' · '+esc(p[0])+'</option>'}).join('');
+ host.innerHTML=db.customers.map(c=>{
+  const products=(c.items||[]).map((it,index)=>'<div class="managed-item-edit"><label>Milk product<select class="field" data-edit-product="'+esc(c.id)+'" data-item-id="'+esc(it.id)+'">'+options(key(it))+'</select></label><label>Daily quantity (packets)<input class="field" type="number" min="0.5" step="0.5" value="'+esc((Number(it.qty||0)*2).toString())+'" data-edit-qty="'+esc(c.id)+'" data-item-id="'+esc(it.id)+'"></label></div>').join('');
+  return '<section class="managed-customer-card" data-managed-id="'+esc(c.id)+'"><div class="managed-customer-row"><div><b>'+esc(c.name)+'</b><small>'+esc(c.location||'No location')+'</small></div><button type="button" class="managed-customer-remove" data-remove-customer="'+esc(c.id)+'">Remove</button></div><div class="managed-customer-fields"><label>Customer name<input class="field" type="text" maxlength="120" value="'+esc(c.name)+'" data-edit-name="'+esc(c.id)+'"></label><label>Location / address<input class="field" type="text" maxlength="120" value="'+esc(c.location||'')+'" data-edit-location="'+esc(c.id)+'"></label></div>'+products+'<button type="button" class="managed-customer-save" data-save-customer="'+esc(c.id)+'">Save changes</button></section>';
+ }).join('')||'<p class="muted">No active customers.</p>';
+ host.querySelectorAll('[data-save-customer]').forEach(button=>button.onclick=()=>{
+  const customer=db.customers.find(x=>x.id===button.dataset.saveCustomer);if(!customer)return;
+  const id=customer.id, name=host.querySelector('[data-edit-name="'+id+'"]').value.trim(), location=host.querySelector('[data-edit-location="'+id+'"]').value.trim();
+  if(!name){alert('Please enter a customer name.');return}
+  const duplicate=db.customers.some(x=>x.id!==id&&x.name.trim().toLowerCase()===name.toLowerCase()&&(x.location||'').trim().toLowerCase()===location.toLowerCase());
+  if(duplicate){alert('A customer with this name and location already exists.');return}
+  const updates=[];
+  for(const it of customer.items||[]){
+   const product=host.querySelector('[data-edit-product="'+id+'"][data-item-id="'+it.id+'"]');
+   const quantity=host.querySelector('[data-edit-qty="'+id+'"][data-item-id="'+it.id+'"]');
+   const qty=Number(quantity?.value), pair=product?.value||'';
+   if(!product||!quantity||!Number.isFinite(qty)||qty<=0||!pair.includes('|')){alert('Please choose a milk product and enter a valid quantity for every item.');return}
+   updates.push({it,pair,qty});
+  }
+  if(!confirm('Save these customer details? Milk product and regular quantity changes will also affect calculations for saved attendance records linked to these items.'))return;
+  customer.name=name;customer.location=location;
+  updates.forEach(({it,pair,qty})=>{const p=pair.split('|');it.brand=p[0];it.type=p.slice(1).join('|');it.qty=qty/2});
+  save();renderManagedCustomers();renderList();renderDaily();fillCustomerSelect();refreshMetrics();
+  $('addCustomerFeedback').textContent=name+' details updated.';
+ });
  host.querySelectorAll('[data-remove-customer]').forEach(button=>button.onclick=()=>{
   const customer=db.customers.find(x=>x.id===button.dataset.removeCustomer);if(!customer)return;
   if(!confirm('Remove '+customer.name+' from the active customer list? Their saved attendance records will remain stored, but they will no longer appear in active delivery and billing lists.'))return;
