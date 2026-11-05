@@ -740,6 +740,7 @@ header .dw-brand-tagline{display:block;font-size:12px;font-weight:650;font-style
     <div class="customer-manage-title"><b>Edit / update existing customers</b><small id="managedCustomerCount">0 customers</small></div>
     <div class="customer-manage-body">
       <div id="managedCustomers"></div>
+      <p class="add-customer-feedback" id="existingCustomersFeedback" role="status" aria-live="polite"></p>
       <p class="settings-note">Open a customer to edit their name, location, milk products and daily quantities. Choose Save changes to update, or Remove customer to remove them from active delivery and billing lists. Saved attendance records are retained.</p>
     </div>
   </div>
@@ -1134,14 +1135,14 @@ $('date').onchange=()=>{renderList();renderDaily()};$('today').onclick=()=>{$('d
   customer.name=name;customer.location=location;
   updates.forEach(({it,pair,qty})=>{const p=pair.split('|');it.brand=p[0];it.type=p.slice(1).join('|');it.qty=qty/2});
   save();renderManagedCustomers();renderList();renderDaily();fillCustomerSelect();refreshMetrics();
-  $('addCustomerFeedback').textContent=name+' details updated.';
+  $('existingCustomersFeedback').textContent=name+' details updated.';
  });
  host.querySelectorAll('[data-remove-customer]').forEach(button=>button.onclick=()=>{
   const customer=db.customers.find(x=>x.id===button.dataset.removeCustomer);if(!customer)return;
   if(!confirm('Remove '+customer.name+' from the active customer list? Their saved attendance records will remain stored, but they will no longer appear in active delivery and billing lists.'))return;
   db.customers=db.customers.filter(x=>x.id!==customer.id);
   save();renderManagedCustomers();renderList();renderDaily();fillCustomerSelect();refreshMetrics();
-  $('addCustomerFeedback').textContent=customer.name+' removed from active customers. Saved attendance records were retained.';
+  $('existingCustomersFeedback').textContent=customer.name+' removed from active customers. Saved attendance records were retained.';
  });
 }
 function setupAddCustomer(){
