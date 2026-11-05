@@ -950,8 +950,23 @@ function showDailyReportPreview(url,dateLabel){
   try{const response=await fetch(url),blob=await response.blob(),a=document.createElement('a'),safe=(dateLabel||'daily').replace(/[^a-z0-9]+/gi,'-');const downloadUrl=URL.createObjectURL(blob);a.href=downloadUrl;a.download='Doodhwala-Daily-Report-'+safe+'.png';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(downloadUrl),1500);say('Daily report image downloaded.')}catch(err){say('Image download failed: '+err.message)}
  };
  modal.querySelector('#shareDailyReport').onclick=async()=>{
-  if(!navigator.share||!navigator.canShare){say('This browser does not support sharing image files.');return}
-  try{const response=await fetch(url),blob=await response.blob(),file=new File([blob],'Doodhwala-Daily-Report.png',{type:'image/png'});if(!navigator.canShare({files:[file]})){say('This browser cannot share image files.');return}await navigator.share({files:[file],title:'Doodhwala daily report',text:'Daily milk report · '+dateLabel});say('Choose WhatsApp in the share panel.')}catch(err){if(err.name!=='AbortError')say('Daily report sharing failed: '+err.message)}
+  const shareText='Doodhwala daily milk report · '+dateLabel;
+  try{
+   const response=await fetch(url),blob=await response.blob();
+   const file=new File([blob],'Doodhwala-Daily-Report.png',{type:'image/png'});
+   if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){
+    await navigator.share({files:[file],title:'Doodhwala daily report',text:shareText});
+    return;
+   }
+   const downloadUrl=URL.createObjectURL(blob),a=document.createElement('a');
+   a.href=downloadUrl;a.download='Doodhwala-Daily-Report.png';document.body.appendChild(a);a.click();a.remove();
+   setTimeout(()=>URL.revokeObjectURL(downloadUrl),3000);
+   const whatsappUrl='https://wa.me/?text='+encodeURIComponent(shareText+' — Please attach the downloaded daily report image.');
+   window.open(whatsappUrl,'_blank','noopener');
+   say('Image downloaded. WhatsApp opened; attach Doodhwala-Daily-Report.png to your chat.');
+  }catch(err){
+   if(err.name!=='AbortError')say('WhatsApp sharing could not start: '+err.message);
+  }
  };
 }
 function renderAfterCloudLoad(){renderList();renderDaily();renderPrices();fillCustomerSelect();refreshMetrics()}
