@@ -11,9 +11,9 @@
   "theme_color": "#fc8019",
   "icons": [
     {
-      "src": "./assets/file_00000000d4ec81faa86c6300e34d6aeb.png",
+      "src": "./assets/transparent-launch-icon.svg",
       "sizes": "any",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any"
     }
   ]
