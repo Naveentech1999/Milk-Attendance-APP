@@ -14,7 +14,7 @@
       "src": "./assets/doodhwala-bike-app-icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any"
+      "purpose": "any maskable"
     }
   ]
 }
