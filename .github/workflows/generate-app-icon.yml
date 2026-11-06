@@ -1,0 +1,52 @@
+name: Generate Doodhwala app icons
+on:
+  push:
+    branches: [main]
+    paths:
+      - "assets/milk-delivery-rider.gif.gif"
+      - ".github/workflows/generate-app-icon.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build-icons:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - run: pip install pillow
+      - name: Create PNG icons from the milk rider GIF
+        run: |
+          python - <<'PY'
+          from PIL import Image, ImageDraw
+          import numpy as np
+          src = Image.open("assets/milk-delivery-rider.gif.gif")
+          src.seek(0)
+          rgba = src.convert("RGBA")
+          arr = np.array(rgba)
+          rgb = arr[:, :, :3].astype(np.int16)
+          # Remove the near-white source backdrop while preserving soft edges.
+          brightness = rgb.min(axis=2)
+          alpha = np.clip((248 - brightness) * 9, 0, 255).astype(np.uint8)
+          alpha[brightness < 218] = 255
+          arr[:, :, 3] = alpha
+          rider = Image.fromarray(arr, "RGBA")
+          rider = rider.crop(rider.getbbox())
+          canvas = Image.new("RGBA", (512, 512), (252, 128, 25, 255))
+          draw = ImageDraw.Draw(canvas)
+          draw.ellipse((16, 16, 496, 496), fill=(255, 164, 78, 255))
+          draw.ellipse((34, 34, 478, 478), fill=(252, 128, 25, 255))
+          rider.thumbnail((456, 426), Image.Resampling.LANCZOS)
+          canvas.alpha_composite(rider, ((512-rider.width)//2, (512-rider.height)//2))
+          canvas.convert("RGB").save("assets/doodhwala-app-icon-512.png", optimize=True)
+          canvas.resize((192, 192), Image.Resampling.LANCZOS).convert("RGB").save("assets/doodhwala-app-icon-192.png", optimize=True)
+          PY
+      - name: Commit generated icons
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/doodhwala-app-icon-192.png assets/doodhwala-app-icon-512.png
+          git commit -m "Generate PNG PWA icons from milk delivery rider" || exit 0
+          git push
