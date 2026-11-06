@@ -785,12 +785,33 @@ header.dw-dashboard-header img.dw-dashboard-logo{
 @media(prefers-reduced-motion:reduce){
   header.dw-dashboard-header img.dw-dashboard-logo{animation:none!important;transform:none!important}
 }
+
+/* Use the actual animated rider GIF in the dashboard brand and move it across the orange header */
+header.dw-dashboard-header{overflow:hidden!important}
+header.dw-dashboard-header img.dw-dashboard-logo{
+  display:block!important;
+  flex:0 0 auto!important;
+  width:min(112px,38vw)!important;
+  height:72px!important;
+  max-width:min(112px,38vw)!important;
+  max-height:72px!important;
+  object-fit:contain!important;
+  animation:dw-rider-drive-right 5s ease-in-out infinite alternate!important;
+  will-change:transform;
+}
+@keyframes dw-rider-drive-right{
+  from{transform:translateX(0)}
+  to{transform:translateX(min(52vw,340px))}
+}
+@media(prefers-reduced-motion:reduce){
+  header.dw-dashboard-header img.dw-dashboard-logo{animation:none!important;transform:none!important}
+}
 </style><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"><link rel="preload" as="image" href="./assets/milk-delivery-rider.gif.gif" fetchpriority="high"></head><body>
 <div class="dw-launch-splash" id="dwLaunchSplash" role="status" aria-label="Loading">
  <div class="dw-hero-window"><img class="dw-hero-art" src="./assets/milk-delivery-rider.gif.gif" alt="Milk delivery rider on scooter"></div>
 </div>
 <script>
-(()=>{const splash=document.getElementById("dwLaunchSplash");if(!splash)return;let closed=false;const close=()=>{if(closed)return;closed=true;splash.classList.add("is-hidden");setTimeout(()=>splash.remove(),250)};const minShow=1250;const started=performance.now();const finish=()=>{const wait=Math.max(0,minShow-(performance.now()-started));setTimeout(close,wait)};if(document.readyState==="complete")finish();else window.addEventListener("load",finish,{once:true});setTimeout(close,4500);})();</script><header class="dw-dashboard-header" aria-label="Dashboard"><img class="dw-dashboard-logo" src="./assets/doodhwala-app-icon-192.png" alt="Doodhwala logo"><div class="dw-dashboard-brand-copy"><strong>Doodhwala</strong><span>Daily Milk Delivery</span></div></header><main>
+(()=>{const splash=document.getElementById("dwLaunchSplash");if(!splash)return;let closed=false;const close=()=>{if(closed)return;closed=true;splash.classList.add("is-hidden");setTimeout(()=>splash.remove(),250)};const minShow=1250;const started=performance.now();const finish=()=>{const wait=Math.max(0,minShow-(performance.now()-started));setTimeout(close,wait)};if(document.readyState==="complete")finish();else window.addEventListener("load",finish,{once:true});setTimeout(close,4500);})();</script><header class="dw-dashboard-header" aria-label="Dashboard"><img class="dw-dashboard-logo" src="./assets/milk-delivery-rider.gif.gif" alt="Milk delivery rider on scooter"><div class="dw-dashboard-brand-copy"><strong>Doodhwala</strong><span>Daily Milk Delivery</span></div></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
 <div class="tabs" style="grid-template-columns:repeat(5,1fr)"><button class="active" data-tab="register">Attendance</button><button data-tab="daily">Daily totals</button><button data-tab="monthly">Monthly bills</button><button data-tab="downloads">Download Bills</button><button data-tab="settings">Prices & backup</button></div>
