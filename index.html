@@ -735,6 +735,9 @@ header{background:linear-gradient(120deg,#e96800 0%,#fc8019 58%,#ff9f43 100%);co
 .bar:has(#date){border-color:#f1dfd0}
 .dw-avatar{background:linear-gradient(145deg,#ffe5ce,#fff4e9)!important;color:#d95f00!important;box-shadow:inset 0 0 0 1px #f7d6bb!important}
 .dw-cust-status.present,.status.present{background:#fff0e3!important;color:#d95f00!important}
+/* Keep absent status visually distinct from the orange present status. */
+.dw-cust-status.absent,.status.absent{background:#e8efff!important;color:#3157a4!important}
+.dw-customer-card:has(.absent){border-color:#b9cafa!important}
 .dw-customer-card[open],.dw-customer-card:has(.present){border-color:#f5c49e!important}
 .dw-expand-hint{background:#fff0e3!important}
 .dw-expand-hint:before{border-color:#e87518!important}
