@@ -35,7 +35,7 @@ On the device that currently contains the authoritative customer and attendance 
 3. Use **Upload this device data** once to migrate the local data into the signed-in account.
 4. Install the Android APK and sign in with that same account.
 
-The existing app schedules cloud snapshot uploads after local edits once initial cloud sync has been enabled. The current schema is a per-user JSONB snapshot with RLS, not normalized customer/attendance tables. This Android wrapper preserves that design; it does not silently migrate or alter the database schema.
+The existing app schedules cloud snapshot uploads after local edits once initial cloud sync has been enabled. The Android bundle also subscribes to Supabase Realtime UPDATE events for the signed-in user's row, so updates made from another connected app session can refresh this device. The `milk_app_state` table must be included in the `supabase_realtime` publication; the updated `supabase/schema.sql` includes an idempotent SQL block for this. Re-run the updated schema in Supabase SQL Editor if Realtime is not already enabled. The current schema remains a per-user JSONB snapshot with RLS, not normalized customer/attendance tables. This Android wrapper preserves that data model and does not silently migrate the database.
 
 ## Notes
 
