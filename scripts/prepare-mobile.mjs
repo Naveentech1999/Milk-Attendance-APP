@@ -13,13 +13,15 @@ for (const dir of ["assets", "icons"]) {
   const from = new URL(dir, root);
   if (existsSync(from)) await cp(from, new URL(dir, out), { recursive: true, force: true });
 }
-const cssFrom = new URL("../mobile/mobile-theme.css", import.meta.url);
-const cssTo = new URL("mobile-theme.css", out);
-await cp(cssFrom, cssTo);
+await cp(new URL("../mobile/mobile-theme.css", import.meta.url), new URL("mobile-theme.css", out));
+await cp(new URL("../mobile/mobile-realtime.js", import.meta.url), new URL("mobile-realtime.js", out));
 const indexPath = new URL("index.html", out);
 let html = await readFile(indexPath, "utf8");
 if (!html.includes("mobile-theme.css")) {
   html = html.replace("</head>", '<link rel="stylesheet" href="./mobile-theme.css"></head>');
+}
+if (!html.includes("mobile-realtime.js")) {
+  html = html.replace("</body>", '<script src="./mobile-realtime.js"></script></body>');
 }
 html = html.replace(/<meta name="theme-color" content="[^"]*">/i, '<meta name="theme-color" content="#5045c5">');
 await writeFile(indexPath, html);
