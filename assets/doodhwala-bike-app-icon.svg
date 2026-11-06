@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffad55"/><stop offset="1" stop-color="#f46b08"/></linearGradient>
+    <linearGradient id="bike" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#d9efff"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="9" stdDeviation="8" flood-color="#8a3600" flood-opacity=".28"/></filter>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <circle cx="256" cy="242" r="183" fill="#fff" opacity=".13"/>
+  <path d="M68 347h92M44 380h92" stroke="#fff" stroke-width="13" stroke-linecap="round" opacity=".8"/>
+  <g filter="url(#shadow)" stroke="#12345b" stroke-width="13" stroke-linecap="round" stroke-linejoin="round">
+    <!-- wheels and scooter -->
+    <circle cx="166" cy="365" r="43" fill="#fff"/>
+    <circle cx="365" cy="365" r="43" fill="#fff"/>
+    <circle cx="166" cy="365" r="17" fill="#ff9b35" stroke-width="9"/>
+    <circle cx="365" cy="365" r="17" fill="#ff9b35" stroke-width="9"/>
+    <path d="M166 365l61-77 70 0 68 77h-95l-43-77" fill="none" stroke="#12345b" stroke-width="20"/>
+    <path d="M297 288h52l26 77h-66" fill="#ffcf80"/>
+    <path d="M293 288l-7-39h48l18 39" fill="#fff"/>
+    <path d="M336 247l20-34 37 0" fill="none" stroke-width="12"/>
+    <!-- rider -->
+    <path d="M220 222c-3-42 23-77 66-77 37 0 61 26 61 61 0 23-12 42-30 54l-18 34h-68l-25-31z" fill="#fff"/>
+    <path d="M211 206c6-48 37-76 81-76 30 0 53 16 64 43-25-8-43-3-59 14-19-13-46-8-61 16z" fill="#12345b"/>
+    <path d="M255 217c11-15 28-20 43-13" fill="none" stroke-width="9"/>
+    <circle cx="287" cy="218" r="6" fill="#12345b" stroke="none"/>
+    <path d="M305 240q18 13 34-1" fill="none" stroke="#e76b51" stroke-width="9"/>
+    <path d="M228 265l-42 23 39 36 47-29" fill="#fff"/>
+    <!-- milk cans -->
+    <path d="M112 250h51l-5 81h-41z" fill="url(#bike)"/>
+    <path d="M122 236h31v14h-31zM119 270h37" fill="none"/>
+    <path d="M169 265h43l-4 66h-35z" fill="url(#bike)"/>
+    <path d="M178 252h25v13h-25z" fill="none"/>
+    <path d="M133 290h12M184 290h12" stroke="#fc8019" stroke-width="8"/>
+  </g>
+  <path d="M92 424q164 38 328 0" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" opacity=".75"/>
+  <text x="256" y="472" font-family="Arial,sans-serif" font-size="25" font-weight="900" text-anchor="middle" fill="#fff" letter-spacing="2">DOODHWALA</text>
+</svg>
