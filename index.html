@@ -769,6 +769,22 @@ header.dw-dashboard-header .dw-dashboard-brand-copy span{display:block!important
 /* Attractive rounded display typography for the dashboard brand */
 header.dw-dashboard-header .dw-dashboard-brand-copy strong{font-family:"Baloo 2","Trebuchet MS",ui-rounded,system-ui,sans-serif!important;font-size:clamp(27px,7vw,34px)!important;font-weight:800!important;letter-spacing:-.6px!important;line-height:1!important;color:#fff!important;text-shadow:0 1px 2px #a9470030!important}
 header.dw-dashboard-header .dw-dashboard-brand-copy span{font-family:"Nunito","Trebuchet MS",system-ui,sans-serif!important;font-size:clamp(12px,3.3vw,15px)!important;font-weight:900!important;letter-spacing:.25px!important;line-height:1.15!important;color:#fff!important}
+
+/* Dashboard rider motion: keep the brand text fixed while the scooter artwork travels right and returns */
+header.dw-dashboard-header{position:relative!important;overflow:hidden!important}
+header.dw-dashboard-header img.dw-dashboard-logo{
+  position:relative!important;
+  z-index:1;
+  will-change:transform;
+  animation:dw-dashboard-rider-ride 7s ease-in-out infinite alternate!important;
+}
+@keyframes dw-dashboard-rider-ride{
+  from{transform:translateX(0)}
+  to{transform:translateX(min(46vw,260px))}
+}
+@media(prefers-reduced-motion:reduce){
+  header.dw-dashboard-header img.dw-dashboard-logo{animation:none!important;transform:none!important}
+}
 </style><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"><link rel="preload" as="image" href="./assets/milk-delivery-rider.gif.gif" fetchpriority="high"></head><body>
 <div class="dw-launch-splash" id="dwLaunchSplash" role="status" aria-label="Loading">
  <div class="dw-hero-window"><img class="dw-hero-art" src="./assets/milk-delivery-rider.gif.gif" alt="Milk delivery rider on scooter"></div>
