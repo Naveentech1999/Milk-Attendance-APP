@@ -1,0 +1,15 @@
+{
+  "appId": "com.naveentech.doodhwala",
+  "appName": "Doodhwala",
+  "webDir": "mobile/www",
+  "bundledWebRuntime": false,
+  "backgroundColor": "#f7f5ef",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1200,
+      "backgroundColor": "#5045c5",
+      "showSpinner": false,
+      "androidScaleType": "CENTER_CROP"
+    }
+  }
+}
