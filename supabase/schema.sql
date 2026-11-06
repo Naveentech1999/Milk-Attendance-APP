@@ -48,3 +48,20 @@ create policy "Users can update their own bill images"
   on storage.objects for update to authenticated
   using (bucket_id = 'customer-bills' and (storage.foldername(name))[1] = auth.uid()::text)
   with check (bucket_id = 'customer-bills' and (storage.foldername(name))[1] = auth.uid()::text);
+
+
+-- Enable row UPDATE events for the Android app's optional Supabase Realtime
+-- listener. This is idempotent and keeps the existing owner-only RLS policies.
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_publication_tables
+    where pubname = 'supabase_realtime'
+      and schemaname = 'public'
+      and tablename = 'milk_app_state'
+  ) then
+    alter publication supabase_realtime add table public.milk_app_state;
+  end if;
+end
+$$;

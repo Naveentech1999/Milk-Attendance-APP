@@ -1,0 +1,36 @@
+/* Doodhwala Android visual refresh — playful indigo, cream, coral and mint */
+:root{
+ --green:#5045c5;--deep:#29245f;--mint:#e5f5eb;--ink:#20223d;
+ --muted:#77788c;--line:#e9e6df;--paper:#f7f5ef;--orange:#fff0e8;
+}
+html,body{background:var(--paper)!important;color:var(--ink)!important}
+body{font-family:Inter,ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif!important;padding-bottom:calc(88px + env(safe-area-inset-bottom))!important}
+header{background:linear-gradient(125deg,#39318f 0%,#5045c5 65%,#766be2 100%)!important;box-shadow:0 8px 25px #39318f2a!important}
+header h1{letter-spacing:-.6px!important}
+header h1:before{background:#ffffff25!important}
+main{padding-top:14px!important}
+.metric{background:#fffefa!important;border:1px solid #e9e6df!important;border-radius:19px!important;box-shadow:0 5px 18px #29245f0d!important;animation:dw-rise .38s both}
+.metric:nth-child(2){animation-delay:.07s}.metric:nth-child(3){animation-delay:.14s}.metric:nth-child(4){animation-delay:.21s}
+.metric:after{background:#eae8fb!important}
+.metric b{color:#39318f!important}
+.card,.dw-customer,.customer,.dw-customer summary{border-radius:18px!important}
+.card{background:#fffefa!important;border-color:#e9e6df!important;box-shadow:0 4px 16px #29245f0b!important}
+.title{color:#39318f!important}
+button{border-radius:13px!important;transition:transform .16s ease,box-shadow .16s ease!important}
+button:active{transform:scale(.97)!important}
+.primary,.tabs .active{background:#5045c5!important;border-color:#5045c5!important;color:white!important}
+#register>.actions .primary{box-shadow:0 6px 14px #5045c52c!important}
+.dw-customer{border:1px solid #e9e6df!important;box-shadow:0 4px 16px #29245f0b!important;overflow:hidden}
+.dw-customer summary{background:#fffefa!important}
+.dw-avatar{background:linear-gradient(145deg,#e6e4fb,#f2f0ff)!important;color:#5045c5!important}
+.dw-cust-status.present{background:#e5f5eb!important;color:#24764e!important}
+.dw-cust-status.absent{background:#fff0e8!important;color:#c65042!important}
+.dw-bottom-nav{background:#fffefaed!important;border-top:1px solid #e9e6df!important;box-shadow:0 -7px 24px #29245f10!important;padding-bottom:calc(8px + env(safe-area-inset-bottom))!important}
+.dw-bottom-nav button.active{background:#efedff!important;color:#5045c5!important}
+.field{border-radius:13px!important;border-color:#e9e6df!important}
+.pill{background:#efedff!important;color:#5045c5!important}
+.status.present{background:#e5f5eb!important;color:#24764e!important}
+.status.absent{background:#fff0e8!important;color:#c65042!important}
+.hint{border-radius:14px!important}
+@keyframes dw-rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
