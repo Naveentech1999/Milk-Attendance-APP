@@ -791,8 +791,8 @@ header.dw-dashboard-header{overflow:hidden!important;isolation:isolate!important
 header.dw-dashboard-header .dw-dashboard-rider-wrap{
   position:relative!important;display:block!important;flex:0 0 min(112px,38vw)!important;
   width:min(112px,38vw)!important;height:72px!important;z-index:2!important;
-  animation:dw-rider-drive-right 5s ease-in-out infinite alternate!important;
-  will-change:transform!important;
+  animation:none!important;
+  transform:none!important;
 }
 header.dw-dashboard-header img.dw-dashboard-logo{
   display:block!important;position:relative!important;z-index:2!important;
@@ -816,10 +816,6 @@ header.dw-dashboard-header .dw-dashboard-brand-copy{position:relative!important;
 header.dw-dashboard-header .dw-dashboard-brand-copy strong,
 header.dw-dashboard-header .dw-dashboard-brand-copy span{
   animation:dw-headlamp-glow 2.4s ease-in-out infinite alternate!important;
-}
-@keyframes dw-rider-drive-right{
-  from{transform:translateX(0)}
-  to{transform:translateX(min(52vw,340px))}
 }
 @keyframes dw-headlamp-rays{
   from{opacity:.3;transform:translateY(-50%) skewX(-10deg) translateX(-8px);filter:blur(3px)}
