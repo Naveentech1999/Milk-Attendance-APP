@@ -11,9 +11,9 @@
   "theme_color": "#fc8019",
   "icons": [
     {
-      "src": "./assets/milk-delivery-rider.gif.gif",
+      "src": "./assets/doodhwala-bike-app-icon.svg",
       "sizes": "any",
-      "type": "image/gif",
+      "type": "image/svg+xml",
       "purpose": "any"
     }
   ]
