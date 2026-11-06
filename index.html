@@ -786,52 +786,57 @@ header.dw-dashboard-header img.dw-dashboard-logo{
   header.dw-dashboard-header img.dw-dashboard-logo{animation:none!important;transform:none!important}
 }
 
-/* Keep the existing scooter travel and text glow; anchor the rays to the bike's front headlight */
-header.dw-dashboard-header{overflow:hidden!important;isolation:isolate!important;position:relative!important}
-header.dw-dashboard-header .dw-dashboard-rider-wrap{
-  position:relative!important;display:block!important;flex:0 0 min(112px,38vw)!important;
-  width:min(112px,38vw)!important;height:72px!important;z-index:2!important;
-  animation:dw-rider-drive-right 5s ease-in-out infinite alternate!important;
-  will-change:transform!important;
-}
+/* Use the actual animated rider GIF in the dashboard brand and move it across the orange header */
+header.dw-dashboard-header{overflow:hidden!important}
 header.dw-dashboard-header img.dw-dashboard-logo{
-  display:block!important;position:relative!important;z-index:2!important;
-  width:100%!important;height:72px!important;max-width:100%!important;max-height:72px!important;
-  object-fit:contain!important;margin:0!important;padding:0!important;
-  transform:none!important;translate:none!important;animation:none!important;
-}
-header.dw-dashboard-header .dw-dashboard-headlamp-beam{
-  position:absolute!important;z-index:1!important;
-  left:61%!important;top:43%!important;width:clamp(130px,48vw,330px)!important;height:34px!important;
-  pointer-events:none!important;transform:translateY(-50%) skewX(-10deg)!important;
-  transform-origin:left center!important;
-  clip-path:polygon(0 42%,100% 0,100% 100%,0 58%)!important;
-  background:
-    linear-gradient(90deg,rgba(255,255,198,.98) 0%,rgba(255,245,157,.66) 22%,rgba(255,231,116,.3) 68%,rgba(255,231,116,0) 100%),
-    linear-gradient(90deg,rgba(255,255,226,.8),rgba(255,245,160,0) 82%)!important;
-  filter:blur(2px)!important;opacity:.82!important;mix-blend-mode:screen!important;
-  animation:dw-headlamp-rays 2.4s ease-in-out infinite alternate!important;
-}
-header.dw-dashboard-header .dw-dashboard-brand-copy{position:relative!important;z-index:3!important;overflow:visible!important}
-header.dw-dashboard-header .dw-dashboard-brand-copy strong,
-header.dw-dashboard-header .dw-dashboard-brand-copy span{
-  animation:dw-headlamp-glow 2.4s ease-in-out infinite alternate!important;
+  display:block!important;
+  flex:0 0 auto!important;
+  width:min(112px,38vw)!important;
+  height:72px!important;
+  max-width:min(112px,38vw)!important;
+  max-height:72px!important;
+  object-fit:contain!important;
+  animation:dw-rider-drive-right 5s ease-in-out infinite alternate!important;
+  will-change:transform;
 }
 @keyframes dw-rider-drive-right{
   from{transform:translateX(0)}
   to{transform:translateX(min(52vw,340px))}
 }
+@media(prefers-reduced-motion:reduce){
+  header.dw-dashboard-header img.dw-dashboard-logo{animation:none!important;transform:none!important}
+}
+
+/* Warm headlamp rays sweep from the moving delivery scooter onto the Doodhwala wordmark */
+header.dw-dashboard-header{isolation:isolate!important;position:relative!important}
+header.dw-dashboard-header .dw-dashboard-brand-copy{position:relative!important;z-index:3!important;overflow:visible!important}
+header.dw-dashboard-header .dw-dashboard-brand-copy:before{
+  content:""!important;display:block!important;position:absolute!important;
+  z-index:-1!important;left:-24px!important;right:-10px!important;top:-13px!important;bottom:-13px!important;
+  pointer-events:none!important;opacity:.78;
+  background:
+    linear-gradient(108deg,transparent 0 9%,rgba(255,244,117,.0) 14%,rgba(255,244,117,.42) 23%,transparent 35%),
+    linear-gradient(99deg,transparent 0 24%,rgba(255,220,74,.0) 30%,rgba(255,232,111,.34) 39%,transparent 51%),
+    linear-gradient(116deg,transparent 0 42%,rgba(255,245,160,.0) 47%,rgba(255,246,177,.27) 54%,transparent 68%),
+    radial-gradient(ellipse at 12% 50%,rgba(255,248,167,.52),transparent 66%);
+  filter:blur(2px);
+  transform:skewX(-12deg);
+  animation:dw-headlamp-rays 2.4s ease-in-out infinite alternate;
+}
+header.dw-dashboard-header .dw-dashboard-brand-copy strong,
+header.dw-dashboard-header .dw-dashboard-brand-copy span{
+  animation:dw-headlamp-glow 2.4s ease-in-out infinite alternate;
+}
 @keyframes dw-headlamp-rays{
-  from{opacity:.3;transform:translateY(-50%) skewX(-10deg) translateX(-8px);filter:blur(3px)}
-  to{opacity:.95;transform:translateY(-50%) skewX(-10deg) translateX(10px);filter:blur(1px)}
+  from{opacity:.3;transform:translateX(-8px) skewX(-12deg);filter:blur(3px)}
+  to{opacity:.95;transform:translateX(10px) skewX(-12deg);filter:blur(1px)}
 }
 @keyframes dw-headlamp-glow{
   from{text-shadow:0 0 2px rgba(255,235,115,.15),0 1px 2px rgba(125,50,0,.18)}
   to{text-shadow:0 0 7px rgba(255,239,115,.95),0 0 15px rgba(255,221,70,.58),0 1px 2px rgba(125,50,0,.2)}
 }
 @media(prefers-reduced-motion:reduce){
-  header.dw-dashboard-header .dw-dashboard-rider-wrap,
-  header.dw-dashboard-header .dw-dashboard-headlamp-beam,
+  header.dw-dashboard-header .dw-dashboard-brand-copy:before,
   header.dw-dashboard-header .dw-dashboard-brand-copy strong,
   header.dw-dashboard-header .dw-dashboard-brand-copy span{animation:none!important}
 }
@@ -840,7 +845,7 @@ header.dw-dashboard-header .dw-dashboard-brand-copy span{
  <div class="dw-hero-window"><img class="dw-hero-art" src="./assets/milk-delivery-rider.gif.gif" alt="Milk delivery rider on scooter"></div>
 </div>
 <script>
-(()=>{const splash=document.getElementById("dwLaunchSplash");if(!splash)return;let closed=false;const close=()=>{if(closed)return;closed=true;splash.classList.add("is-hidden");setTimeout(()=>splash.remove(),250)};const minShow=1250;const started=performance.now();const finish=()=>{const wait=Math.max(0,minShow-(performance.now()-started));setTimeout(close,wait)};if(document.readyState==="complete")finish();else window.addEventListener("load",finish,{once:true});setTimeout(close,4500);})();</script><header class="dw-dashboard-header" aria-label="Dashboard"><div class="dw-dashboard-rider-wrap"><img class="dw-dashboard-logo" src="./assets/milk-delivery-rider.gif.gif" alt="Milk delivery rider on scooter"><span class="dw-dashboard-headlamp-beam" aria-hidden="true"></span></div><div class="dw-dashboard-brand-copy"><strong>Doodhwala</strong><span>Daily Milk Delivery</span></div></header><main>
+(()=>{const splash=document.getElementById("dwLaunchSplash");if(!splash)return;let closed=false;const close=()=>{if(closed)return;closed=true;splash.classList.add("is-hidden");setTimeout(()=>splash.remove(),250)};const minShow=1250;const started=performance.now();const finish=()=>{const wait=Math.max(0,minShow-(performance.now()-started));setTimeout(close,wait)};if(document.readyState==="complete")finish();else window.addEventListener("load",finish,{once:true});setTimeout(close,4500);})();</script><header class="dw-dashboard-header" aria-label="Dashboard"><img class="dw-dashboard-logo" src="./assets/milk-delivery-rider.gif.gif" alt="Milk delivery rider on scooter"><div class="dw-dashboard-brand-copy"><strong>Doodhwala</strong><span>Daily Milk Delivery</span></div></header><main>
 <div class="bar"><label class="muted">Select date</label><input class="field" id="date" type="date"><button id="today">Today</button></div>
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
 <div class="tabs" style="grid-template-columns:repeat(5,1fr)"><button class="active" data-tab="register">Attendance</button><button data-tab="daily">Daily totals</button><button data-tab="monthly">Monthly bills</button><button data-tab="downloads">Download Bills</button><button data-tab="settings">Prices & backup</button></div>
