@@ -910,36 +910,90 @@ body{background:#f5f7fb;color:var(--pro-ink)}
 
 
 <style id="dw-consistent-pages-performance">
-/* Match Daily, Monthly and More to the Attendance visual system */
-:root{--dw-green:#176b45;--dw-deep:#104b32;--dw-mint:#eaf4ed;--dw-line:#dcebe1}
-#daily,#monthly,#settings,#downloads{color:var(--dw-deep);animation:none!important}
-#daily>.card,#monthly>.card,#settings>.settings-card,#settings>.settings-accordion{
-  background:#fff!important;border:1px solid var(--dw-line)!important;border-radius:16px!important;
-  box-shadow:0 2px 8px #173b2808!important
+/* Make Daily, Monthly and More visually match the Professional Attendance register */
+:root{--pro-ink:#172b4d;--pro-muted:#64748b;--pro-line:#e2e8f0;--pro-blue:#2563eb;--pro-soft:#eff6ff;--pro-bg:#f5f7fb}
+#daily,#monthly,#settings{color:var(--pro-ink);padding-bottom:18px}
+#daily>.card,#monthly>.card,#settings .settings-card,#settings .settings-accordion{
+ background:#fff!important;border:1px solid var(--pro-line)!important;border-radius:14px!important;
+ box-shadow:0 2px 8px #172b4d08!important
 }
-#daily .title,#monthly .title,#settings .title{color:var(--dw-deep)!important}
-#daily .dw-brand-block,#daily .totgrid>div,#monthly .monthly-customer,
-#monthly .monthly-stat,#settings .settings-card{box-shadow:none!important}
-#daily .dw-brand-block{border:1px solid var(--dw-line)!important;border-radius:13px!important;background:#fff!important;animation:none!important}
-#daily .totgrid>div{background:#f4f8f5!important;border:1px solid var(--dw-line)!important;border-radius:12px!important;animation:none!important}
+#daily>.card,#monthly>.card{padding:15px!important;margin:10px 0!important}
+#daily .title,#monthly .title,#settings .title{color:var(--pro-ink)!important;font-size:15px!important;font-weight:850!important}
+#daily .muted,#monthly .muted,#settings .muted{color:var(--pro-muted)!important}
 #daily #previewDaily,#daily button.primary,#monthly button.primary,#settings button.primary{
-  background:var(--dw-green)!important;border-color:var(--dw-green)!important;box-shadow:none!important
+ background:var(--pro-blue)!important;border:1px solid var(--pro-blue)!important;color:#fff!important;
+ border-radius:10px!important;min-height:44px!important;box-shadow:none!important;font-weight:800!important
 }
-#monthly .monthly-shell,#monthly .monthly-share-card{background:#fff!important;border:1px solid var(--dw-line)!important}
-#monthly .monthly-customer{border:1px solid var(--dw-line)!important;border-radius:13px!important;background:#fff!important}
-#monthly .monthly-grand-total{background:linear-gradient(120deg,#125b3b,#218456)!important;border-radius:13px!important}
-#settings .settings-intro-icon,#settings .settings-accordion-icon{background:var(--dw-mint)!important;color:var(--dw-green)!important;box-shadow:none!important}
-#settings .settings-accordion{margin:9px 0!important}
-#settings .settings-accordion-summary{min-height:56px!important}
-#settings .settings-accordion-body{animation:none!important}
-#daily *,#monthly *,#settings *,#downloads *,
-#daily *:before,#monthly *:before,#settings *:before,#downloads *:before{
-  animation:none!important;transition:none!important
+#daily #previewDaily{width:100%;margin:12px 0 10px!important}
+#daily .dw-brand-block{background:#fff!important;border:1px solid var(--pro-line)!important;border-radius:12px!important;box-shadow:none!important;margin:9px 0!important;overflow:hidden;animation:none!important}
+#daily .dw-brand-heading{padding:12px 13px!important;background:#f8fafc!important;border-bottom:1px solid var(--pro-line)!important;color:var(--pro-ink)!important;font-weight:850!important}
+#daily .dw-brand-total{color:var(--pro-blue)!important;font-weight:850!important}
+#daily .dw-product-list{padding:4px 12px!important}
+#daily .dw-product-line{padding:11px 2px!important;border-bottom:1px solid #edf1f6!important}
+#daily .dw-product-line:last-child{border-bottom:0!important}
+#daily .dw-product-name{color:var(--pro-ink)!important;font-weight:750!important}
+#daily .dw-product-qty{color:#1d4ed8!important;font-weight:850!important}
+#daily .dw-daily-total{gap:9px!important;margin-top:12px!important}
+#daily .totgrid>div{min-height:94px!important;padding:13px!important;border:1px solid var(--pro-line)!important;border-radius:12px!important;background:#f8fafc!important;box-shadow:none!important;animation:none!important}
+#daily .totgrid small{color:var(--pro-muted)!important;font-weight:700!important}
+#daily .totgrid .big{color:var(--pro-ink)!important;font-size:22px!important;font-weight:900!important}
+#daily .totgrid>div:nth-child(2) .big{color:#15803d!important}
+#daily .totgrid>div:nth-child(3) .big{color:#dc2626!important}
+#daily .totgrid>div:nth-child(4) .big{color:var(--pro-blue)!important}
+#monthly .monthly-shell,#monthly .monthly-share-card{background:#fff!important;border:1px solid var(--pro-line)!important;border-radius:14px!important;box-shadow:0 2px 8px #172b4d08!important}
+#monthly .monthly-heading{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;padding:2px 1px 13px!important}
+#monthly .monthly-kicker{color:#2563eb!important;font-size:9px!important;font-weight:900!important;letter-spacing:1px!important}
+#monthly .monthly-icon{background:var(--pro-soft)!important;color:var(--pro-blue)!important;border-radius:11px!important;padding:10px!important}
+#monthly .monthly-controls{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;gap:9px!important;padding:11px!important;background:#f8fafc!important;border:1px solid var(--pro-line)!important;border-radius:12px!important}
+#monthly .monthly-controls .field,#monthly #billCustomer{min-height:43px!important;border:1px solid var(--pro-line)!important;border-radius:9px!important;background:#fff!important;color:var(--pro-ink)!important}
+#monthly .monthly-stat{border:1px solid var(--pro-line)!important;border-radius:12px!important;background:#fff!important;box-shadow:none!important;padding:13px!important}
+#monthly .monthly-stat small{color:var(--pro-muted)!important;font-weight:800!important;letter-spacing:.4px!important}
+#monthly .monthly-stat strong{color:var(--pro-ink)!important;font-weight:900!important}
+#monthly .monthly-stat.stat-green strong{color:#15803d!important}
+#monthly .monthly-stat.stat-blue strong{color:var(--pro-blue)!important}
+#monthly .monthly-stat.stat-purple strong{color:#6d28d9!important}
+#monthly .monthly-list-head{padding:13px 2px 8px!important;color:var(--pro-ink)!important}
+#monthly .monthly-count{background:var(--pro-soft)!important;color:#1d4ed8!important}
+#monthly .monthly-customer{border:1px solid var(--pro-line)!important;border-radius:12px!important;background:#fff!important;box-shadow:none!important;padding:13px!important}
+#monthly .monthly-avatar{background:var(--pro-soft)!important;color:#1d4ed8!important;border-radius:10px!important}
+#monthly .monthly-customer-name b{color:var(--pro-ink)!important;font-size:13px!important}
+#monthly .monthly-total{color:#1d4ed8!important;font-weight:900!important}
+#monthly .monthly-breakdown>div{background:#f8fafc!important;border:1px solid #edf1f6!important;border-radius:9px!important}
+#monthly .monthly-breakdown small{color:var(--pro-muted)!important}
+#monthly .monthly-breakdown b{color:var(--pro-ink)!important}
+#monthly .monthly-charge-wrap{border-top:1px solid var(--pro-line)!important}
+#monthly .monthly-charge-input{background:var(--pro-soft)!important;border-color:#dbeafe!important;color:#1d4ed8!important}
+#monthly .monthly-grand-total{background:linear-gradient(115deg,#1d4ed8,#2563eb)!important;border-radius:12px!important;box-shadow:none!important}
+#monthly .monthly-share-card{padding:15px!important}
+#monthly .monthly-share-card .title{margin:4px 0 12px!important}
+#monthly #billCustomer{width:100%!important;padding:10px!important}
+#monthly #printOne{width:100%!important;margin-top:10px!important}
+#settings .settings-intro{padding:7px 2px 15px!important}
+#settings .settings-intro-icon{background:var(--pro-soft)!important;color:var(--pro-blue)!important;border:1px solid #dbeafe!important;box-shadow:none!important;border-radius:12px!important}
+#settings .settings-intro h2{color:var(--pro-ink)!important;font-size:21px!important;font-weight:900!important}
+#settings .settings-eyebrow{color:var(--pro-blue)!important}
+#settings .settings-accordion{margin:9px 0!important;overflow:hidden!important}
+#settings .settings-accordion-summary{min-height:62px!important;padding:12px 14px!important;color:var(--pro-ink)!important;font-size:13px!important;font-weight:850!important}
+#settings .settings-accordion-icon{background:var(--pro-soft)!important;color:var(--pro-blue)!important;border-radius:10px!important}
+#settings .settings-accordion[open]>.settings-accordion-summary{background:#f8fafc!important;border-bottom:1px solid var(--pro-line)!important}
+#settings .settings-accordion-body{background:#fff!important;padding:13px!important;animation:none!important}
+#settings .settings-accordion-body>.add-customer-card,#settings .settings-accordion-body>.card.settings-card{background:#fff!important}
+#settings .add-customer-card,#settings .settings-card,#settings .cloud-card{border:1px solid var(--pro-line)!important;border-radius:12px!important;box-shadow:none!important}
+#settings .add-customer-heading h2{color:var(--pro-ink)!important}
+#settings .add-customer-heading p,#settings .settings-card-heading p{color:var(--pro-muted)!important}
+#settings .field,#settings input.field,#settings select.field{border:1px solid var(--pro-line)!important;border-radius:9px!important;background:#fff!important;color:var(--pro-ink)!important;min-height:42px}
+#settings .settings-note{background:#f8fafc!important;border:1px solid #edf1f6!important;border-radius:10px!important;color:var(--pro-muted)!important}
+#settings .settings-icon{background:var(--pro-soft)!important;color:var(--pro-blue)!important;border-radius:10px!important}
+#settings .cloud-status-wrap{border:1px solid var(--pro-line)!important;border-radius:10px!important;background:#f8fafc!important;padding:10px!important}
+#daily *,#monthly *,#settings *{animation:none!important;transition:none!important}
+#daily *:before,#monthly *:before,#settings *:before{animation:none!important}
+@media(max-width:420px){
+ #daily>.card,#monthly>.card{padding:12px!important}
+ #daily .totgrid>div{min-height:84px!important;padding:10px!important}
+ #daily .totgrid .big{font-size:19px!important}
+ #monthly .monthly-controls{grid-template-columns:1fr!important}
+ #settings .settings-accordion-summary{min-height:58px!important}
 }
-/* Avoid layout-heavy decorative effects on the attendance dashboard too */
-header:after,.metrics .metric:before{animation:none!important}
-.dw-customer-card,.dw-customer-content,.metric{animation:none!important;transition:none!important}
-@media(prefers-reduced-motion:reduce){html:focus-within{scroll-behavior:auto!important}}
 </style>
 </head><body>
 <div class="dw-launch-splash" id="dwLaunchSplash" role="status" aria-label="Loading">
