@@ -1,5 +1,5 @@
-const CACHE='dudhwala-customer-list-v70';
-const ASSETS=['./','./index.html','./manifest.webmanifest','./assets/milk-delivery-rider.gif.gif','./assets/doodhwala-app-icon-192.png','./assets/doodhwala-app-icon-512.png','./assets/doodhwala-bike-app-icon.svg'];
+const CACHE='dudhwala-customer-list-v71';
+const ASSETS=['./','./index.html','./manifest.webmanifest','./assets/milk-delivery-rider.gif.gif','./assets/file_000000008c608211ba28afc982c26b8d.gif','./assets/doodhwala-app-icon-192.png','./assets/doodhwala-app-icon-512.png','./assets/doodhwala-bike-app-icon.svg'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)));self.skipWaiting();});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))));self.clients.claim();});
 self.addEventListener('fetch',event=>{
