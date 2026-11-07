@@ -843,6 +843,69 @@ header.dw-dashboard-header .dw-dashboard-brand-copy span{
   header.dw-dashboard-header .dw-dashboard-brand-copy strong,
   header.dw-dashboard-header .dw-dashboard-brand-copy span{animation:none!important}
 }
+
+/* Professional attendance register refresh */
+:root{--pro-ink:#172b4d;--pro-muted:#64748b;--pro-line:#e2e8f0;--pro-blue:#2563eb;--pro-surface:#f8fafc}
+body{background:#f5f7fb;color:var(--pro-ink)}
+.bar:has(#date){background:#fff;border:1px solid var(--pro-line);border-radius:14px;box-shadow:0 2px 8px #172b4d08;padding:12px 14px}
+.bar:has(#date) .muted{color:var(--pro-muted);font-weight:700}
+#date{border:1px solid var(--pro-line);border-radius:10px;color:var(--pro-ink);background:#fff}
+#today{background:var(--pro-blue);box-shadow:none;border-radius:10px}
+.metrics .metric{min-height:118px;padding:17px 18px;border:1px solid var(--pro-line);border-radius:15px;background:#fff;box-shadow:0 2px 8px #172b4d08;animation:none}
+.metrics .metric:nth-child(n){border-color:var(--pro-line);background:#fff}
+.metrics .metric:before{width:74px;height:74px;right:-28px;bottom:-32px;border:0;background:#eff6ff;box-shadow:0 0 0 10px #f8fafc;animation:none}
+.metrics .metric small{color:var(--pro-muted);font-size:10px;letter-spacing:.55px}
+.metrics .metric b,.metrics .metric:nth-child(n) b{color:var(--pro-ink)!important;font-size:29px;margin-top:13px}
+.metrics .metric:nth-child(2) b{color:#15803d!important}
+.metrics .metric:nth-child(3) b{color:#dc2626!important}
+.metrics .metric:nth-child(4) b{color:#2563eb!important}
+#register .tools{grid-template-columns:minmax(0,1fr) 132px;gap:10px;margin:14px 0 11px}
+#register #search,#register #filter{min-height:45px;border:1px solid var(--pro-line);border-radius:10px;background:#fff;box-shadow:none;color:var(--pro-ink)}
+#register #search{padding-left:13px}
+#register>.actions{gap:9px;margin:10px 0 14px}
+#register>.actions button{min-height:43px;border-radius:10px;font-size:12px;box-shadow:none}
+#register>.actions .primary{background:var(--pro-blue)!important;border-color:var(--pro-blue)!important}
+#register>.actions button:not(.primary){background:#fff;border:1px solid var(--pro-line);color:#475569}
+#register #list{display:grid;gap:9px}
+#register .dw-customer-card{margin:0;border:1px solid var(--pro-line)!important;border-radius:13px!important;background:#fff!important;box-shadow:0 2px 8px #172b4d08!important;animation:none!important}
+#register .dw-customer-card[open]{border-color:#bfdbfe!important;box-shadow:0 5px 16px #172b4d0c!important}
+#register .dw-customer-summary{min-height:72px;padding:13px 14px!important;gap:11px}
+#register .dw-avatar{width:39px;height:39px;min-width:39px;border-radius:11px!important;background:#eff6ff!important;color:#1d4ed8!important;box-shadow:none!important;font-weight:800}
+#register .dw-customer-head h3{font-size:14px!important;font-weight:800!important;color:var(--pro-ink)!important}
+#register .dw-customer-head .loc{display:block;margin-top:3px;color:var(--pro-muted);font-size:11px}
+#register .dw-cust-status,#register .status{border-radius:7px!important;padding:5px 8px!important;font-size:9px!important;font-weight:800!important;letter-spacing:.35px}
+#register .dw-cust-status.present,#register .status.present{background:#dcfce7!important;color:#166534!important}
+#register .dw-cust-status.absent,#register .status.absent{background:#fee2e2!important;color:#991b1b!important}
+#register .dw-cust-status.unmarked,#register .status.unmarked{background:#f1f5f9!important;color:#475569!important}
+#register .dw-customer-card:has(.present){border-left:3px solid #16a34a!important}
+#register .dw-customer-card:has(.absent){border-left:3px solid #dc2626!important}
+#register .dw-expand-hint{background:#f1f5f9!important;border-radius:8px!important}
+#register .dw-expand-hint:before{border-color:#64748b!important}
+#register .dw-customer-content{padding:0 14px 14px!important}
+#register .dw-customer-content>.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:4px 0 12px}
+#register .dw-customer-content>.actions button{min-height:40px;border-radius:9px;font-size:12px;font-weight:800}
+#register .dw-customer-content>.actions button[data-status=present]{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534}
+#register .dw-customer-content>.actions button[data-status=present].yes{background:#15803d!important;border-color:#15803d!important;color:#fff!important}
+#register .dw-customer-content>.actions button[data-status=absent]{background:#fff;border:1px solid #fecaca;color:#b91c1c}
+#register .dw-customer-content>.actions button[data-status=absent].no{background:#dc2626!important;border-color:#dc2626!important;color:#fff!important}
+#register .dw-customer-content .milk-row{border:1px solid var(--pro-line);border-radius:10px;background:#fbfdff;padding:11px;margin:8px 0}
+#register .dw-customer-content .milk-row>div:first-child{color:var(--pro-ink);font-weight:800}
+#register .dw-customer-content .milk-row small{color:var(--pro-muted)}
+#register .dw-customer-content .qty{border:1px solid var(--pro-line);border-radius:8px}
+#register .dw-customer-content .milk-row .row-total{background:#eff6ff!important;border:1px solid #dbeafe!important;color:#1e40af!important;border-radius:8px}
+#register .customer-total{padding:10px 2px;color:var(--pro-muted)}
+#register .dw-inline-edit{border-top:1px solid var(--pro-line);padding-top:10px}
+#register .dw-inline-edit>summary{color:#334155;font-size:12px;font-weight:800}
+#register .dw-inline-save{background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:9px}
+@media(max-width:420px){
+ .metrics{gap:8px}
+ .metrics .metric{min-height:104px;padding:13px;border-radius:12px}
+ .metrics .metric b,.metrics .metric:nth-child(n) b{font-size:25px}
+ #register .tools{grid-template-columns:minmax(0,1fr) 112px;gap:7px}
+ #register .dw-customer-summary{padding:11px!important}
+}
+@media(prefers-reduced-motion:reduce){#register .dw-customer-card{animation:none!important;transition:none!important}}
+
 </style><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"><link rel="preload" as="image" href="./assets/milk-delivery-rider.gif.gif" fetchpriority="high"></head><body>
 <div class="dw-launch-splash" id="dwLaunchSplash" role="status" aria-label="Loading">
  <div class="dw-hero-window"><img class="dw-hero-art" src="./assets/milk-delivery-rider.gif.gif" alt="Milk delivery rider on scooter"></div>
