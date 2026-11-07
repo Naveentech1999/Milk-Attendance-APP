@@ -908,6 +908,39 @@ body{background:#f5f7fb;color:var(--pro-ink)}
 
 </style><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"><link rel="preload" as="image" href="./assets/milk-delivery-rider.gif.gif" fetchpriority="high">
 
+
+<style id="dw-consistent-pages-performance">
+/* Match Daily, Monthly and More to the Attendance visual system */
+:root{--dw-green:#176b45;--dw-deep:#104b32;--dw-mint:#eaf4ed;--dw-line:#dcebe1}
+#daily,#monthly,#settings,#downloads{color:var(--dw-deep);animation:none!important}
+#daily>.card,#monthly>.card,#settings>.settings-card,#settings>.settings-accordion{
+  background:#fff!important;border:1px solid var(--dw-line)!important;border-radius:16px!important;
+  box-shadow:0 2px 8px #173b2808!important
+}
+#daily .title,#monthly .title,#settings .title{color:var(--dw-deep)!important}
+#daily .dw-brand-block,#daily .totgrid>div,#monthly .monthly-customer,
+#monthly .monthly-stat,#settings .settings-card{box-shadow:none!important}
+#daily .dw-brand-block{border:1px solid var(--dw-line)!important;border-radius:13px!important;background:#fff!important;animation:none!important}
+#daily .totgrid>div{background:#f4f8f5!important;border:1px solid var(--dw-line)!important;border-radius:12px!important;animation:none!important}
+#daily #previewDaily,#daily button.primary,#monthly button.primary,#settings button.primary{
+  background:var(--dw-green)!important;border-color:var(--dw-green)!important;box-shadow:none!important
+}
+#monthly .monthly-shell,#monthly .monthly-share-card{background:#fff!important;border:1px solid var(--dw-line)!important}
+#monthly .monthly-customer{border:1px solid var(--dw-line)!important;border-radius:13px!important;background:#fff!important}
+#monthly .monthly-grand-total{background:linear-gradient(120deg,#125b3b,#218456)!important;border-radius:13px!important}
+#settings .settings-intro-icon,#settings .settings-accordion-icon{background:var(--dw-mint)!important;color:var(--dw-green)!important;box-shadow:none!important}
+#settings .settings-accordion{margin:9px 0!important}
+#settings .settings-accordion-summary{min-height:56px!important}
+#settings .settings-accordion-body{animation:none!important}
+#daily *,#monthly *,#settings *,#downloads *,
+#daily *:before,#monthly *:before,#settings *:before,#downloads *:before{
+  animation:none!important;transition:none!important
+}
+/* Avoid layout-heavy decorative effects on the attendance dashboard too */
+header:after,.metrics .metric:before{animation:none!important}
+.dw-customer-card,.dw-customer-content,.metric{animation:none!important;transition:none!important}
+@media(prefers-reduced-motion:reduce){html:focus-within{scroll-behavior:auto!important}}
+</style>
 </head><body>
 <div class="dw-launch-splash" id="dwLaunchSplash" role="status" aria-label="Loading">
  <div class="dw-hero-window"><img class="dw-hero-art" src="./assets/milk-delivery-rider.gif.gif" alt="Milk delivery rider on scooter"></div>
@@ -1127,7 +1160,6 @@ function renderDaily(){
  $('dAmount').textContent=money(t.amount);
  $('dCommission').textContent=money(t.commission);
  $('dPayable').textContent=money(t.payable);
- document.querySelectorAll('#daily .big').forEach(el=>{el.classList.remove('dw-daily-pop');void el.offsetWidth;el.classList.add('dw-daily-pop')});
 }
 function renderPrices(){$('prices').innerHTML=Object.entries(db.prices).map(([k,v])=>`<div class="product"><div>${esc(k.replace('|',' '))}<small>${isPacketKey(k)?'Per packet':'Per litre'}</small></div><input class="field" type="number" min="0" step=".5" value="${v}" data-price="${esc(k)}"></div>`).join('');document.querySelectorAll('[data-price]').forEach(i=>i.onchange=()=>{db.prices[i.dataset.price]=Math.max(0,+i.value||0);save();renderList();renderDaily();say('Price saved')});$('commissionRate').value=db.commission}
 function orderedProductSections(products,extraKeys=[]){
@@ -1535,4 +1567,4 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./service-worker.js').catch(err => console.warn('Offline setup unavailable', err));
   });
 }
-</script><script>(function(){const list=document.getElementById('list');if(list){const decorate=()=>{list.querySelectorAll(':scope > article.customer').forEach(a=>{if(a.dataset.collapseReady)return;a.dataset.collapseReady='1';const first=a.querySelector(':scope > div:first-child');if(!first)return;const d=document.createElement('details');d.className='dw-customer-card';const summary=document.createElement('summary');summary.className='dw-customer-summary';const head=document.createElement('div');head.className='dw-customer-head';[...first.children].forEach(x=>head.append(x.cloneNode(true)));const hint=document.createElement('span');hint.className='dw-expand-hint';hint.setAttribute('aria-hidden','true');summary.append(head,hint);d.append(summary);const body=document.createElement('div');body.className='dw-customer-content';[...a.children].filter(x=>x!==first).forEach(x=>body.append(x));d.append(body);a.replaceWith(d);});};new MutationObserver(decorate).observe(list,{childList:true});decorate();}const navs=[...document.querySelectorAll('[data-dw-tab]')];function show(id){['register','daily','monthly','downloads','settings'].forEach(k=>document.getElementById(k)?.classList.toggle('hidden',k!==id));document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));navs.forEach(b=>b.classList.toggle('active',b.dataset.dwTab===id));document.querySelector('[data-tab='+id+']')?.click();window.scrollTo({top:0,behavior:'smooth'});}navs.forEach(b=>b.addEventListener('click',()=>show(b.dataset.dwTab)));const m=document.querySelector('.metrics');if(m)document.getElementById('register')?.prepend(m);document.querySelectorAll('.metric b').forEach(el=>{new MutationObserver(()=>{el.classList.remove('dw-number-pop');void el.offsetWidth;el.classList.add('dw-number-pop')}).observe(el,{childList:true,characterData:true,subtree:true})});})();</script></main></body></html>
+</script><script>(function(){const navs=[...document.querySelectorAll('[data-dw-tab]')];function show(id){['register','daily','monthly','downloads','settings'].forEach(k=>document.getElementById(k)?.classList.toggle('hidden',k!==id));document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));navs.forEach(b=>b.classList.toggle('active',b.dataset.dwTab===id));document.querySelector('[data-tab='+id+']')?.click();window.scrollTo({top:0,behavior:'smooth'});}navs.forEach(b=>b.addEventListener('click',()=>show(b.dataset.dwTab)));const m=document.querySelector('.metrics');if(m)document.getElementById('register')?.prepend(m);})();</script></main></body></html>
