@@ -1112,7 +1112,7 @@ main{max-width:760px!important;padding:0 0 24px!important}
 <div class="card"><div class="title">Milk types & quantities</div><div id="productTable"></div></div>
 <div class="card"><div class="title">Daily total & commission</div><div class="totgrid dw-daily-total"><div><small class="muted">Total litres</small><div class="big" id="dLitres">0 L</div></div><div><small class="muted">Total bill amount</small><div class="big" id="dAmount">₹0</div></div><div><small class="muted">Commission deduction</small><div class="big" id="dCommission">₹0</div></div><div><small class="muted">Amount after commission</small><div class="big" id="dPayable">₹0</div></div></div></div>
 </section>
-<section id="monthly" class="hidden">
+<section id="monthly" class="hidden"><div class="ref-page-heading"><div><h2>Bills</h2><p>Monthly customer billing</p></div><button type="button" data-go-tab="downloads">Download</button></div>
 <div class="card monthly-shell"><div class="monthly-heading"><div><div class="monthly-kicker">MONTHLY SUMMARY</div><div class="title">Customer milk bills</div><p class="muted">Choose a month to calculate every customer's bill.</p></div><span class="monthly-icon">🧾</span></div><div class="bar monthly-controls"><input class="field" id="month" type="month"><button class="primary" id="calculate">Calculate bills</button></div><div id="monthOutput"></div></div>
 <div class="card monthly-share-card"><div class="monthly-kicker">INDIVIDUAL RECEIPT</div><div class="title">Preview and share a customer bill</div><select class="field" id="billCustomer" style="width:100%"></select><button class="primary" id="printOne" style="margin-top:10px;width:100%">Preview receipt image</button><p class="muted">Review the receipt first, then choose WhatsApp to share it.</p></div>
 </section>
@@ -1759,6 +1759,7 @@ if ('serviceWorker' in navigator) {
  navs.forEach(b=>b.addEventListener('click',()=>show(b.dataset.dwTab)));
  document.querySelectorAll('[data-go-tab]').forEach(b=>b.addEventListener('click',()=>show(b.dataset.goTab)));
  document.getElementById('refCustomerSearch')?.addEventListener('input',renderCustomers);
+ document.addEventListener('click',()=>updateHome());document.addEventListener('change',()=>updateHome());document.addEventListener('input',e=>{if(e.target?.id!=='refCustomerSearch')updateHome();});
  const originalRefresh=refreshMetrics;
  window.refreshMetrics=function(){originalRefresh();updateHome();};
  const originalSave=save;
