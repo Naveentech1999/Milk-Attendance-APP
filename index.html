@@ -1104,7 +1104,27 @@ header.dw-dashboard-header:before{
 }
 @media(prefers-reduced-motion:reduce){header.dw-dashboard-header:before{animation:none;opacity:.85}}
 </style>
-</head><body>
+
+<style id="dw-home-brand-cards">
+.dw-brand-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:10px 0 18px}
+.dw-brand-card{min-width:0;overflow:hidden;border-radius:19px;background:#fff;box-shadow:0 5px 18px #172b4d10;border:1px solid #e7eaf0}
+.dw-brand-photo{height:126px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:7px;background:#fff}
+.dw-brand-photo img{display:block;width:100%;height:100%;object-fit:contain}
+.dw-brand-photo.no-image:after{content:"Milk products";font-size:14px;font-weight:900;letter-spacing:.2px;color:#fff}
+.dw-brand-copy{padding:11px 12px 13px;display:flex;flex-direction:column;gap:3px}
+.dw-brand-copy b{font-size:15px;font-weight:900;color:#182536}
+.dw-brand-copy span{font-size:10px;color:#707987}
+.dw-brand-copy strong{font-size:21px;font-weight:950;line-height:1.2;margin-top:4px;font-variant-numeric:tabular-nums}
+.dw-brand-card.heritage .dw-brand-photo{background:#effbe9}.dw-brand-card.heritage .dw-brand-copy strong{color:#26934b}
+.dw-brand-card.vijaya .dw-brand-photo{background:#fffbd0}.dw-brand-card.vijaya .dw-brand-copy strong{color:#d49a00}
+.dw-brand-card.amul .dw-brand-photo{background:#fff}.dw-brand-card.amul .dw-brand-copy strong{color:#e22b2b}
+.dw-brand-card.jersey .dw-brand-photo{background:#fff}.dw-brand-card.jersey .dw-brand-copy strong{color:#d92f3b}
+.dw-brand-card.heritage .dw-brand-photo.no-image{background:#38a54d}
+.dw-brand-card.vijaya .dw-brand-photo.no-image{background:#f5d900}
+.dw-brand-card.amul .dw-brand-photo.no-image{background:#f4f4f4}
+.dw-brand-card.jersey .dw-brand-photo.no-image{background:#fff0f0}
+@media(max-width:360px){.dw-brand-cards{gap:9px}.dw-brand-photo{height:108px}.dw-brand-copy{padding:9px}.dw-brand-copy strong{font-size:19px}}
+</style></head><body>
 <div class="dw-launch-splash" id="dwLaunchSplash" role="status" aria-label="Loading">
  <div class="dw-hero-window"><img class="dw-hero-art" src="./assets/milk-delivery-rider.gif.gif?v=74" alt="Milk delivery rider on scooter"></div>
 </div>
@@ -1120,7 +1140,12 @@ header.dw-dashboard-header:before{
  <div class="ref-section-title">Quick Glance</div>
  <div class="ref-quick-grid"><div class="ref-quick"><small>Total Customers</small><b id="homeCustomers">0</b><span>Active customers</span></div><div class="ref-quick"><small>Milk Delivered</small><b id="homeLitres">0 L</b><span>Today's quantity</span></div></div>
  <button class="ref-wide-link" style="margin-top:12px" data-go-tab="register"><span class="ref-link-icon">✓</span><span><b id="homePendingTitle">Deliveries today</b><small id="homePendingSub">Open the delivery list to update orders</small></span><span class="ref-arrow">›</span></button>
- <div class="ref-section-title">Products</div><p class="muted" style="margin:0 2px 10px">Today's order progress</p><div id="homeProducts"></div>
+ <div class="ref-section-title">Milk by Brand</div><p class="muted" style="margin:0 2px 10px">Today's total milk quantity</p><div class="dw-brand-cards" id="homeBrandCards">
+  <article class="dw-brand-card heritage"><div class="dw-brand-photo"><img src="./assets/brand-heritage.jpg" alt="Heritage milk products" onerror="this.style.display='none';this.parentElement.classList.add('no-image')"></div><div class="dw-brand-copy"><b>Heritage</b><span>Milk quantity today</span><strong id="brandQtyHeritage">0.00 L</strong></div></article>
+  <article class="dw-brand-card vijaya"><div class="dw-brand-photo"><img src="./assets/brand-vijaya.jpg" alt="Vijaya milk products" onerror="this.style.display='none';this.parentElement.classList.add('no-image')"></div><div class="dw-brand-copy"><b>Vijaya</b><span>Milk quantity today</span><strong id="brandQtyVijaya">0.00 L</strong></div></article>
+  <article class="dw-brand-card amul"><div class="dw-brand-photo"><img src="./assets/brand-amul.jpg" alt="Amul milk products" onerror="this.style.display='none';this.parentElement.classList.add('no-image')"></div><div class="dw-brand-copy"><b>Amul</b><span>Milk quantity today</span><strong id="brandQtyAmul">0.00 L</strong></div></article>
+  <article class="dw-brand-card jersey"><div class="dw-brand-photo"><img src="./assets/brand-jersey.jpg" alt="Jersey milk products" onerror="this.style.display='none';this.parentElement.classList.add('no-image')"></div><div class="dw-brand-copy"><b>Jersey</b><span>Milk quantity today</span><strong id="brandQtyJersey">0.00 L</strong></div></article>
+ </div>
  <button class="ref-wide-link" style="margin-top:13px" data-go-tab="daily"><span class="ref-link-icon" style="background:#eaf2fc;color:#2464a8">▤</span><span><b>Daily report</b><small>View quantities and commission</small></span><span class="ref-arrow">›</span></button>
 </section><section id="register">
 <div class="tools"><input class="field" id="search" placeholder="Search customer / floor..." style="flex:1"><select class="field" id="filter"><option value="all">All</option><option value="unmarked">Not marked</option><option value="present">Present</option><option value="absent">Absent</option></select></div>
@@ -1758,9 +1783,15 @@ if ('serviceWorker' in navigator) {
   set('homeCustomers',db.customers.length);set('homeLitres',d.litres.toFixed(2)+' L');
   set('homePendingTitle',unmarked+' deliveries not marked');
   set('homePendingSub',d.present+' delivered · '+d.absent+' absent today');
-  const products=Object.entries(d.products||{});
-  const host=document.getElementById('homeProducts');
-  if(host)host.innerHTML=products.map(([k,v])=>{const p=k.split('|');return '<div class="ref-product-row"><span><b>'+esc(displayProductName({brand:p[0],type:p[1]}))+'</b><small>'+esc(p[0])+'</small></span><strong>'+Number(v.qty||0).toFixed(2)+(isPacketKey(k)?' pkt':' L')+'</strong></div>'}).join('')||'<div class="ref-card"><span class="muted">No deliveries recorded for today yet.</span></div>';
+  const brandTotals={Heritage:0,Vijaya:0,Amul:0,Jersey:0};
+  Object.entries(d.products||{}).forEach(([k,v])=>{
+   const parts=k.split('|'),brand=parts[0]||'',type=parts.slice(1).join('|');
+   if(Object.prototype.hasOwnProperty.call(brandTotals,brand)&&!(/curd|small/i.test(type)))brandTotals[brand]+=Number(v.qty||0);
+  });
+  Object.entries(brandTotals).forEach(([brand,qty])=>{
+   const el=document.getElementById('brandQty'+brand);
+   if(el)el.textContent=qty.toFixed(2)+' L';
+  });
  }
  function renderCustomers(){
   const host=document.getElementById('refCustomerList');if(!host)return;
