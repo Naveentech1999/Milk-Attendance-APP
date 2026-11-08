@@ -1124,7 +1124,16 @@ header.dw-dashboard-header:before{
 .dw-brand-card.amul .dw-brand-photo.no-image{background:#f4f4f4}
 .dw-brand-card.jersey .dw-brand-photo.no-image{background:#fff0f0}
 @media(max-width:360px){.dw-brand-cards{gap:9px}.dw-brand-photo{height:108px}.dw-brand-copy{padding:9px}.dw-brand-copy strong{font-size:19px}}
-</style></head><body>
+</style><style id="dw-sticky-dashboard-header">
+/* Keep the dashboard brand header visible while every page scrolls */
+header.dw-dashboard-header{
+ position:sticky!important;
+ top:0!important;
+ z-index:1000!important;
+ align-self:start!important;
+}
+</style>
+</head><body>
 <div class="dw-launch-splash" id="dwLaunchSplash" role="status" aria-label="Loading">
  <div class="dw-hero-window"><img class="dw-hero-art" src="./assets/milk-delivery-rider.gif.gif?v=74" alt="Milk delivery rider on scooter"></div>
 </div>
