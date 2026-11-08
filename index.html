@@ -1079,6 +1079,31 @@ main{max-width:760px!important;padding:0 0 24px!important}
  #settings .settings-accordion-summary{min-height:58px!important}
 }
 </style>
+
+<style id="dw-greeting-bike-polish">
+/* Greeting follows the device's local time. */
+#homeGreeting{transition:opacity .2s ease}
+/* Keep the rider GIF clean: no white badge, circular crop or image frame. */
+header.dw-dashboard-header img.dw-dashboard-logo{
+ width:96px!important;height:76px!important;max-width:38vw!important;max-height:76px!important;
+ object-fit:contain!important;border:0!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;outline:0!important;
+ filter:none!important;padding:0!important
+}
+/* Small animated yellow delivery beacon beside the rider. */
+header.dw-dashboard-header{position:relative!important;isolation:isolate}
+header.dw-dashboard-header:before{
+ content:"";display:block!important;position:absolute!important;left:79px;top:25px;
+ width:11px;height:11px;border-radius:50%;background:#ffe45c;
+ box-shadow:0 0 5px 2px #ffe45c,0 0 13px 5px #ffc92880;
+ animation:dw-yellow-beacon 1.25s ease-in-out infinite;z-index:2;pointer-events:none
+}
+@keyframes dw-yellow-beacon{
+ 0%,100%{opacity:.55;transform:scale(.82);box-shadow:0 0 4px 2px #ffe45c,0 0 9px 3px #ffc92866}
+ 50%{opacity:1;transform:scale(1.18);box-shadow:0 0 7px 3px #fff176,0 0 18px 8px #ffc928b0}
+}
+@media(prefers-reduced-motion:reduce){header.dw-dashboard-header:before{animation:none;opacity:.85}}
+</style>
 </head><body>
 <div class="dw-launch-splash" id="dwLaunchSplash" role="status" aria-label="Loading">
  <div class="dw-hero-window"><img class="dw-hero-art" src="./assets/milk-delivery-rider.gif.gif?v=74" alt="Milk delivery rider on scooter"></div>
@@ -1089,7 +1114,7 @@ main{max-width:760px!important;padding:0 0 24px!important}
 <div class="metrics"><div class="metric"><small>Delivery locations</small><b id="nCustomers">0</b></div><div class="metric"><small>Present</small><b id="nPresent">0</b></div><div class="metric"><small>Absent</small><b id="nAbsent">0</b></div><div class="metric"><small>Net milk today</small><b id="nLitres">0 L</b></div></div>
 <div class="tabs" style="grid-template-columns:repeat(5,1fr)"><button class="active" data-tab="register">Attendance</button><button data-tab="daily">Daily totals</button><button data-tab="monthly">Monthly bills</button><button data-tab="downloads">Download Bills</button><button data-tab="settings">Prices & backup</button></div>
 <section id="home">
- <div class="ref-page-heading"><div><h2>Good day 👋</h2><p>Your milk delivery overview</p></div></div>
+ <div class="ref-page-heading"><div><h2 id="homeGreeting">Good morning 👋</h2><p>Your milk delivery overview</p></div></div>
  <div class="ref-section-title" style="margin-top:5px">Payments</div>
  <div class="ref-card"><div class="ref-card-label">Monthly bills · <span id="homeMonthLabel">This month</span></div><div class="ref-big" id="homeBillTotal">₹0</div><div class="ref-divider"></div><div class="ref-split"><div><span class="ref-card-label">Delivered today</span><strong id="homeDelivered">0</strong></div><div><span class="ref-card-label">Not marked</span><strong class="orange" id="homeUnmarked">0</strong></div></div></div>
  <div class="ref-section-title">Quick Glance</div>
@@ -1724,6 +1749,7 @@ if ('serviceWorker' in navigator) {
  const navs=[...document.querySelectorAll('[data-dw-tab]')];
  function updateHome(){
   if(typeof calcDay!=='function'||typeof monthRows!=='function')return;
+  const hour=new Date().getHours();const greeting=hour>=5&&hour<12?'Good morning':hour>=12&&hour<17?'Good afternoon':'Good evening';const greetingEl=document.getElementById('homeGreeting');if(greetingEl)greetingEl.textContent=greeting+' 👋';
   const d=calcDay(),rows=monthRows(),total=rows.reduce((s,x)=>s+x.total,0);
   const marked=d.present+d.absent,unmarked=Math.max(0,db.customers.length-marked);
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
