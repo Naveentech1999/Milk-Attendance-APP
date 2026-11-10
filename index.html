@@ -151,6 +151,7 @@ button:active{transform:scale(.97)}
 @media(prefers-reduced-motion:reduce){#list>.customer{animation:none}}
 
 
+.dw-shilpi-group-heading{grid-column:1/-1;display:flex;align-items:center;gap:9px;margin:8px 2px 0;padding:11px 14px;border-radius:12px;background:#fff3e8;color:#9a4d13;font-size:14px;font-weight:900;letter-spacing:.2px}.dw-shilpi-group-heading span{font-size:10px;font-weight:750;color:#a96c3e}
 /* Compact animated customer accordions + refreshed dashboard metrics */
 #list{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin:12px 0 24px}
 .dw-customer-card{display:block;background:#fff;border:1px solid #e1ebe4;border-radius:19px;overflow:hidden;box-shadow:0 4px 17px #153b260b;animation:dw-card-in .3s ease both;transition:border-color .2s,box-shadow .2s}
@@ -1285,14 +1286,50 @@ const esc=s=>String(s).replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 function calcDay(date=$('date').value){let r={litres:0,amount:0,commission:0,payable:0,products:{},present:0,absent:0};let entries=db.days[date]||{};db.customers.forEach(c=>{let e=entries[c.id];if(e?.status==='present'){r.present++;c.items.forEach(it=>{let v=e.items?.[it.id]||{extra:0,returns:0},q=Math.max(0,it.qty+(+v.extra||0)-(+v.returns||0)),a=q*(isPacketItem(it)?2:1)*price(it),k=key(it);if(!isCurd(it))r.litres+=q;r.amount+=a;if(!isCurd(it))r.commission+=q*db.commission;if(!r.products[k])r.products[k]={qty:0,amount:0};r.products[k].qty+=q;r.products[k].amount+=a})}else if(e?.status==='absent')r.absent++});r.payable=r.amount-r.commission;return r}
 function refreshMetrics(){let t=calcDay();$('nCustomers').textContent=db.customers.length;$('nPresent').textContent=t.present;$('nAbsent').textContent=t.absent;$('nLitres').textContent=t.litres.toFixed(2)+' L'}
 function displayProductName(it){if(isCurd(it))return 'Heritage Curd packet';if(isSmallMilk(it))return 'Heritage Small packet';return it.brand+' '+it.type;}
+function applyShilpiGroupUpdate(){
+ const desired=[
+  {id:'cust059',name:'Shilpi Apt',location:'301',items:[{id:'i59_1',brand:'Vijaya',type:'TM',qty:0.5}]},
+  {id:'cust076',name:'Shilpi Apt',location:'602',items:[{id:'i76_1',brand:'Amul',type:'TM',qty:4}]},
+  {id:'cust077',name:'Shilpi Apt',location:'501',items:[{id:'i77_1',brand:'Heritage',type:'TM',qty:0.5}]},
+  {id:'cust078',name:'Shilpi Apt',location:'104',items:[{id:'i78_1',brand:'Vijaya',type:'TM',qty:0.5}]},
+  {id:'cust079',name:'Shilpi Apt',location:'202',items:[{id:'i79_1',brand:'Heritage',type:'TM',qty:1}]},
+  {id:'cust080',name:'Shilpi Apt',location:'403',items:[{id:'i80_1',brand:'Vijaya',type:'SM',qty:0.5},{id:'i80_2',brand:'Vijaya',type:'WM',qty:0.5}]},
+  {id:'cust081',name:'Danoda',location:'Shilpi',items:[{id:'i81_1',brand:'Vijaya',type:'TM',qty:2.5}]}
+ ];
+ if(!Array.isArray(db.customers))return false;
+ let changed=false;
+ const group=db.customers.filter(c=>/shilpi/i.test(String(c.name||''))||/shilpi/i.test(String(c.location||''))||/^danoda$/i.test(String(c.name||'')));
+ let primary=group.find(c=>c.id==='cust059')||group.find(c=>/shilpi/i.test(String(c.name||'')))||null;
+ if(!primary){primary={...desired[0],items:desired[0].items.map(x=>({...x}))};db.customers.push(primary);changed=true;}
+ else{
+  if(primary.id!=='cust059'){primary.id='cust059';changed=true;}
+  const first=desired[0];
+  if(primary.name!==first.name||primary.location!==first.location||JSON.stringify(primary.items)!==JSON.stringify(first.items)){
+   primary.name=first.name;primary.location=first.location;primary.items=first.items.map(x=>({...x}));changed=true;
+  }
+ }
+ group.filter(c=>c!==primary).forEach(c=>{db.customers=db.customers.filter(x=>x!==c);changed=true;});
+ for(const item of desired.slice(1)){
+  const existing=db.customers.find(c=>c.id===item.id);
+  if(!existing){db.customers.push({...item,items:item.items.map(x=>({...x}))});changed=true;continue;}
+  if(existing.name!==item.name||existing.location!==item.location||JSON.stringify(existing.items)!==JSON.stringify(item.items)){
+   existing.name=item.name;existing.location=item.location;existing.items=item.items.map(x=>({...x}));changed=true;
+  }
+ }
+ return changed;
+}
 function renderList(){
  let q=$('search').value.toLowerCase(),f=$('filter').value;
  let arr=db.customers.filter(c=>(c.name+' '+c.location).toLowerCase().includes(q)&&(f==='all'||status(c)===f));
+ const isShilpiGroup=c=>/shilpi/i.test(String(c.name||''))||/shilpi/i.test(String(c.location||''))||/^danoda$/i.test(String(c.name||''));
+ const shilpiRows=arr.filter(isShilpiGroup),otherRows=arr.filter(c=>!isShilpiGroup(c));
+ arr=[...otherRows,...shilpiRows];
  const editPairs=Object.keys(db.prices).filter(k=>k.includes('|'));
  const editOptions=selected=>'<option value="">Choose milk product</option>'+editPairs.map(k=>{const p=k.split('|');return '<option value="'+esc(k)+'" '+(k===selected?'selected':'')+'>'+esc(displayProductName({brand:p[0],type:p[1]}))+' · '+esc(p[0])+'</option>'}).join('');
- $('list').innerHTML=arr.map(c=>{
+ $('list').innerHTML=arr.map((c,index)=>{
   let s=status(c),initial=(c.name||'?').trim().charAt(0).toUpperCase();
-  return `<details class="dw-customer-card" data-customer-card="${esc(c.id)}">
+  const groupHeading=isShilpiGroup(c)&&(index===0||!isShilpiGroup(arr[index-1]))?'<div class="dw-shilpi-group-heading">Shilpi <span>Apartment + Danoda</span></div>':'';
+  return groupHeading+`<details class="dw-customer-card" data-customer-card="${esc(c.id)}">
    <summary class="dw-customer-summary">
     <span class="dw-avatar">${esc(initial)}</span>
     <span class="dw-customer-head"><span><h3>${esc(c.name)}</h3><span class="loc">${esc(c.location||'')}</span></span><span class="status ${s}">${s==='unmarked'?'NOT MARKED':s.toUpperCase()}</span></span>
@@ -1772,7 +1809,7 @@ $('cloudSignOut').onclick=async()=>{if(!cloud.client)return;const {error}=await 
 $('cloudUpload').onclick=cloudPush;
 $('cloudDownload').onclick=cloudPull;
 renderList();renderDaily();renderPrices();fillCustomerSelect();refreshMetrics();
-cloudAuth().then(()=>{if(!Array.isArray(db.customers)||db.customers.length===0){db.customers=SEED.map(c=>({...c,items:(c.items||[]).map(it=>({...it}))}));}renderList();renderDaily();renderPrices();fillCustomerSelect();refreshMetrics();}).catch(err=>{console.error('Cloud startup failed',err);cloudSay('Cloud connection failed. Showing saved device customers; check More → Supabase cloud database.');renderList();renderDaily();renderPrices();fillCustomerSelect();refreshMetrics();});
+cloudAuth().then(()=>{if(!Array.isArray(db.customers)||db.customers.length===0){db.customers=SEED.map(c=>({...c,items:(c.items||[]).map(it=>({...it}))}));}if(applyShilpiGroupUpdate())save();renderList();renderDaily();renderPrices();fillCustomerSelect();refreshMetrics();}).catch(err=>{console.error('Cloud startup failed',err);cloudSay('Cloud connection failed. Showing saved device customers; check More → Supabase cloud database.');if(applyShilpiGroupUpdate())save();renderList();renderDaily();renderPrices();fillCustomerSelect();refreshMetrics();});
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./service-worker.js').catch(err => console.warn('Offline setup unavailable', err));
