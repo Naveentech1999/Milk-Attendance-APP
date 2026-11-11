@@ -4,13 +4,14 @@ import { getAuth, initializeAuth, getReactNativePersistence } from 'firebase/aut
 import { getFirestore } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// Firebase Web App client configuration. This is public client config, not a service-account key.
 const firebaseConfig = {
-  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID
+  apiKey: 'AIzaSyC1-7wvfIqHiKzcV4WazXRfvcaRCoHPSws',
+  authDomain: 'doodhdelight-6897a.firebaseapp.com',
+  projectId: 'doodhdelight-6897a',
+  storageBucket: 'doodhdelight-6897a.firebasestorage.app',
+  messagingSenderId: '531222128751',
+  appId: '1:531222128751:web:194ddc8343069d93ecc59a'
 };
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 export const auth = Platform.OS === 'web' ? getAuth(app) : (() => {
