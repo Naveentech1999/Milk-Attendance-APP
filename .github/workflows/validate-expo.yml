@@ -1,0 +1,36 @@
+name: Validate Expo app
+
+on:
+  push:
+    branches: [expo-native-app]
+    paths:
+      - 'mobile-app/**'
+      - '.github/workflows/validate-expo.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'mobile-app/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.13'
+      - name: Install dependencies
+        working-directory: mobile-app
+        run: npm install --no-audit --no-fund
+      - name: Align Expo dependencies
+        working-directory: mobile-app
+        run: npx expo install --fix
+      - name: Check Expo project
+        working-directory: mobile-app
+        run: npx expo-doctor
+      - name: Type-check
+        working-directory: mobile-app
+        run: npx tsc --noEmit
+      - name: Export web build
+        working-directory: mobile-app
+        run: npx expo export --platform web --output-dir ../mobile-app-web
