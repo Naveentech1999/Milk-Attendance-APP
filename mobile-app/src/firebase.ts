@@ -1,5 +1,8 @@
 import { Platform } from 'react-native';
 import { initializeApp, getApps } from 'firebase/app';
+// Firebase's React Native conditional export is available at runtime, but Firebase 12's
+// shared TypeScript declarations omit it. Expo resolves the RN implementation for native builds.
+// @ts-expect-error Firebase RN conditional export is missing from the shared declarations.
 import { getAuth, initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
