@@ -1,156 +1,35 @@
-# Doodhwala – Milk Delivery Attendance & Billing Management
+# Doodhwala — Firebase migration branch
 
-Doodhwala is an installable, mobile-friendly web application (Progressive Web App) built to help milk vendors and milk delivery businesses manage customer-wise milk delivery attendance, daily milk quantities, product prices, and customer billing.
+This branch retains the existing Doodhwala PWA interface and its GitHub Pages deployment workflow while replacing Supabase cloud authentication/storage with Firebase Authentication + Cloud Firestore.
 
-Instead of maintaining daily delivery records manually, a milk vendor can use Doodhwala to mark whether each customer received milk, record morning and evening quantities, review daily delivery totals, and calculate customer charges over a month.
+## Firebase setup
 
-## What is the app used for?
+1. In Firebase Console, create/select a Firebase project.
+2. Register a Web App and copy its Firebase web configuration.
+3. Enable **Authentication → Sign-in method → Email/Password**.
+4. Create **Firestore Database** in production mode.
+5. In Firestore Rules, publish the rules from `firestore.rules`.
+6. Create a file named `firebase-config.js` from `firebase-config.example.js` and fill in the Web App config values.
+7. Deploy the static site. Keep `firebase-config.js` next to `index.html`.
 
-Doodhwala is intended for the day-to-day operations of a local milk delivery business. Its main purpose is to keep customer delivery and billing records organised in one place.
+The Firebase Web API key in a browser config is not a server secret. Access control is enforced by Firebase Authentication and Firestore Security Rules. Never put service-account private keys in this repository.
 
-Typical users include:
-- Individual milk vendors and milkmen.
-- Small milk delivery businesses.
-- Milk suppliers who manage recurring household customers.
-- Delivery operators who need daily attendance and monthly customer accounts.
+## Data structure
 
-## Features
+Each authenticated user owns one Firestore document:
 
-### 1. Customer and delivery records
-- Maintain a list of milk customers.
-- Store customer details such as name and delivery location.
-- Configure the milk products and quantities associated with customers.
-- Search and filter the customer list.
+`milk_app_state/{uid}`
 
-### 2. Daily delivery attendance
-- Select a date and record customer-wise delivery attendance.
-- Mark a customer as **Present** or **Absent**.
-- Keep attendance records date-wise.
-- Use the attendance record as the basis for delivery and billing calculations.
+Its `payload` field stores the app's existing JSON snapshot (customers, products, daily attendance, prices and monthly charges). The app retains localStorage for offline/local operation and writes to Firestore after the first successful upload. Signing in to an account with existing data restores that account's snapshot.
 
-### 3. Morning and evening milk quantity tracking
-- Record morning and evening quantities for configured milk products.
-- Enter the quantity delivered to each customer.
-- Calculate line totals from quantities and configured product prices.
-- Review the total amount for an individual customer.
+## Moving existing Supabase/local data
 
-### 4. Product pricing and billing
-- Configure product prices used in delivery calculations.
-- Calculate customer charges from recorded quantities and prices.
-- Review daily delivery amounts and month-wise customer charges.
-- Maintain monthly charge records.
-
-### 5. Daily and monthly summaries
-- View daily attendance and delivery summaries.
-- Review daily milk quantities and calculated totals.
-- Review monthly customer billing information.
-
-### 6. Reports, downloads, and backup
-- Download a backup of the app's stored data.
-- Generate and share a daily report image.
-- Keep a backup before moving data between devices or restoring a cloud copy.
-
-### 7. Optional Supabase cloud account and sync
-- Create an account or sign in using an email address and password.
-- Upload the current device data to the configured Supabase database.
-- Download the saved cloud data on another device.
-- After the initial successful upload, automatic cloud sync can be enabled for subsequent changes on that device.
-- The database uses Supabase Row Level Security so authenticated users can access only their own app-state row.
-
-Cloud sync is optional and requires the Supabase project and database setup to be available. The first migration to the cloud is a manual upload.
-
-### 8. Installable Progressive Web App
-- Install the app from a supported mobile browser.
-- Use a home-screen app experience without needing a separately packaged Android APK.
-- The service worker caches the application shell so it can reopen offline after the required assets have been cached.
-
-**Offline note:** The cached app shell can open offline, but cloud authentication and cloud sync require an internet connection. Data stored locally belongs to that browser/device unless it is backed up or synced.
-
-## How to use
-
-1. Open the deployed Doodhwala website.
-2. Add or review the customer list and each customer's milk product configuration.
-3. Set the applicable product prices.
-4. Open the daily attendance/registration screen and select the date.
-5. Mark each customer Present or Absent.
-6. Enter the morning and evening quantities as applicable.
-7. Review daily totals and customer charges.
-8. Open the daily or monthly sections to review summaries and billing.
-9. Download a data backup regularly. To use cloud sync, configure Supabase, sign in, and upload the device data first.
-
-The exact labels and available actions are those implemented in the current `index.html`.
-
-## Technology
-
-- **HTML5** – application structure.
-- **CSS3** – responsive, mobile-first interface.
-- **JavaScript** – attendance, quantity, pricing, calculations, reports, and application behaviour.
-- **Browser Local Storage** – saves the app data on the current device/browser.
-- **Supabase** – optional email/password authentication and cloud storage of the app-state JSON data.
-- **Progressive Web App (PWA)** – web app manifest, installable experience, and service-worker caching.
-
-The main application interface and most application logic are contained in `index.html`.
-
-## Run locally
-
-Because this is a browser-based application, you can serve the repository with any simple local HTTP server.
-
-For example, with Python installed:
-
-```bash
-python -m http.server 8000
-```
-
-Then open:
-
-```text
-http://localhost:8000
-```
-
-Opening the HTML file directly may limit service-worker and PWA functionality. Use localhost or an HTTPS host for those features.
+Use the existing app while connected to Supabase to download a JSON backup (or export it from the browser using the app's backup function). Open this Firebase branch, configure Firebase, sign in/create the Firebase account, and import that JSON backup into the app before pressing **Upload device data**. The Firebase document shape intentionally uses the same `payload` schema, so the backup does not need field-by-field transformation.
 
 ## Deploy
 
-This project can be hosted on a static web host that supports HTTPS, such as GitHub Pages.
+The existing `.github/workflows/deploy-pages.yml` remains unchanged. It deploys the static PWA to GitHub Pages on pushes to `main`; to deploy this branch, merge it via PR or adjust the workflow trigger/deploy source to your intended branch. GitHub Pages must be enabled for the repository.
 
-Keep the following files and folders together at the deployed site path:
+## Verification
 
-- `index.html`
-- `manifest.webmanifest`
-- `service-worker.js`
-- `assets/`
-- `icons/`
-
-After deployment, open the HTTPS URL in a supported browser and use its **Install app** or **Add to Home screen** option.
-
-## Supabase cloud setup
-
-The repository includes Supabase setup files:
-
-- `supabase/SETUP.md` – setup and migration instructions.
-- `supabase/schema.sql` – database table, Row Level Security policies, and private Storage bucket setup.
-
-Follow `supabase/SETUP.md` to prepare the configured Supabase project and create an app account.
-
-**Important data behaviour:**
-- Local records are saved in the current browser's Local Storage.
-- Signing in does not by itself migrate existing local records to the cloud; perform the initial **Upload this device data** action.
-- Upload replaces the cloud snapshot for the signed-in account.
-- Download cloud data replaces the local app data on that device.
-- Keep a JSON backup before uploading or downloading data.
-
-## Current limitations and scope
-
-- The application is a PWA, not a native Android APK.
-- Cloud sync depends on Supabase configuration, connectivity, and a successful initial upload.
-- Offline support caches the app shell; it does not make online cloud services available offline.
-- The repository's Supabase setup documentation states that automatic monthly PNG bill generation is not implemented yet. The private Storage bucket is prepared for future bill images, but the month-end image generation and scheduled automation still need to be developed and deployed.
-- The app should not be described as having automated monthly bill delivery unless that functionality is implemented separately.
-
-## Repository
-
-[Milk-Attendance-APP](https://github.com/Naveentech1999/Milk-Attendance-APP)
-
----
-
-**Doodhwala helps milk delivery businesses manage daily customer attendance, track milk quantities, and organise customer billing through a simple installable web app.**
+The GitHub Pages workflow deployment and live Firebase operations must be tested after adding your project config and publishing Firestore rules. No Firebase project config has been supplied yet, so cloud login/sync cannot be live until those steps are completed.
